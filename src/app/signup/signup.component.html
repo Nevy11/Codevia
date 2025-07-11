@@ -14,14 +14,15 @@
         (blur)="updateErrorMessage()"
         required
       />
-      @if (this.formSignUp().email.invalid && this.formSignUp().email.touched) {
+      <!-- @if (this.formSignUp().email.invalid && this.formSignUp().email.touched) {
       <mat-error *ngIf="this.formSignUp().email.hasError('required')">
         Email is required
       </mat-error>
       <mat-error *ngIf="this.formSignUp().email.hasError('email')">
         Please enter a valid email address
-      </mat-error>
-      } @if (errorMessage()) {
+      </mat-error> -->
+      <!-- } -->
+      @if (errorMessage()) {
       <!-- Display error message if email is invalid -->
 
       <mat-error>{{ errorMessage() }}</mat-error>
@@ -33,10 +34,16 @@
     <mat-form-field>
       <mat-label>Enter your password</mat-label>
       <input
-        formControlName="password"
+        [formControl]="this.formSignUp().password"
         matInput
+        (blur)="updatePasswordErrorMessage()"
         [type]="hide() ? 'password' : 'text'"
       />
+      @if (passwordErrorMessage()) {
+      <mat-error>
+        {{ passwordErrorMessage() }}
+      </mat-error>
+      }
       <button
         matIconButton
         matSuffix
@@ -50,16 +57,7 @@
   </div>
 
   <div class="button-container">
-    <button
-      mat-raised-button
-      color="primary"
-      [disabled]="
-        this.formSignUp().email.invalid || this.formSignUp().password.invalid
-      "
-      (click)="signUp()"
-    >
-      Sign Up
-    </button>
+    <button mat-raised-button (click)="signUp()">Sign Up</button>
   </div>
   <!-- <div class="link-container">
     <a routerLink="/login">Already have an account? Login</a>
