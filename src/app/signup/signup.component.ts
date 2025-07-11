@@ -9,6 +9,9 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { merge } from 'rxjs';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
 @Component({
   selector: 'nevy11-signup',
   standalone: true,
@@ -17,12 +20,16 @@ import { merge } from 'rxjs';
     MatInputModule,
     FormsModule,
     ReactiveFormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
   ],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignupComponent {
+  // Email form control with validation
   readonly email = new FormControl('', [Validators.required, Validators.email]);
   errorMessage = signal('');
   constructor() {
@@ -40,5 +47,34 @@ export class SignupComponent {
     } else {
       this.errorMessage.set('');
     }
+  }
+  // password form control with validation
+  readonly password = new FormControl('', [
+    Validators.required,
+    Validators.minLength(6),
+    Validators.maxLength(20),
+  ]);
+  passwordErrorMessage = signal('');
+  updatePasswordErrorMessage() {
+    if (this.password.hasError('required')) {
+      this.passwordErrorMessage.set('Password is required');
+    } else if (this.password.hasError('minlength')) {
+      this.passwordErrorMessage.set(
+        'Password must be at least 6 characters long'
+      );
+    } else if (this.password.hasError('maxlength')) {
+      this.passwordErrorMessage.set(
+        'Password cannot be longer than 20 characters'
+      );
+    } else {
+      this.passwordErrorMessage.set('');
+    }
+  }
+
+  // method to handle hide and show password
+  hide = signal(true);
+  clickEvent(event: MouseEvent) {
+    this.hide.set(!this.hide());
+    event.stopPropagation();
   }
 }

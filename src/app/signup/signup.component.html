@@ -1,6 +1,6 @@
 <div class="signUp">
   <h1>Signup</h1>
-  <p>Enter your email to sign up.</p>
+  <p class="description">Enter your email and password to sign up.</p>
 </div>
 
 <div class="example-container">
@@ -16,5 +16,20 @@
     @if (email.invalid) {
     <mat-error>{{ errorMessage() }}</mat-error>
     }
+  </mat-form-field>
+  <!-- password field -->
+  <br />
+  <mat-form-field>
+    <mat-label>Enter your password</mat-label>
+    <input matInput [type]="hide() ? 'password' : 'text'" />
+    <button
+      matIconButton
+      matSuffix
+      (click)="clickEvent($event)"
+      [attr.aria-label]="'Hide password'"
+      [attr.aria-pressed]="hide()"
+    >
+      <mat-icon>{{ hide() ? "visibility_off" : "visibility" }}</mat-icon>
+    </button>
   </mat-form-field>
 </div>
