@@ -14,14 +14,7 @@
         (blur)="updateErrorMessage()"
         required
       />
-      <!-- @if (this.formSignUp().email.invalid && this.formSignUp().email.touched) {
-      <mat-error *ngIf="this.formSignUp().email.hasError('required')">
-        Email is required
-      </mat-error>
-      <mat-error *ngIf="this.formSignUp().email.hasError('email')">
-        Please enter a valid email address
-      </mat-error> -->
-      <!-- } -->
+
       @if (errorMessage()) {
       <!-- Display error message if email is invalid -->
 
