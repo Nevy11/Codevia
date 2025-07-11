@@ -12,6 +12,7 @@ import { merge } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { JsonPipe } from '@angular/common';
 @Component({
   selector: 'nevy11-signup',
   standalone: true,
@@ -29,40 +30,52 @@ import { MatCardModule } from '@angular/material/card';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignupComponent {
+  // form group for the signup form
+  formSignUp = signal({
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [
+      Validators.required,
+      Validators.minLength(6),
+      Validators.maxLength(20),
+    ]),
+  });
   // Email form control with validation
-  readonly email = new FormControl('', [Validators.required, Validators.email]);
+  // readonly email = new FormControl('', [Validators.required, Validators.email]);
   errorMessage = signal('');
   constructor() {
-    merge(this.email.valueChanges, this.email.statusChanges)
+    merge(
+      this.formSignUp().email.valueChanges,
+      this.formSignUp().email.statusChanges
+    )
       .pipe(takeUntilDestroyed())
       .subscribe(() => {
         this.updateErrorMessage();
       });
   }
   updateErrorMessage() {
-    if (this.email.hasError('required')) {
+    if (this.formSignUp().email.hasError('required')) {
       this.errorMessage.set('Email is required');
-    } else if (this.email.hasError('email')) {
+    } else if (this.formSignUp().email.hasError('email')) {
       this.errorMessage.set('Please enter a valid email address');
     } else {
       this.errorMessage.set('');
     }
   }
   // password form control with validation
-  readonly password = new FormControl('', [
-    Validators.required,
-    Validators.minLength(6),
-    Validators.maxLength(20),
-  ]);
+  // readonly password = new FormControl('', [
+  //   Validators.required,
+  //   Validators.minLength(6),
+  //   Validators.maxLength(20),
+  // ]);
   passwordErrorMessage = signal('');
   updatePasswordErrorMessage() {
-    if (this.password.hasError('required')) {
+    if (this.formSignUp().password.hasError('required')) {
       this.passwordErrorMessage.set('Password is required');
-    } else if (this.password.hasError('minlength')) {
+    } else if (this.formSignUp().password.hasError('minlength')) {
       this.passwordErrorMessage.set(
         'Password must be at least 6 characters long'
       );
-    } else if (this.password.hasError('maxlength')) {
+    } else if (this.formSignUp().password.hasError('maxlength')) {
       this.passwordErrorMessage.set(
         'Password cannot be longer than 20 characters'
       );
@@ -76,5 +89,17 @@ export class SignupComponent {
   clickEvent(event: MouseEvent) {
     this.hide.set(!this.hide());
     event.stopPropagation();
+  }
+  signUp() {
+    if (this.formSignUp().email.valid && this.formSignUp().password.valid) {
+      // Handle signup logic here
+      console.log('Signup successful', {
+        email: this.formSignUp().email.value,
+        password: this.formSignUp().password.value,
+      });
+    } else {
+      this.updateErrorMessage();
+      this.updatePasswordErrorMessage();
+    }
   }
 }

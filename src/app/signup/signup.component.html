@@ -3,33 +3,67 @@
   <p class="description">Enter your email and password to sign up.</p>
 </div>
 
-<div class="example-container">
-  <mat-form-field>
-    <mat-label>Enter your email</mat-label>
-    <input
-      matInput
-      placeholder="pat@example.com"
-      [formControl]="email"
-      (blur)="updateErrorMessage()"
-      required
-    />
-    @if (email.invalid) {
-    <mat-error>{{ errorMessage() }}</mat-error>
-    }
-  </mat-form-field>
-  <!-- password field -->
-  <br />
-  <mat-form-field>
-    <mat-label>Enter your password</mat-label>
-    <input matInput [type]="hide() ? 'password' : 'text'" />
+<form class="signup-form">
+  <div class="example-container">
+    <mat-form-field>
+      <mat-label>Enter your email</mat-label>
+      <input
+        matInput
+        placeholder="pat@example.com"
+        [formControl]="this.formSignUp().email"
+        (blur)="updateErrorMessage()"
+        required
+      />
+      @if (this.formSignUp().email.invalid && this.formSignUp().email.touched) {
+      <mat-error *ngIf="this.formSignUp().email.hasError('required')">
+        Email is required
+      </mat-error>
+      <mat-error *ngIf="this.formSignUp().email.hasError('email')">
+        Please enter a valid email address
+      </mat-error>
+      } @if (errorMessage()) {
+      <!-- Display error message if email is invalid -->
+
+      <mat-error>{{ errorMessage() }}</mat-error>
+
+      }
+    </mat-form-field>
+    <!-- password field -->
+    <br />
+    <mat-form-field>
+      <mat-label>Enter your password</mat-label>
+      <input
+        formControlName="password"
+        matInput
+        [type]="hide() ? 'password' : 'text'"
+      />
+      <button
+        matIconButton
+        matSuffix
+        (click)="clickEvent($event)"
+        [attr.aria-label]="'Hide password'"
+        [attr.aria-pressed]="hide()"
+      >
+        <mat-icon>{{ hide() ? "visibility_off" : "visibility" }}</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+
+  <div class="button-container">
     <button
-      matIconButton
-      matSuffix
-      (click)="clickEvent($event)"
-      [attr.aria-label]="'Hide password'"
-      [attr.aria-pressed]="hide()"
+      mat-raised-button
+      color="primary"
+      [disabled]="
+        this.formSignUp().email.invalid || this.formSignUp().password.invalid
+      "
+      (click)="signUp()"
     >
-      <mat-icon>{{ hide() ? "visibility_off" : "visibility" }}</mat-icon>
+      Sign Up
     </button>
-  </mat-form-field>
-</div>
+  </div>
+  <!-- <div class="link-container">
+    <a routerLink="/login">Already have an account? Login</a>
+  </div> -->
+</form>
+{{ this.formSignUp().email.value }}
+{{ this.formSignUp().password.value }}
