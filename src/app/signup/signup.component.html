@@ -52,7 +52,16 @@
   <div class="button-container">
     <button mat-raised-button (click)="signUp()">Sign Up</button>
   </div>
-  <!-- <div class="link-container">
-    <a routerLink="/login">Already have an account? Login</a>
-  </div> -->
+  <div class="button-container">
+    <span class="already-have-account">Already have an account?</span>
+
+    <button
+      class="login-btn"
+      mat-raised-button
+      (click)="goToLogin()"
+      color="primary"
+    >
+      Login
+    </button>
+  </div>
 </form>

@@ -1,4 +1,9 @@
-import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  signal,
+  inject,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormControl,
@@ -13,6 +18,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { JsonPipe } from '@angular/common';
+import { Router } from '@angular/router';
 @Component({
   selector: 'nevy11-signup',
   standalone: true,
@@ -30,6 +36,7 @@ import { JsonPipe } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignupComponent {
+  router = inject(Router);
   // form group for the signup form
   formSignUp = signal({
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -101,5 +108,8 @@ export class SignupComponent {
       this.updateErrorMessage();
       this.updatePasswordErrorMessage();
     }
+  }
+  goToLogin() {
+    this.router.navigate(['/login']);
   }
 }

@@ -1,0 +1,65 @@
+.not-available-page {
+  text-align: center;
+  margin-top: 50px;
+}
+@media (max-width: 600px) {
+  .not-available-page h1 {
+    font-size: 2.5em;
+    color: #ff0000;
+    margin-top: 1rem;
+  }
+  .not-available-page p {
+    font-size: 1.2em;
+    color: #333;
+    margin-top: 4rem;
+    margin-bottom: 2rem;
+  }
+
+  .not-available-page button {
+    font-size: 1.2em;
+    padding: 10px 20px;
+    margin-top: 1rem;
+  }
+  .not-available-page {
+    padding: 20px;
+  }
+}
+@media (min-width: 601px) and (max-width: 1024px) {
+  .not-available-page h1 {
+    font-size: 3em;
+    color: #ff0000;
+    margin-top: 2rem;
+  }
+  .not-available-page p {
+    font-size: 1.5em;
+    color: #333;
+    margin-top: 6rem;
+    margin-bottom: 2rem;
+  }
+
+  .not-available-page button {
+    font-size: 1.5em;
+    padding: 15px 30px;
+    margin-top: 2rem;
+  }
+}
+
+@media (min-width: 1025px) {
+  .not-available-page h1 {
+    font-size: 4em;
+    color: #ff0000;
+    margin-top: 5rem;
+  }
+  .not-available-page p {
+    font-size: 1.8em;
+    color: #333;
+    margin-top: 6rem;
+    margin-bottom: 2rem;
+  }
+
+  .not-available-page button {
+    font-size: 1.8em;
+    padding: 20px 40px;
+    margin-top: 2rem;
+  }
+}
