@@ -32,21 +32,123 @@
   }
 }
 @media (min-width: 601px) and (max-width: 960px) {
-  .login-container {
+  .top-login {
+    width: 100%;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .top-login h1 {
+    color: #333;
+  }
+  .form-field {
     width: 80%;
-    padding: 30px;
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .login-button {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+  }
+  .button-holder {
+    display: flex;
+    justify-content: center;
+  }
+  .bottom-login {
+    width: 100%;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2rem;
   }
 }
 @media (min-width: 1024px) and (max-width: 1980px) {
-  .login-container {
+  .top-login {
+    width: 100%;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .top-login h1 {
+    color: #333;
+  }
+  .form-field {
     width: 50%;
-    padding: 40px;
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .login-button {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+  }
+  .button-holder {
+    display: flex;
+    justify-content: center;
+  }
+  .bottom-login {
+    width: 100%;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2rem;
   }
 }
 
 @media (min-width: 1981px) {
-  .login-container {
-    width: 40%;
-    padding: 50px;
+  .top-login {
+    width: 100%;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .top-login h1 {
+    color: #333;
+  }
+  .form-field {
+    width: 30%;
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .login-button {
+    width: 30%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+  }
+  .button-holder {
+    display: flex;
+    justify-content: center;
+  }
+  .bottom-login {
+    width: 100%;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2rem;
   }
 }

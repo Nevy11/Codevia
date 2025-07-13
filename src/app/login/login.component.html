@@ -48,7 +48,7 @@
     </button>
   </div>
 </form>
-<div>
+<div class="bottom-login">
   <span class="dont-have-account">Do not have an account?</span>
   <button
     mat-button
@@ -59,3 +59,6 @@
     Sign Up
   </button>
 </div>
+
+{{ loginForm().email.value }}
+{{ loginForm().password.value }}
