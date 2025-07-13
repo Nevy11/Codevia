@@ -68,12 +68,7 @@ export class SignupComponent {
       this.errorMessage.set('');
     }
   }
-  // password form control with validation
-  // readonly password = new FormControl('', [
-  //   Validators.required,
-  //   Validators.minLength(6),
-  //   Validators.maxLength(20),
-  // ]);
+
   passwordErrorMessage = signal('');
   updatePasswordErrorMessage() {
     if (this.formSignUp().password.hasError('required')) {
