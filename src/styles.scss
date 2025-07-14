@@ -1,6 +1,24 @@
 /* You can add global styles to this file, and also import other style files */
 
-html,
+// import styles.css
+@use "@angular/material" as mat;
+
+// Defining a simple theme
+$my-custom-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: mat.$cyan-palette,
+      accent: mat.$azure-palette,
+      warn: mat.$red-palette,
+    ),
+    typography: roboto,
+    density: 0,
+  )
+);
+
+// Apply theme to all angular material components
+@include mat.all-component-themes($my-custom-theme);
+
 body {
   height: 100%;
 }
