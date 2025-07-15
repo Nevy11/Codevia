@@ -13,18 +13,17 @@ import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'nevy11-login',
-  standalone: true,
-  imports: [
-    FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    ReactiveFormsModule,
-    MatButtonModule,
-    MatIconModule,
-  ],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.scss',
+    selector: 'nevy11-login',
+    imports: [
+        FormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+        MatIconModule,
+    ],
+    templateUrl: './login.component.html',
+    styleUrl: './login.component.scss'
 })
 export class LoginComponent {
   router = inject(Router);

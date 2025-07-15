@@ -20,20 +20,19 @@ import { MatCardModule } from '@angular/material/card';
 import { JsonPipe } from '@angular/common';
 import { Router } from '@angular/router';
 @Component({
-  selector: 'nevy11-signup',
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    MatInputModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatButtonModule,
-    MatIconModule,
-    MatCardModule,
-  ],
-  templateUrl: './signup.component.html',
-  styleUrl: './signup.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'nevy11-signup',
+    imports: [
+        MatFormFieldModule,
+        MatInputModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+        MatIconModule,
+        MatCardModule,
+    ],
+    templateUrl: './signup.component.html',
+    styleUrl: './signup.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SignupComponent {
   router = inject(Router);
