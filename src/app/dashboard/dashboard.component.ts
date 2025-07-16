@@ -77,8 +77,8 @@ export class DashboardComponent {
           rows: 1,
           card_content: 'Learn about various topics',
           image: 'dashboardImages/learn.jpeg',
-          imageWidth: 250,
-          imageHeight: 164,
+          imageWidth: 273,
+          imageHeight: 180,
         },
         {
           title: 'Courses',
