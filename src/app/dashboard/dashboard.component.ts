@@ -7,6 +7,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'nevy11-dashboard',
@@ -19,6 +20,7 @@ import { MatCardModule } from '@angular/material/card';
     MatIconModule,
     MatButtonModule,
     MatCardModule,
+    NgOptimizedImage,
   ],
 })
 export class DashboardComponent {
@@ -29,18 +31,82 @@ export class DashboardComponent {
     map(({ matches }) => {
       if (matches) {
         return [
-          { title: 'Learn', cols: 2, rows: 1 },
-          { title: 'Course', cols: 2, rows: 1 },
-          { title: 'Stats', cols: 2, rows: 1 },
-          { title: 'Setting', cols: 2, rows: 1 },
+          {
+            title: 'Learn',
+            cols: 2,
+            rows: 1,
+            card_content: 'Learn about various topics',
+            image: '/dashboardImages/learn.jpeg',
+            imageWidth: 250,
+            imageHeight: 164,
+          },
+          {
+            title: 'Courses',
+            cols: 2,
+            rows: 1,
+            card_content: 'View available courses',
+            image: '/dashboardImages/courses.png',
+            imageWidth: 250,
+            imageHeight: 164,
+          },
+          {
+            title: 'Stats',
+            cols: 2,
+            rows: 1,
+            card_content: 'Get Detailed statistics about your progress',
+            image: 'dashboardImages/stat.jpeg',
+            imageWidth: 250,
+            imageHeight: 164,
+          },
+          {
+            title: 'Setting',
+            cols: 2,
+            rows: 1,
+            card_content: 'Change your username and password',
+            image: 'dashboardImages/settings_project.png',
+            imageWidth: 250,
+            imageHeight: 164,
+          },
         ];
       }
 
       return [
-        { title: 'Learn', cols: 2, rows: 1 },
-        { title: 'Courses', cols: 1, rows: 1 },
-        { title: 'Statistics', cols: 1, rows: 2 },
-        { title: 'Settings', cols: 1, rows: 1 },
+        {
+          title: 'Learn',
+          cols: 2,
+          rows: 1,
+          card_content: 'Learn about various topics',
+          image: 'dashboardImages/learn.jpeg',
+          imageWidth: 250,
+          imageHeight: 164,
+        },
+        {
+          title: 'Courses',
+          cols: 1,
+          rows: 1,
+          card_content: 'View available courses',
+          image: 'dashboardImages/courses.png',
+          imageWidth: 250,
+          imageHeight: 164,
+        },
+        {
+          title: 'Statistics',
+          cols: 1,
+          rows: 2,
+          card_content: 'Get Detailed statistics about your progress',
+          image: 'dashboardImages/stat.jpeg',
+          imageWidth: 250,
+          imageHeight: 164,
+        },
+        {
+          title: 'Settings',
+          cols: 1,
+          rows: 1,
+          card_content: 'Change your username and password',
+          image: 'dashboardImages/settings_project.png',
+          imageWidth: 250,
+          imageHeight: 164,
+        },
       ];
     })
   );
