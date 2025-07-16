@@ -29,10 +29,10 @@ export class DashboardComponent {
     map(({ matches }) => {
       if (matches) {
         return [
-          { title: 'Learn', cols: 1, rows: 1 },
-          { title: 'Course', cols: 1, rows: 1 },
-          { title: 'Stats', cols: 1, rows: 1 },
-          { title: 'Setting', cols: 1, rows: 1 },
+          { title: 'Learn', cols: 2, rows: 1 },
+          { title: 'Course', cols: 2, rows: 1 },
+          { title: 'Stats', cols: 2, rows: 1 },
+          { title: 'Setting', cols: 2, rows: 1 },
         ];
       }
 
