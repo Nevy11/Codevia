@@ -30,6 +30,7 @@ export class DashboardComponent {
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {
       if (matches) {
+        console.log('Handset View');
         return [
           {
             title: 'Learn',
@@ -39,6 +40,7 @@ export class DashboardComponent {
             image: '/dashboardImages/learn.jpeg',
             imageWidth: 250,
             imageHeight: 164,
+            device: 'phone',
           },
           {
             title: 'Courses',
@@ -48,6 +50,7 @@ export class DashboardComponent {
             image: '/dashboardImages/courses.png',
             imageWidth: 250,
             imageHeight: 164,
+            device: 'phone',
           },
           {
             title: 'Stats',
@@ -57,57 +60,165 @@ export class DashboardComponent {
             image: 'dashboardImages/stat.jpeg',
             imageWidth: 250,
             imageHeight: 164,
+            device: 'phone',
           },
           {
             title: 'Setting',
             cols: 2,
             rows: 1,
             card_content: 'Change your username and password',
-            image: 'dashboardImages/settings_project.png',
-            imageWidth: 250,
+            image: 'dashboardImages/new_set.png',
+            imageWidth: 230,
             imageHeight: 164,
+            device: 'phone',
           },
         ];
+      } else {
+        // tablet potrati view
+        const isTabletPotrait = this.breakpointObserver.isMatched(
+          Breakpoints.TabletPortrait
+        );
+        if (isTabletPotrait) {
+          console.log('Tablet Portrait View');
+          return [
+            {
+              title: 'Learn',
+              cols: 2,
+              rows: 1,
+              card_content: 'Learn about various topics',
+              image: '/dashboardImages/learn.jpeg',
+              imageWidth: 243,
+              imageHeight: 160,
+              device: 'tablet',
+            },
+            {
+              title: 'Courses',
+              cols: 2,
+              rows: 1,
+              card_content: 'View available courses',
+              image: '/dashboardImages/courses.png',
+              imageWidth: 235,
+              imageHeight: 170,
+              device: 'tablet',
+            },
+            {
+              title: 'Stats',
+              cols: 2,
+              rows: 1,
+              card_content: 'Get Detailed statistics about your progress',
+              image: 'dashboardImages/stat.jpeg',
+              imageWidth: 246,
+              imageHeight: 164,
+              device: 'tablet',
+            },
+            {
+              title: 'Setting',
+              cols: 2,
+              rows: 1,
+              card_content: 'Change your username and password',
+              image: 'dashboardImages/new_set.png',
+              imageWidth: 180,
+              imageHeight: 180,
+              device: 'tablet',
+            },
+          ];
+        } else {
+          const isSmallLaptop = this.breakpointObserver.isMatched(
+            '(min-width: 840px) and (max-width: 1366px)'
+          );
+          if (isSmallLaptop) {
+            console.log('Small Laptop View');
+            return [
+              {
+                title: 'Learn',
+                cols: 2,
+                rows: 2,
+                card_content: 'Learn about various topics',
+                image: 'dashboardImages/learn.jpeg',
+                imageWidth: 760,
+                imageHeight: 500,
+                device: 'small_laptop',
+              },
+              {
+                title: 'Courses',
+                cols: 1,
+                rows: 1,
+                card_content: 'View available courses',
+                image: 'dashboardImages/courses.png',
+                imageWidth: 248,
+                imageHeight: 180,
+                device: 'small_laptop',
+              },
+              {
+                title: 'Statistics',
+                cols: 1,
+                rows: 2,
+                card_content: 'Get Detailed statistics about your progress',
+                image: 'dashboardImages/stat.jpeg',
+                imageWidth: 375,
+                imageHeight: 250,
+                device: 'small_laptop',
+              },
+              {
+                title: 'Settings',
+                cols: 1,
+                rows: 1,
+                card_content: 'Change your username and password',
+                image: 'dashboardImages/new_set.png',
+                imageWidth: 180,
+                imageHeight: 180,
+                device: 'small_laptop',
+              },
+            ];
+          }
+          // laptop view
+          else {
+            console.log('Large View');
+            return [
+              {
+                title: 'Learn',
+                cols: 2,
+                rows: 2,
+                card_content: 'Learn about various topics',
+                image: 'dashboardImages/learn.jpeg',
+                imageWidth: 760,
+                imageHeight: 500,
+                device: 'large_view',
+              },
+              {
+                title: 'Courses',
+                cols: 1,
+                rows: 1,
+                card_content: 'View available courses',
+                image: 'dashboardImages/courses.png',
+                imageWidth: 250,
+                imageHeight: 180,
+                device: 'large_view',
+              },
+              {
+                title: 'Statistics',
+                cols: 1,
+                rows: 2,
+                card_content: 'Get Detailed statistics about your progress',
+                image: 'dashboardImages/stat.jpeg',
+                imageWidth: 375,
+                imageHeight: 250,
+                device: 'large_view',
+              },
+              {
+                title: 'Settings',
+                cols: 1,
+                rows: 1,
+                card_content: 'Change your username and password',
+                image: 'dashboardImages/updated_set.png',
+                imageWidth: 219,
+                imageHeight: 164,
+                device: 'large_view',
+              },
+            ];
+          }
+        }
       }
-
-      return [
-        {
-          title: 'Learn',
-          cols: 2,
-          rows: 2,
-          card_content: 'Continue learning about various topics',
-          image: 'dashboardImages/learn.jpeg',
-          imageWidth: 600,
-          imageHeight: 480,
-        },
-        {
-          title: 'Courses',
-          cols: 1,
-          rows: 1,
-          card_content: 'View available courses',
-          image: 'dashboardImages/courses.png',
-          imageWidth: 250,
-          imageHeight: 164,
-        },
-        {
-          title: 'Statistics',
-          cols: 1,
-          rows: 2,
-          card_content: 'Get Detailed statistics about your progress',
-          image: 'dashboardImages/stat.jpeg',
-          imageWidth: 250,
-          imageHeight: 164,
-        },
-        {
-          title: 'Settings',
-          cols: 1,
-          rows: 1,
-          card_content: 'Change your username and password',
-          image: 'dashboardImages/settings_project.png',
-          imageWidth: 250,
-          imageHeight: 164,
-        },
-      ];
     })
   );
 }
