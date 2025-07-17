@@ -33,6 +33,18 @@
             />
           </div>
           <div class="card_content">{{ card.card_content }}</div>
+          <div>
+            @if (card.device == "small_laptop" && card.title == "Statistics" ||
+            card.device == "large_view" && card.title == "Statistics") {
+            <img
+              ngSrc="/dashboardImages/stat.jpeg"
+              [width]="card.imageWidth"
+              [height]="card.imageHeight"
+              alt="Statistics Image"
+              priority
+            />
+            }
+          </div>
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
