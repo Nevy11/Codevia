@@ -74,11 +74,11 @@ export class DashboardComponent {
         {
           title: 'Learn',
           cols: 2,
-          rows: 1,
-          card_content: 'Learn about various topics',
+          rows: 2,
+          card_content: 'Continue learning about various topics',
           image: 'dashboardImages/learn.jpeg',
-          imageWidth: 273,
-          imageHeight: 180,
+          imageWidth: 600,
+          imageHeight: 480,
         },
         {
           title: 'Courses',

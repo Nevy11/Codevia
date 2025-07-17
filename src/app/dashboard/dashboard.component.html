@@ -23,6 +23,7 @@
         </mat-card-header>
         <mat-card-content class="dashboard-card-content">
           <div>
+            @if (card.title == "learn" || card.title == "Learn") {}
             <img
               alt="{{ card.title }}"
               class="card-image"
