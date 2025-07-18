@@ -3,6 +3,7 @@ import { SignupComponent } from './signup/signup.component';
 import { LoginComponent } from './login/login.component';
 import { NotAvailablePageComponent } from './not-available-page/not-available-page.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { LandingPageComponent } from './landing-page/landing-page.component';
 
 export const routes: Routes = [
   {
@@ -23,8 +24,7 @@ export const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'signup',
-    pathMatch: 'full',
+    component: LandingPageComponent,
   },
   {
     path: '**',
