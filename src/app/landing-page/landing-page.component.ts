@@ -10,10 +10,11 @@ import {
 } from '@angular/core';
 import { map } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
   selector: 'nevy11-landing-page',
-  imports: [CommonModule],
+  imports: [CommonModule, MatToolbarModule],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss',
 })
@@ -24,10 +25,10 @@ export class LandingPageComponent implements OnInit, OnDestroy {
 
   // rendering different images
   images = [
-    '/home_page/angular.jpeg',
+    '/home_page/resized_pytorch.png',
     '/home_page/cool.jpeg',
+    '/home_page/resized_tf.png',
     '/home_page/download.jpeg',
-    '/home_page/typescript.jpeg',
   ];
   currentImageIndex = 0;
   private intervalId: any;
@@ -69,4 +70,8 @@ export class LandingPageComponent implements OnInit, OnDestroy {
       }
     })
   );
+
+  get currentBackground(): string {
+    return `url(${this.images[this.currentImageIndex]})`;
+  }
 }
