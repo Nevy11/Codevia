@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "E-learning-platform": {
+    "Codevia": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "outputPath": "dist/e-learning-platform",
+            "outputPath": "dist/Codevia",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": ["zone.js"],
@@ -69,10 +69,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "E-learning-platform:build:production"
+              "buildTarget": "Codevia:build:production"
             },
             "development": {
-              "buildTarget": "E-learning-platform:build:development"
+              "buildTarget": "Codevia:build:development"
             }
           },
           "defaultConfiguration": "development"

@@ -25,10 +25,10 @@ export class LandingPageComponent implements OnInit, OnDestroy {
 
   // rendering different images
   images = [
-    '/home_page/resized_pytorch.png',
-    '/home_page/cool.jpeg',
-    '/home_page/resized_tf.png',
-    '/home_page/download.jpeg',
+    '/home_page/image3.jpg',
+    '/home_page/image2.jpg',
+    '/home_page/image4.jpeg',
+    '/home_page/image1.avif',
   ];
   currentImageIndex = 0;
   private intervalId: any;
