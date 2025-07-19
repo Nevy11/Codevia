@@ -38,7 +38,7 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   // rendering different images
   images = [
     '/home_page/image3.jpg',
-    '/home_page/success_1.png',
+    '/home_page/strong.png',
     '/home_page/image4.jpeg',
     '/home_page/image1.avif',
   ];
@@ -109,4 +109,10 @@ export class LandingPageComponent implements OnInit, OnDestroy {
     const scrollTop = (event.target as Document).documentElement.scrollTop;
     this.showScrollIndicator = scrollTop < 300; // Show indicator if scrolled less than 100px
   }
+
+  previewVideos = [
+    { url: '/home_page/video1.mp4' },
+    { url: '/home_page/video2.mp4' },
+    { url: '/home_page/video3.mp4' },
+  ];
 }
