@@ -2,6 +2,33 @@
   <span class="brand-title">E-Learning</span>
 </mat-toolbar>
 
+<section class="hero-section">
+  <div class="image-container">
+    <img
+      *ngFor="let image of images; let i = index"
+      [src]="image"
+      [class.active]="i === currentImageIndex"
+      class="bg-image"
+      loading="eager"
+    />
+  </div>
+  <div class="overlay-content">
+    <h1>Empower Your Learning Journey</h1>
+  </div>
+</section>
+
+<section class="content-section">
+  <h2>Explore Courses</h2>
+  <p>
+    Discover interactive courses, AI-powered lessons, and personalized study
+    tracks.
+  </p>
+</section>
+
+<!-- <mat-toolbar color="primary" class="top-bar">
+  <span class="brand-title">E-Learning</span>
+</mat-toolbar>
+
 <section
   class="hero-section"
   [ngStyle]="{ 'background-image': currentBackground }"
@@ -18,9 +45,4 @@
     tracks.
   </p>
 </section>
-
-<!-- <div
-  class="hero-section"
-  [ngStyle]="{ 'background-image': 'url(' + images[currentImageIndex] + ')' }"
-></div>
-<div>Hello world</div> -->
+ -->

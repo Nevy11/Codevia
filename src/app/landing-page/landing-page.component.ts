@@ -26,13 +26,22 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   // rendering different images
   images = [
     '/home_page/image3.jpg',
-    '/home_page/image2.jpg',
+    '/home_page/success.jpeg',
     '/home_page/image4.jpeg',
     '/home_page/image1.avif',
   ];
   currentImageIndex = 0;
   private intervalId: any;
+
+  preloadImages() {
+    this.images.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }
+
   ngOnInit() {
+    this.preloadImages();
     if (isPlatformBrowser(this.platformId)) {
       // Start the interval only if the platform is a browser
       this.intervalId = setInterval(() => {
