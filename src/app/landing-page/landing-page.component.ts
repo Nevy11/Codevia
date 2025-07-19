@@ -7,6 +7,7 @@ import {
   OnDestroy,
   PLATFORM_ID,
   Inject,
+  HostListener,
 } from '@angular/core';
 import { map } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
@@ -14,10 +15,17 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'nevy11-landing-page',
-  imports: [CommonModule, MatToolbarModule, MatButtonModule, MatIconModule],
+  imports: [
+    CommonModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+  ],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss',
 })
@@ -30,7 +38,7 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   // rendering different images
   images = [
     '/home_page/image3.jpg',
-    '/home_page/success.jpeg',
+    '/home_page/success_1.png',
     '/home_page/image4.jpeg',
     '/home_page/image1.avif',
   ];
@@ -92,5 +100,13 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   }
   register() {
     this.router.navigate(['/signup']);
+  }
+
+  // Scroll indicator functionality
+  showScrollIndicator = true;
+  @HostListener('window:scroll', ['$event'])
+  onWindowScroll(event: Event) {
+    const scrollTop = (event.target as Document).documentElement.scrollTop;
+    this.showScrollIndicator = scrollTop < 300; // Show indicator if scrolled less than 100px
   }
 }

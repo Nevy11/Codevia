@@ -1,10 +1,24 @@
 <mat-toolbar color="primary" class="top-bar">
-  <span class="brand-title">Codevia</span>
+  <!-- <span class="brand-title">Codevia</span> -->
+  <span class="logo">
+    <span style="color: #0d47a1">C</span>
+    <span style="color: #29b6f6">o</span>
+    <span style="color: #7e57c2">d</span>
+    <span style="color: #b39ddb">e</span>
+    <span style="color: #00e676">V</span>
+    <span style="color: #ffa726">i</span>
+    <span style="color: #e91e63">a</span>
+  </span>
   <span class="spacer"></span>
-  <button mat-button (click)="login()">Login</button>
-  <button mat-button (click)="register()">Register</button>
-  <button mat-button>Courses</button>
-  <button mat-button>About Us</button>
+  <button mat-button><mat-icon>help_outline</mat-icon> About Us</button>
+  <button mat-button><mat-icon>school</mat-icon>Courses</button>
+  <button mat-button (click)="login()">
+    <mat-icon>login</mat-icon>
+    Login
+  </button>
+  <button mat-button (click)="register()">
+    <mat-icon>how_to_reg</mat-icon>Register
+  </button>
 </mat-toolbar>
 
 <section class="hero-section">
@@ -20,19 +34,42 @@
   <div class="overlay-content">
     <h1>Empower Your Learning Journey</h1>
   </div>
+  @if (showScrollIndicator) {
   <div class="scroll-indicator">
     <span class="scroll-text">Scroll</span>
     <span class="scroll-arrow"> <mat-icon>keyboard_arrow_down</mat-icon> </span>
   </div>
+  }
 </section>
 
-<section class="content-section">
-  <h2>Explore Courses</h2>
+<!-- <section class="content-section">
+  <h1>Explore Courses</h1>
   <p>
     Discover interactive courses, AI-powered lessons, and personalized study
     tracks.
   </p>
+</section> -->
+<!-- <section class="content-wrapper">
+  <div class="content-box">
+    <h2 class="section-title">Explore Courses</h2>
+    <p class="section-description">
+      Discover interactive courses, AI-powered lessons, and personalized study
+      tracks.
+    </p>
+  </div>
+</section> -->
+<section class="content-section">
+  <mat-card>
+    <mat-card-title>Explore Courses</mat-card-title>
+    <mat-card-content>
+      <p>
+        Discover interactive courses, AI-powered lessons, and personalized study
+        tracks.
+      </p>
+    </mat-card-content>
+  </mat-card>
 </section>
+
 <section class="content-section">
   <h2>Join Our Community</h2>
   <p>
