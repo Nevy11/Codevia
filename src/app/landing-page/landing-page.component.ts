@@ -72,19 +72,39 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {
       if (matches) {
+        return [
+          {
+            mobile_device: true,
+          },
+        ];
       } else {
         // tablet potrait view
         const isTabletPotrait = this.breakpointObserver.isMatched(
           Breakpoints.TabletPortrait
         );
         if (isTabletPotrait) {
+          return [
+            {
+              mobile_device: false,
+            },
+          ];
         } else {
           // small laptop view
           const isSmallLaptop = this.breakpointObserver.isMatched(
             '(min-width: 840px) and (max-width: 1366px)'
           );
           if (isSmallLaptop) {
+            return [
+              {
+                mobile_device: false,
+              },
+            ];
           } else {
+            return [
+              {
+                mobile_device: false,
+              },
+            ];
             // Large laptop view
           }
         }
