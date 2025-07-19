@@ -11,10 +11,11 @@ import {
 import { map } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'nevy11-landing-page',
-  imports: [CommonModule, MatToolbarModule],
+  imports: [CommonModule, MatToolbarModule, MatButtonModule],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss',
 })
