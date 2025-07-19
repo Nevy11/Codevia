@@ -12,6 +12,7 @@ import { map } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'nevy11-landing-page',
@@ -21,6 +22,7 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class LandingPageComponent implements OnInit, OnDestroy {
   private breakpointObserver = inject(BreakpointObserver);
+  private router = inject(Router);
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
@@ -83,5 +85,11 @@ export class LandingPageComponent implements OnInit, OnDestroy {
 
   get currentBackground(): string {
     return `url(${this.images[this.currentImageIndex]})`;
+  }
+  login() {
+    this.router.navigate(['/login']);
+  }
+  register() {
+    this.router.navigate(['/signup']);
   }
 }
