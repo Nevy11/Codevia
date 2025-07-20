@@ -3,7 +3,7 @@ import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'nevy11-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, VideoDialogComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })

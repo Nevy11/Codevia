@@ -1,4 +1,4 @@
-<!-- Thumbnail View -->
+<!-- Thumbnail View
 @if (!showVideo) {
 <div class="relative max-w-4xl mx-auto mt-12">
   <img
@@ -16,10 +16,10 @@
     ▶️
   </button>
 </div>
-}
+} -->
 
 <!-- Modal View -->
-@if (showVideo) {
+<!-- @if (showVideo) {
 <div
   class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
 >
@@ -40,10 +40,10 @@
       allow="autoplay; encrypted-media"
       allowfullscreen
     >
-    </iframe>
+    </iframe> -->
 
-    <!-- CTA Appears After 15s -->
-    @if (showCTA) {
+<!-- CTA Appears After 15s -->
+<!-- @if (showCTA) {
     <div class="text-center mt-4">
       <button
         class="bg-blue-600 text-white px-6 py-3 rounded-full text-lg hover:bg-blue-700"
@@ -54,4 +54,25 @@
     }
   </div>
 </div>
-}
+} -->
+
+<div class="thumbnail-container">
+  <img
+    ngSrc="/video-image/python.png"
+    width="300"
+    height="168"
+    alt="Course Preview"
+    class="thumbnail-image"
+  />
+
+  <button
+    mat-icon-button
+    color="primary"
+    class="play-button"
+    (click)="openVideo()"
+    matTooltip="Watch Course Preview"
+    matTooltipPosition="above"
+  >
+    <mat-icon>play_circle</mat-icon>
+  </button>
+</div>
