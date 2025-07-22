@@ -40,7 +40,7 @@ export class VideoPromoComponent {
       width: '80%',
       height: '80%',
       panelClass: 'video-dialog',
-      data: { url: 'https://www.youtube.com/embed/G3e-cpL7ofc' },
+      data: { url: 'https://www.youtube.com/embed/kUMe1FH4CHE' },
     });
   }
 
