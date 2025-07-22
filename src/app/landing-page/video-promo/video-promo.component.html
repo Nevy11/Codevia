@@ -1,67 +1,11 @@
-<!-- Thumbnail View
-@if (!showVideo) {
-<div class="relative max-w-4xl mx-auto mt-12">
-  <img
-    src="assets/preview-image.jpg"
-    class="w-full rounded-xl shadow"
-    alt="Course Preview"
-  />
-  <button
-    class="absolute inset-0 flex items-center justify-center text-white text-5xl bg-black bg-opacity-50 hover:bg-opacity-70"
-    matbutton
-    matTooltip="Watch Course Preview"
-    matTooltipPosition="above"
-    (click)="playVideo()"
-  >
-    ▶️
-  </button>
-</div>
-} -->
-
-<!-- Modal View -->
-<!-- @if (showVideo) {
-<div
-  class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
->
-  <div class="bg-white rounded-xl shadow-xl p-4 w-[90%] max-w-4xl relative">
-    <button
-      (click)="closeVideo()"
-      class="absolute top-2 right-2 text-black text-2xl"
-    >
-      ✖
-    </button>
-
-    <iframe
-      width="100%"
-      height="400"
-      src="https://www.youtube.com/embed/rfscVS0vtbw?autoplay=1&mute=1"
-      title="Course Preview"
-      frameborder="0"
-      allow="autoplay; encrypted-media"
-      allowfullscreen
-    >
-    </iframe> -->
-
-<!-- CTA Appears After 15s -->
-<!-- @if (showCTA) {
-    <div class="text-center mt-4">
-      <button
-        class="bg-blue-600 text-white px-6 py-3 rounded-full text-lg hover:bg-blue-700"
-      >
-        Sign Up Now — It’s Free
-      </button>
-    </div>
-    }
-  </div>
-</div>
-} -->
-
+@for (card of cards | async; track card) { @if (card.mobile_device) {
 <div class="thumbnail-container">
   <img
     ngSrc="/video-image/python.png"
-    width="800"
-    height="446"
+    width="280"
+    height="150"
     alt="Course Preview"
+    priority
   />
 
   <button
@@ -75,3 +19,236 @@
     <mat-icon>play_circle</mat-icon>
   </button>
 </div>
+<div class="thumbnail-container">
+  <img
+    ngSrc="/video-image/html.png"
+    width="280"
+    height="150"
+    alt="Course Preview"
+    priority
+  />
+
+  <button
+    mat-icon-button
+    color="primary"
+    class="play-button"
+    (click)="openVideo()"
+    matTooltip="Watch Course Preview"
+    matTooltipPosition="above"
+  >
+    <mat-icon>play_circle</mat-icon>
+  </button>
+</div>
+<!-- Third image displayed -->
+<div class="thumbnail-container">
+  <img
+    ngSrc="/video-image/Rust.png"
+    width="280"
+    height="150"
+    alt="Course Preview"
+    priority
+  />
+
+  <button
+    mat-icon-button
+    color="primary"
+    class="play-button"
+    (click)="openVideo()"
+    matTooltip="Watch Course Preview"
+    matTooltipPosition="above"
+  >
+    <mat-icon>play_circle</mat-icon>
+  </button>
+</div>
+<!-- html full course url -->
+<!-- https://www.youtube.com/watch?v=G3e-cpL7ofc -->
+} @else if (card.isTabletPotrait) {
+<div class="thumbnail-container">
+  <img
+    ngSrc="/video-image/python.png"
+    width="800"
+    height="446"
+    alt="Course Preview"
+    priority
+  />
+
+  <button
+    mat-icon-button
+    color="primary"
+    class="play-button"
+    (click)="openVideo()"
+    matTooltip="Watch Course Preview"
+    matTooltipPosition="above"
+  >
+    <mat-icon>play_circle</mat-icon>
+  </button>
+</div>
+<div class="thumbnail-container">
+  <img
+    ngSrc="/video-image/html.png"
+    width="280"
+    height="150"
+    alt="Course Preview"
+    priority
+  />
+
+  <button
+    mat-icon-button
+    color="primary"
+    class="play-button"
+    (click)="openVideo()"
+    matTooltip="Watch Course Preview"
+    matTooltipPosition="above"
+  >
+    <mat-icon>play_circle</mat-icon>
+  </button>
+</div>
+<!-- Third image displayed -->
+<div class="thumbnail-container">
+  <img
+    ngSrc="/video-image/Rust.png"
+    width="280"
+    height="150"
+    alt="Course Preview"
+    priority
+  />
+
+  <button
+    mat-icon-button
+    color="primary"
+    class="play-button"
+    (click)="openVideo()"
+    matTooltip="Watch Course Preview"
+    matTooltipPosition="above"
+  >
+    <mat-icon>play_circle</mat-icon>
+  </button>
+</div>
+} @else if (card.isSmallLaptop) {
+<div class="thumbnail-container">
+  <img
+    ngSrc="/video-image/python.png"
+    width="800"
+    height="446"
+    alt="Course Preview"
+    priority
+  />
+
+  <button
+    mat-icon-button
+    color="primary"
+    class="play-button"
+    (click)="openVideo()"
+    matTooltip="Watch Course Preview"
+    matTooltipPosition="above"
+  >
+    <mat-icon>play_circle</mat-icon>
+  </button>
+</div>
+<div class="thumbnail-container">
+  <img
+    ngSrc="/video-image/html.png"
+    width="280"
+    height="150"
+    alt="Course Preview"
+    priority
+  />
+
+  <button
+    mat-icon-button
+    color="primary"
+    class="play-button"
+    (click)="openVideo()"
+    matTooltip="Watch Course Preview"
+    matTooltipPosition="above"
+  >
+    <mat-icon>play_circle</mat-icon>
+  </button>
+</div>
+<!-- Third image displayed -->
+<div class="thumbnail-container">
+  <img
+    ngSrc="/video-image/Rust.png"
+    width="280"
+    height="150"
+    alt="Course Preview"
+    priority
+  />
+
+  <button
+    mat-icon-button
+    color="primary"
+    class="play-button"
+    (click)="openVideo()"
+    matTooltip="Watch Course Preview"
+    matTooltipPosition="above"
+  >
+    <mat-icon>play_circle</mat-icon>
+  </button>
+</div>
+} @else if (card.isLargeLaptop) {
+<div class="thumbnail-container">
+  <img
+    ngSrc="/video-image/python.png"
+    width="800"
+    height="446"
+    alt="Course Preview"
+    priority
+  />
+
+  <button
+    mat-icon-button
+    color="primary"
+    class="play-button"
+    (click)="openVideo()"
+    matTooltip="Watch Course Preview"
+    matTooltipPosition="above"
+  >
+    <mat-icon>play_circle</mat-icon>
+  </button>
+</div>
+<div class="thumbnail-container">
+  <img
+    ngSrc="/video-image/html.png"
+    width="280"
+    height="150"
+    alt="Course Preview"
+    priority
+  />
+
+  <button
+    mat-icon-button
+    color="primary"
+    class="play-button"
+    (click)="openVideo()"
+    matTooltip="Watch Course Preview"
+    matTooltipPosition="above"
+  >
+    <mat-icon>play_circle</mat-icon>
+  </button>
+</div>
+<!-- Third image displayed -->
+<div class="thumbnail-container">
+  <img
+    ngSrc="/video-image/Rust.png"
+    width="280"
+    height="150"
+    alt="Course Preview"
+    priority
+  />
+
+  <button
+    mat-icon-button
+    color="primary"
+    class="play-button"
+    (click)="openVideo()"
+    matTooltip="Watch Course Preview"
+    matTooltipPosition="above"
+  >
+    <mat-icon>play_circle</mat-icon>
+  </button>
+</div>
+} @else {
+<div style="color: red">Error</div>
+
+} }
