@@ -1,0 +1,16 @@
+// spacer for toolbar
+.spacer {
+  flex: 1 1 auto;
+}
+
+/* Top Bar */
+.top-bar {
+  height: 64px;
+  display: flex;
+  align-items: center;
+}
+
+.brand-title {
+  font-size: 20px;
+  font-weight: bold;
+}

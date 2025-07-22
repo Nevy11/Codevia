@@ -17,22 +17,23 @@ import { merge } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
-import { JsonPipe } from '@angular/common';
 import { Router } from '@angular/router';
+import { TopLoginSignupComponent } from '../top-login-signup/top-login-signup.component';
 @Component({
-    selector: 'nevy11-signup',
-    imports: [
-        MatFormFieldModule,
-        MatInputModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatButtonModule,
-        MatIconModule,
-        MatCardModule,
-    ],
-    templateUrl: './signup.component.html',
-    styleUrl: './signup.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'nevy11-signup',
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    TopLoginSignupComponent,
+  ],
+  templateUrl: './signup.component.html',
+  styleUrl: './signup.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignupComponent {
   router = inject(Router);
