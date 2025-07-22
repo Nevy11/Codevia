@@ -40,7 +40,7 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   // rendering different images
   images = [
     '/home_page/image3.jpg',
-    '/home_page/strong.png',
+    '/home_page/strong.jpeg',
     '/home_page/image4.jpeg',
     '/home_page/image1.avif',
   ];
