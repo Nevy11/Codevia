@@ -124,6 +124,10 @@ export class LandingPageComponent implements OnInit, OnDestroy {
     this.router.navigate(['/signup']);
   }
 
+  home() {
+    this.router.navigate(['']);
+  }
+
   // Scroll indicator functionality
   showScrollIndicator = true;
   @HostListener('window:scroll', ['$event'])

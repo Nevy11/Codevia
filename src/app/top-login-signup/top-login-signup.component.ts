@@ -23,6 +23,9 @@ export class TopLoginSignupComponent {
     this.router.navigate(['/signup']);
   }
 
+  home() {
+    this.router.navigate(['']);
+  }
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {
       if (matches) {
