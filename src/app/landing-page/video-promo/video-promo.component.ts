@@ -29,9 +29,30 @@ export class VideoPromoComponent {
       width: '80%',
       height: '80%',
       panelClass: 'video-dialog',
+      data: {
+        url: 'https://www.youtube.com/embed/rfscVS0vtbw?autoplay=1&mute=1',
+      },
+    });
+  }
+  openHtmlVideo(): void {
+    console.log('Opening video dialog');
+    this.dialog.open(VideoDialogComponent, {
+      width: '80%',
+      height: '80%',
+      panelClass: 'video-dialog',
+      data: { url: 'https://www.youtube.com/embed/G3e-cpL7ofc' },
     });
   }
 
+  openRustVideo(): void {
+    console.log('Opening video dialog');
+    this.dialog.open(VideoDialogComponent, {
+      width: '80%',
+      height: '80%',
+      panelClass: 'video-dialog',
+      data: { url: 'https://www.youtube.com/embed/rQ_J9WH6CGk' },
+    });
+  }
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {
       if (matches) {

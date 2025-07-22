@@ -6,6 +6,14 @@
   overflow: hidden;
   //   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
+.thumbnail-container-large {
+  position: relative;
+  max-width: 800px;
+  margin: 2rem auto;
+  border-radius: 8px;
+  overflow: hidden;
+  //   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
 
 .thumbnail-image {
   width: 100%;
@@ -32,4 +40,11 @@
   background: rgba(0, 0, 0, 0.5);
   font-size: 28px;
   border-radius: 50%;
+}
+
+.thumbnails-wrapper {
+  display: flex;
+  gap: 20px; /* Optional: space between thumbnails */
+  justify-content: center; /* Center horizontally */
+  flex-wrap: wrap; /* Wrap if screen is too narrow */
 }
