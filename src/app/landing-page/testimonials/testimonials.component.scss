@@ -1,0 +1,24 @@
+.testimonials-container {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 40px;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.testimonial-card {
+  //   width: 300px;
+  text-align: center;
+  padding: 20px;
+}
+
+.quote {
+  font-style: italic;
+  margin-bottom: 10px;
+}
+
+.name {
+  font-weight: bold;
+  color: #3f51b5;
+}

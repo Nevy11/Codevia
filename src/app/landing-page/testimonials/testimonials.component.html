@@ -1,0 +1,17 @@
+<div class="testimonials-container">
+  @for (testimonial of testimonials; track testimonial; ) {
+  <mat-card class="testimonial-card">
+    <img
+      mat-card-avatar
+      [ngSrc]="testimonial.avatar"
+      alt="{{ testimonial.name }}"
+      [width]="testimonial.width"
+      [height]="testimonial.height"
+    />
+    <mat-card-content>
+      <p class="quote">"{{ testimonial.quote }}"</p>
+      <p class="name">{{ testimonial.name }}</p>
+    </mat-card-content>
+  </mat-card>
+  }
+</div>

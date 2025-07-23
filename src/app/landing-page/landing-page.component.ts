@@ -18,6 +18,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { VideoPromoComponent } from './video-promo/video-promo.component';
 import { LandingFooterComponent } from './landing-footer/landing-footer.component';
+import { TestimonialsComponent } from './testimonials/testimonials.component';
 
 @Component({
   selector: 'nevy11-landing-page',
@@ -29,6 +30,7 @@ import { LandingFooterComponent } from './landing-footer/landing-footer.componen
     MatCardModule,
     VideoPromoComponent,
     LandingFooterComponent,
+    TestimonialsComponent,
   ],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss',
