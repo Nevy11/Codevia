@@ -40,7 +40,9 @@ export class VideoPromoComponent {
       width: '80%',
       height: '80%',
       panelClass: 'video-dialog',
-      data: { url: 'https://www.youtube.com/embed/kUMe1FH4CHE' },
+      data: {
+        url: 'https://www.youtube.com/embed/kUMe1FH4CHE?autoplay=1&mute=1',
+      },
     });
   }
 
@@ -50,7 +52,9 @@ export class VideoPromoComponent {
       width: '80%',
       height: '80%',
       panelClass: 'video-dialog',
-      data: { url: 'https://www.youtube.com/embed/rQ_J9WH6CGk' },
+      data: {
+        url: 'https://www.youtube.com/embed/rQ_J9WH6CGk?autoplay=1&mute=1',
+      },
     });
   }
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
