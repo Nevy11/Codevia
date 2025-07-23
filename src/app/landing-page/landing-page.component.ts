@@ -17,6 +17,7 @@ import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { VideoPromoComponent } from './video-promo/video-promo.component';
+import { LandingFooterComponent } from './landing-footer/landing-footer.component';
 
 @Component({
   selector: 'nevy11-landing-page',
@@ -27,6 +28,7 @@ import { VideoPromoComponent } from './video-promo/video-promo.component';
     MatIconModule,
     MatCardModule,
     VideoPromoComponent,
+    LandingFooterComponent,
   ],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss',

@@ -50,7 +50,7 @@ greet()`,
       panelClass: 'video-dialog',
       data: {
         url: 'https://www.youtube.com/embed/PkZNo7MFNFg?autoplay=1&mute=1',
-        language: 'HTML',
+        language: 'JavaScript',
         code: `// Welcome to JavaScript on Codevia!
 // Sign up to start learning and run real JavaScript code.
 

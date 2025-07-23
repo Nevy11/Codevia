@@ -8,7 +8,6 @@ import {
 import { SafeUrlPipe } from './safe-url.pipe';
 import { FormsModule } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { loadPyodide, PyodideInterface } from 'pyodide';
 import { Router } from '@angular/router';
 
 @Component({
@@ -35,30 +34,6 @@ export class VideoDialogComponent implements OnInit {
     }, 5000);
 
     // Start loading Pyodide but don't block UI
-    loadPyodide().then((py) => {
-      this.pyodide = py;
-      this.loading = false;
-      this.snackBar.open('Pyodide loaded successfully', 'Close', {
-        duration: 2000,
-      });
-      console.log('Pyodide loaded successfully');
-    });
-  }
-
-  code: string = `print("Hello, World!")`;
-  pyodide!: PyodideInterface;
-  loading = false;
-
-  async runCode() {
-    try {
-      this.snackBar.open(`Output: $(result)`, `Close`, {
-        duration: 4000,
-      });
-    } catch (err: any) {
-      this.snackBar.open(`Error: ${err.message}`, `Close`, {
-        duration: 4000,
-      });
-    }
   }
 
   signUp() {
