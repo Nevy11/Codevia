@@ -9,9 +9,41 @@
     allowfullscreen
   >
   </iframe>
+  <!-- Simple code editor
+  <div class="editor-container">
+    <ngx-monaco-editor [(ngModel)]="code" [options]="editorOptions">
+    </ngx-monaco-editor>
+    <button mat-raised-button color="accent" (click)="runCode()">Run</button>
+  </div> -->
+  <!-- <div class="editor-container">
+    <textarea
+      [(ngModel)]="code"
+      placeholder="Write Python code here..."
+    ></textarea>
+    <button
+      mat-raised-button
+      color="accent"
+      (click)="runCode()"
+      [disabled]="loading"
+    >
+      {{ loading ? "Loading Python..." : "Run" }}
+    </button>
+  </div> -->
+
+  <div class="code-preview">
+    <pre><code>
+{{data.code}}
+  </code></pre>
+    <!-- <div class="cta-container">
+      <button mat-raised-button color="primary"></button>
+    </div> -->
+  </div>
+
   @if (ctaVisible) {
   <div class="cta-container">
-    <button mat-raised-button color="primary">Sign Up Now — It’s Free</button>
+    <button mat-raised-button color="primary" (click)="signUp()">
+      Sign Up to Run {{ data.language }}
+    </button>
   </div>
   }
 </div>

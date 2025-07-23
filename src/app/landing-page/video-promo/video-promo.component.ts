@@ -31,17 +31,34 @@ export class VideoPromoComponent {
       panelClass: 'video-dialog',
       data: {
         url: 'https://www.youtube.com/embed/rfscVS0vtbw?autoplay=1&mute=1',
+        language: 'Python',
+        code: `# Welcome to Python on Codevia!
+# Sign up to start learning and run real code.
+
+def greet():
+    print("Hello, Future Python Developer!")
+
+greet()`,
       },
     });
   }
-  openHtmlVideo(): void {
+  openJavaScriptHtml(): void {
     console.log('Opening video dialog');
     this.dialog.open(VideoDialogComponent, {
       width: '80%',
       height: '80%',
       panelClass: 'video-dialog',
       data: {
-        url: 'https://www.youtube.com/embed/kUMe1FH4CHE?autoplay=1&mute=1',
+        url: 'https://www.youtube.com/embed/PkZNo7MFNFg?autoplay=1&mute=1',
+        language: 'HTML',
+        code: `// Welcome to JavaScript on Codevia!
+// Sign up to start learning and run real JavaScript code.
+
+function greet() {
+    console.log("Hello, Future JavaScript Developer!");
+}
+
+greet();`,
       },
     });
   }
@@ -54,6 +71,17 @@ export class VideoPromoComponent {
       panelClass: 'video-dialog',
       data: {
         url: 'https://www.youtube.com/embed/rQ_J9WH6CGk?autoplay=1&mute=1',
+        language: 'Rust',
+        code: `// Welcome to Rust on Codevia!
+// Sign up to start learning and run real Rust code.
+
+fn greet() {
+    println!("Hello, Future Rust Developer!");
+}
+
+fn main() {
+    greet();
+}`,
       },
     });
   }

@@ -7,3 +7,56 @@
   margin-top: 20px;
   text-align: center;
 }
+
+// .editor-container {
+//   margin-top: 20px;
+//   height: 300px;
+// }
+
+// ngx-monaco-editor {
+//   height: 250px;
+//   border: 1px solid #ccc;
+//   display: block;
+// }
+
+// .editor-container {
+//   display: flex;
+//   flex-direction: column;
+//   gap: 10px;
+//   margin-top: 15px;
+// }
+// textarea {
+//   margin-top: 3rem;
+//   width: 100%;
+//   min-height: 150px;
+//   padding: 8px;
+//   font-family: "Fira Code", monospace;
+//   background: transparent; // Remove background color
+//   border: none; // Remove border
+//   outline: none; // Remove focus outline
+//   resize: none; // Disable resize (optional)
+//   color: #000; // Text color (adjust based on your theme)
+//   font-size: 14px; // Optional: adjust for readability
+// }
+// textarea:focus {
+//   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
+//   border-radius: 4px;
+// }
+
+.code-preview {
+  background: #f5f5f5;
+  padding: 12px;
+  border-radius: 8px;
+  font-family: "Fira Code", monospace;
+  font-size: 14px;
+  overflow-x: auto;
+  white-space: pre;
+  margin: 2rem;
+}
+pre {
+  margin: 0;
+}
+
+.code-preview code {
+  color: #d6336c; // keywords
+}

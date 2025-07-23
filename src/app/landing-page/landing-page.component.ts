@@ -136,9 +136,9 @@ export class LandingPageComponent implements OnInit, OnDestroy {
     this.showScrollIndicator = scrollTop < 300; // Show indicator if scrolled less than 100px
   }
 
-  previewVideos = [
-    { url: '/home_page/video1.mp4' },
-    { url: '/home_page/video2.mp4' },
-    { url: '/home_page/video3.mp4' },
-  ];
+  // previewVideos = [
+  //   { url: '/home_page/video1.mp4' },
+  //   { url: '/home_page/video2.mp4' },
+  //   { url: '/home_page/video3.mp4' },
+  // ];
 }
