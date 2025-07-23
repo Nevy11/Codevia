@@ -4,6 +4,9 @@ html {
   margin: 0;
   padding: 0;
 }
+// body {
+//   padding-top: 64px; /* Equal to top-bar height */
+// }
 
 //
 /* Hero Section */
@@ -12,6 +15,7 @@ html {
   position: relative;
   overflow: hidden;
   color: white;
+  margin-top: 64px; /* Adjust for fixed top bar */
 }
 
 /* Image Container */
@@ -57,10 +61,23 @@ html {
 }
 
 /* Top Bar */
+// .top-bar {
+//   height: 64px;
+//   display: flex;
+//   align-items: center;
+// }
+
 .top-bar {
   height: 64px;
   display: flex;
   align-items: center;
+  position: fixed; /* Makes it fixed */
+  top: 0; /* Sticks it to the top */
+  left: 0; /* Aligns to the left edge */
+  width: 100%; /* Stretches across the viewport */
+  z-index: 1000; /* Keeps it above other elements */
+  background: #fff; /* Optional: Add background to prevent content overlap */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
 }
 
 .brand-title {
