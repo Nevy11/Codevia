@@ -20,8 +20,12 @@
       potential.
     </p>
     <div class="pre-footer-actions">
-      <button mat-raised-button color="accent">Get Started</button>
-      <button mat-stroked-button color="primary">See Courses</button>
+      <button mat-stroked-button (click)="login()" color="primary">
+        See Courses
+      </button>
+      <button mat-raised-button (click)="signUp()" color="accent">
+        Get Started
+      </button>
       <button mat-icon-button color="warn">
         <mat-icon>contact_support</mat-icon>
       </button>
