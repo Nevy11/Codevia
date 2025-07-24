@@ -1,0 +1,9 @@
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* full height of screen */
+}
+
+.content {
+  flex: 1; /* this fills all space above footer+pre-footer */
+}

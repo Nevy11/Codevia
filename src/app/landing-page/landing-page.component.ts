@@ -20,6 +20,7 @@ import { VideoPromoComponent } from './video-promo/video-promo.component';
 import { LandingFooterComponent } from './landing-footer/landing-footer.component';
 import { TestimonialsComponent } from './testimonials/testimonials.component';
 import { PreFooterComponent } from './pre-footer/pre-footer.component';
+import { TopLoginSignupComponent } from '../top-login-signup/top-login-signup.component';
 
 @Component({
   selector: 'nevy11-landing-page',
@@ -33,6 +34,7 @@ import { PreFooterComponent } from './pre-footer/pre-footer.component';
     LandingFooterComponent,
     TestimonialsComponent,
     PreFooterComponent,
+    TopLoginSignupComponent,
   ],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss',
@@ -77,48 +79,48 @@ export class LandingPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
-    map(({ matches }) => {
-      if (matches) {
-        return [
-          {
-            mobile_device: true,
-          },
-        ];
-      } else {
-        // tablet potrait view
-        const isTabletPotrait = this.breakpointObserver.isMatched(
-          Breakpoints.TabletPortrait
-        );
-        if (isTabletPotrait) {
-          return [
-            {
-              mobile_device: false,
-            },
-          ];
-        } else {
-          // small laptop view
-          const isSmallLaptop = this.breakpointObserver.isMatched(
-            '(min-width: 840px) and (max-width: 1366px)'
-          );
-          if (isSmallLaptop) {
-            return [
-              {
-                mobile_device: false,
-              },
-            ];
-          } else {
-            return [
-              {
-                mobile_device: false,
-              },
-            ];
-            // Large laptop view
-          }
-        }
-      }
-    })
-  );
+  // cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
+  //   map(({ matches }) => {
+  //     if (matches) {
+  //       return [
+  //         {
+  //           mobile_device: true,
+  //         },
+  //       ];
+  //     } else {
+  //       // tablet potrait view
+  //       const isTabletPotrait = this.breakpointObserver.isMatched(
+  //         Breakpoints.TabletPortrait
+  //       );
+  //       if (isTabletPotrait) {
+  //         return [
+  //           {
+  //             mobile_device: false,
+  //           },
+  //         ];
+  //       } else {
+  //         // small laptop view
+  //         const isSmallLaptop = this.breakpointObserver.isMatched(
+  //           '(min-width: 840px) and (max-width: 1366px)'
+  //         );
+  //         if (isSmallLaptop) {
+  //           return [
+  //             {
+  //               mobile_device: false,
+  //             },
+  //           ];
+  //         } else {
+  //           return [
+  //             {
+  //               mobile_device: false,
+  //             },
+  //           ];
+  //           // Large laptop view
+  //         }
+  //       }
+  //     }
+  //   })
+  // );
 
   get currentBackground(): string {
     return `url(${this.images[this.currentImageIndex]})`;

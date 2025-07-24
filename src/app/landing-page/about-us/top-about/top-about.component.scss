@@ -1,0 +1,35 @@
+.top-about-hero {
+  background: url("/about/laptop.jpg") no-repeat center/cover;
+  color: white;
+  height: 50vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+
+  .overlay {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 2rem;
+    border-radius: 8px;
+  }
+}
+
+.top-about-story {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4rem 2rem;
+  background: #f9f9f9;
+
+  .story-text {
+    flex: 1;
+    padding-right: 2rem;
+  }
+
+  .story-image img {
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}

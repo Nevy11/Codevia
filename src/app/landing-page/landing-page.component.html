@@ -1,7 +1,8 @@
-@for (card of cards | async; track card) {
-<mat-toolbar color="primary" class="top-bar">
-  <!-- <span class="brand-title">Codevia</span> -->
-  @if (!card.mobile_device) {
+<!-- @for (card of cards | async; track card) { -->
+<!-- start of filtering top -->
+<!-- <mat-toolbar color="primary" class="top-bar"> -->
+<!-- <span class="brand-title">Codevia</span> -->
+<!-- @if (!card.mobile_device) {
   <mat-icon style="color: #2196f3">star</mat-icon>
   <mat-icon style="color: #2196f3">star</mat-icon>
   } @if (card.mobile_device) {
@@ -26,7 +27,7 @@
   </span>
   }
   <span class="spacer"></span>
-  <button mat-button>
+  <button mat-button (click)="aboutUs()">
     @if(!card.mobile_device){ <mat-icon>help_outline</mat-icon>} About Us
   </button>
   <button mat-button (click)="home()">
@@ -42,8 +43,8 @@
   <button mat-button (click)="register()">
     @if(!card.mobile_device){<mat-icon>how_to_reg</mat-icon> }Register
   </button>
-</mat-toolbar>
-
+</mat-toolbar> -->
+<nevy11-top-login-signup></nevy11-top-login-signup>
 <section class="hero-section">
   <div class="image-container">
     <img
@@ -129,4 +130,4 @@
 <!-- <section><nevy11-pre-footer></nevy11-pre-footer></section> -->
 <nevy11-landing-footer></nevy11-landing-footer>
 
-}
+<!-- } -->

@@ -4,6 +4,7 @@ import { LoginComponent } from './login/login.component';
 import { NotAvailablePageComponent } from './not-available-page/not-available-page.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LandingPageComponent } from './landing-page/landing-page.component';
+import { AboutUsComponent } from './landing-page/about-us/about-us.component';
 
 export const routes: Routes = [
   {
@@ -21,6 +22,10 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent,
+  },
+  {
+    path: 'about-us',
+    component: AboutUsComponent,
   },
   {
     path: '',
