@@ -45,7 +45,6 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   images = [
     '/home_page/image3.jpg',
     '/home_page/female_student.avif',
-    '/home_page/image4.jpeg',
     '/home_page/chenes_focus.webp',
     '/home_page/image1.avif',
   ];
