@@ -19,6 +19,7 @@ import { MatCardModule } from '@angular/material/card';
 import { VideoPromoComponent } from './video-promo/video-promo.component';
 import { LandingFooterComponent } from './landing-footer/landing-footer.component';
 import { TestimonialsComponent } from './testimonials/testimonials.component';
+import { PreFooterComponent } from './pre-footer/pre-footer.component';
 
 @Component({
   selector: 'nevy11-landing-page',
@@ -31,6 +32,7 @@ import { TestimonialsComponent } from './testimonials/testimonials.component';
     VideoPromoComponent,
     LandingFooterComponent,
     TestimonialsComponent,
+    PreFooterComponent,
   ],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss',
