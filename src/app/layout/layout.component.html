@@ -1,0 +1,81 @@
+<mat-sidenav-container class="sidenav-container">
+  <!-- Side Navigation -->
+  <mat-sidenav #drawer class="sidenav" mode="side" opened>
+    <mat-toolbar color="primary">
+      <mat-icon style="color: #2196f3">star</mat-icon>
+      <mat-icon style="color: #2196f3">star</mat-icon>
+      <span class="logo">
+        <span style="color: #0d47a1">C</span>
+        <span style="color: #29b6f6">o</span>
+        <span style="color: #7e57c2">d</span>
+        <span style="color: #b39ddb">e</span>
+        <span style="color: #00e676">V</span>
+        <span style="color: #ffa726">i</span>
+        <span style="color: #e91e63">a</span>
+      </span>
+    </mat-toolbar>
+    <mat-nav-list>
+      <a mat-list-item routerLink="/layout/home" routerLinkActive="active">
+        <mat-icon class="mat-icon-align">home</mat-icon>
+        <span>Home</span>
+      </a>
+      <br />
+      <a
+        mat-list-item
+        routerLink="/continue-learning"
+        routerLinkActive="active"
+      >
+        <mat-icon class="mat-icon-align">play_circle_filled</mat-icon>
+        <span>Continue Learning</span>
+      </a>
+      <br />
+      <a mat-list-item routerLink="/statistics" routerLinkActive="active">
+        <mat-icon class="mat-icon-align">insert_chart</mat-icon>
+        <span>Statistics</span>
+      </a>
+      <br />
+      <a mat-list-item routerLink="/courses" routerLinkActive="active">
+        <mat-icon class="mat-icon-align">school</mat-icon>
+        <span>Courses</span>
+      </a>
+      <br />
+      <a mat-list-item routerLink="/settings" routerLinkActive="active">
+        <mat-icon class="mat-icon-align">settings</mat-icon>
+        <span>Settings</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <!-- Main Content -->
+  <mat-sidenav-content>
+    <!-- Top Bar -->
+    <mat-toolbar color="primary" class="topbar">
+      <button mat-icon-button (click)="drawer.toggle()" class="menu-button">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span class="title">{{ username }}</span>
+      <span class="spacer"></span>
+      <button mat-icon-button>
+        <mat-icon>search</mat-icon>
+      </button>
+      <button mat-icon-button>
+        <mat-icon>notifications</mat-icon>
+      </button>
+      <button mat-icon-button>
+        <img
+          ngSrc="/about/laptop.jpg"
+          alt=""
+          width="96"
+          height="64"
+          class="img"
+        />
+        <!-- <mat-icon>account_circle</mat-icon> -->
+      </button>
+    </mat-toolbar>
+
+    <!-- Routed Content -->
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
