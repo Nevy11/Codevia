@@ -1,76 +1,16 @@
 /* You can add global styles to this file, and also import other style files */
-// @use "@angular/material" as mat;
-
-// html {
-//   color-scheme: dark light;
-//   @include mat.theme(
-//     (
-//       color: mat.$green-palette,
-//       typography: Roboto,
-//       density: 0,
-//     )
-//   );
-// }
-
-// html,
-// body {
-//   height: 100%;
-// }
-// body {
-//   margin: 0;
-//   font-family: Roboto, "Helvetica Neue", sans-serif;
-// }
-// @use "@angular/material" as mat;
-
-// /* 1) Load core styles ONCE at the very top */
-// @include mat.core();
-
-// /* 2) Define your color palettes */
-// $violet-primary: mat.define-palette(mat.$magenta-palette);
-// $magenta-primary: mat.define-palette(mat.$pink-palette);
-
-// /* 3) Define your theme maps */
-// $violet-theme: mat.define-light-theme(
-//   (
-//     color: (
-//       primary: $violet-palette,
-//     ),
-//   )
-// );
-
-// $magenta-theme: mat.define-light-theme(
-//   (
-//     color: (
-//       primary: $magenta-primary,
-//     ),
-//   )
-// );
-
-// /* 4) Assign theme to CSS classes */
-// .violet-theme {
-//   @include mat.all-component-themes($violet-theme);
-// }
-
-// .magneta-theme {
-//   @include mat.all-component-themes($magenta-theme);
-// }
-
-// /* Optional: default theme */
-// body {
-//   @include mat.all-component-themes($violet-theme);
-// }
 @use "@angular/material" as mat;
 
-// html {
-//   color-scheme: light;
-//   @include mat.theme(
-//     (
-//       color: mat.$green-palette,
-//       typography: Roboto,
-//       density: 0,
-//     )
-//   );
-// }
+html {
+  color-scheme: light;
+  @include mat.theme(
+    (
+      color: mat.$cyan-palette,
+      typography: Roboto,
+      density: 0,
+    )
+  );
+}
 
 html,
 body {
@@ -81,96 +21,27 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 /* Apply Material baseline styles */
-@include mat.core();
-// html,
-// body {
-//   height: 100%;
-//   margin: 0;
-//   font-family: Roboto, "Helvetica Neue", sans-serif;
-// }
+// @include mat.core();
 
-:root {
-  --md-sys-color-primary: #7e57c2;
-  --md-sys-color-secondary: #29b6f6;
-  --md-sys-color-surface: #ffffff;
-  --md-sys-color-on-primary: #ffffff;
-  --md-sys-color-on-surface: #000000;
-}
-
-.dark-theme {
-  --md-sys-color-primary: #bb86fc;
-  --md-sys-color-secondary: #03dac6;
-  --md-sys-color-surface: #121212;
-  --md-sys-color-on-primary: #000000;
-  --md-sys-color-on-surface: #ffffff;
-}
-
-.violet-theme {
-  --md-sys-color-primary: #673ab7;
-  --md-sys-color-secondary: #03a9f4;
-}
-
-.magneta-theme {
-  --md-sys-color-primary: #d81b60;
-  --md-sys-color-secondary: #f06292;
-}
-
-// .violet-theme .mat-toolbar {
-//   background-color: var(--md-sys-color-primary) !important;
-// }
-// .magneta-theme .mat-toolbar {
-//   background-color: var(--md-sys-color-primary) !important;
-// }
-
-.mat-toolbar {
-  background-color: var(--md-sys-color-primary) !important;
-  color: var(--md-sys-color-on-primary) !important;
-}
-// /* ===== CARDS ===== */
-// .mat-card {
-//   background-color: var(--md-sys-color-surface) !important;
-//   color: var(--md-sys-color-on-surface) !important;
-// }
-
-// /* ===== BUTTONS ===== */
-// .mat-raised-button,
-// .mat-flat-button {
-//   background-color: var(--md-sys-color-primary) !important;
-//   color: var(--md-sys-color-on-primary) !important;
-// }
-
-// /* ===== FORM FIELDS ===== */
-// .mat-form-field-appearance-outline .mat-form-field-outline {
-//   color: var(--md-sys-color-primary) !important;
-// }
-// .mat-form-field-label {
-//   color: var(--md-sys-color-on-surface) !important;
-// }
-
-// /* ===== ICONS ===== */
-// .mat-icon {
-//   color: var(--md-sys-color-on-surface) !important;
-// }
-
-// /* ===== SIDENAV ===== */
-// .mat-sidenav {
-//   background: var(--md-sys-color-surface) !important;
-//   color: var(--md-sys-color-on-surface) !important;
-// }
-
-@include mat.all-component-themes(
-  mat.define-theme(
+// Light theme
+body.light-theme {
+  @include mat.theme(
     (
-      color: (
-        primary: mat.$green-palette,
-
-        // secondary: var(--md-sys-color-secondary),
-        // surface: var(--md-sys-color-surface),
-        // on-primary: var(--md-sys-color-on-primary),,,,,,,,,,,
-      ),
-      // color: mat.$green-palette,
-      // typography: Roboto,
-      // density: 0,,,,,,
+      color: mat.$violet-palette,
+      typography: Roboto,
+      density: 0,
     )
-  )
-);
+  );
+}
+
+// Dark theme
+body.dark-theme {
+  @include mat.theme(
+    (
+      color: mat.$azure-palette,
+      typography: Roboto,
+      density: 0,
+      // You can also use mat.$pink-palette for accent, etc.
+    )
+  );
+}

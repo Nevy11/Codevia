@@ -28,6 +28,7 @@ export class LayoutComponent implements OnInit {
   themeService = inject(ThemeService);
   ngOnInit(): void {
     // this.themeService.loadTheme();
-    this.themeService.setTheme('violet-theme');
+    this.themeService.setTheme('dark-theme');
+    // this.themeService.gettheme();
   }
 }
