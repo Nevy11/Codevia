@@ -94,6 +94,7 @@ body {
   --md-sys-color-secondary: #29b6f6;
   --md-sys-color-surface: #ffffff;
   --md-sys-color-on-primary: #ffffff;
+  --md-sys-color-on-surface: #000000;
 }
 
 .dark-theme {
@@ -101,6 +102,7 @@ body {
   --md-sys-color-secondary: #03dac6;
   --md-sys-color-surface: #121212;
   --md-sys-color-on-primary: #000000;
+  --md-sys-color-on-surface: #ffffff;
 }
 
 .violet-theme {
@@ -124,3 +126,51 @@ body {
   background-color: var(--md-sys-color-primary) !important;
   color: var(--md-sys-color-on-primary) !important;
 }
+// /* ===== CARDS ===== */
+// .mat-card {
+//   background-color: var(--md-sys-color-surface) !important;
+//   color: var(--md-sys-color-on-surface) !important;
+// }
+
+// /* ===== BUTTONS ===== */
+// .mat-raised-button,
+// .mat-flat-button {
+//   background-color: var(--md-sys-color-primary) !important;
+//   color: var(--md-sys-color-on-primary) !important;
+// }
+
+// /* ===== FORM FIELDS ===== */
+// .mat-form-field-appearance-outline .mat-form-field-outline {
+//   color: var(--md-sys-color-primary) !important;
+// }
+// .mat-form-field-label {
+//   color: var(--md-sys-color-on-surface) !important;
+// }
+
+// /* ===== ICONS ===== */
+// .mat-icon {
+//   color: var(--md-sys-color-on-surface) !important;
+// }
+
+// /* ===== SIDENAV ===== */
+// .mat-sidenav {
+//   background: var(--md-sys-color-surface) !important;
+//   color: var(--md-sys-color-on-surface) !important;
+// }
+
+@include mat.all-component-themes(
+  mat.define-theme(
+    (
+      color: (
+        primary: mat.$green-palette,
+
+        // secondary: var(--md-sys-color-secondary),
+        // surface: var(--md-sys-color-surface),
+        // on-primary: var(--md-sys-color-on-primary),,,,,,,,,,,
+      ),
+      // color: mat.$green-palette,
+      // typography: Roboto,
+      // density: 0,,,,,,
+    )
+  )
+);
