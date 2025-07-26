@@ -1,47 +1,30 @@
-/* You can add global styles to this file, and also import other style files */
 @use "@angular/material" as mat;
 
-html {
-  color-scheme: light;
+.light-theme {
   @include mat.theme(
     (
-      color: mat.$yellow-palette,
+      color: (
+        primary: mat.$azure-palette,
+        theme-type: light,
+      ),
       typography: Roboto,
       density: 0,
     )
   );
 }
 
-html,
-body {
-  height: 100%;
-}
-body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-}
-/* Apply Material baseline styles */
-// @include mat.core();
-
-// Light theme
-body.light-theme {
+.dark-theme {
+  color-scheme: dark;
   @include mat.theme(
     (
-      color: mat.$violet-palette,
+      color: (
+        primary: mat.$violet-palette,
+        // on-surface: mat.$spring-green-palette,
+      ),
       typography: Roboto,
       density: 0,
     )
   );
-}
-
-// Dark theme
-body.dark-theme {
-  @include mat.theme(
-    (
-      color: mat.$azure-palette,
-      typography: Roboto,
-      density: 0,
-      // You can also use mat.$pink-palette for accent, etc.
-    )
-  );
+  background: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
 }

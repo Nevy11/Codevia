@@ -6,8 +6,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
 import { NgOptimizedImage } from '@angular/common';
-import { ThemeService } from '../theme.service';
 import { MatMenuModule } from '@angular/material/menu';
+import { ThemeChangeService } from '../theme-change.service';
 @Component({
   selector: 'nevy11-layout',
   imports: [
@@ -25,10 +25,8 @@ import { MatMenuModule } from '@angular/material/menu';
 })
 export class LayoutComponent implements OnInit {
   username: string = 'User'; // Placeholder for username
-  themeService = inject(ThemeService);
+  themeChangeService = inject(ThemeChangeService);
   ngOnInit(): void {
-    // this.themeService.loadTheme();
-    this.themeService.setTheme('dark-theme');
-    // this.themeService.gettheme();
+    this.themeChangeService.loadTheme();
   }
 }

@@ -56,25 +56,9 @@
       <span class="title">{{ username }}</span>
       <span class="spacer"></span>
 
-      <button mat-icon-button (click)="themeService.toggleDarkTheme()">
-        <mat-icon>dark_mode</mat-icon>
+      <button mat-icon-button (click)="themeChangeService.toggleTheme()">
+        <mat-icon>brightness_6</mat-icon>
       </button>
-      <button mat-icon-button [matMenuTriggerFor]="themeMenu">
-        <mat-icon>color_lens</mat-icon>
-      </button>
-
-      <mat-menu #themeMenu="matMenu">
-        <button mat-menu-item (click)="themeService.setTheme('')">
-          Default
-        </button>
-        <button mat-menu-item (click)="themeService.setTheme('violet-theme')">
-          Violet
-        </button>
-        <button mat-menu-item (click)="themeService.setTheme('magneta-theme')">
-          Magenta
-        </button>
-      </mat-menu>
-
       <button mat-icon-button>
         <mat-icon>search</mat-icon>
       </button>
