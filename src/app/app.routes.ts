@@ -5,7 +5,7 @@ import { NotAvailablePageComponent } from './not-available-page/not-available-pa
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { AboutUsComponent } from './landing-page/about-us/about-us.component';
 import { LayoutComponent } from './layout/layout.component';
-import { HomeComponent } from './home/home.component';
+import { HomeComponent } from './layout/home/home.component';
 
 export const routes: Routes = [
   {
