@@ -50,7 +50,7 @@ export class LoginComponent {
     // Logic for login can be added here
     console.log('Login clicked', this.loginForm());
     if (this.loginForm().email.valid || this.loginForm().password.valid) {
-      this.router.navigate(['dashboard']);
+      this.router.navigate(['/layout/home']);
     }
   }
 }
