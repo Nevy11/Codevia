@@ -10,6 +10,7 @@ import { provideClientHydration } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideServiceWorker } from '@angular/service-worker';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { provideMonacoEditor } from 'ngx-monaco-editor-v2';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -22,5 +23,12 @@ export const appConfig: ApplicationConfig = {
       registrationStrategy: 'registerWhenStable:30000',
     }),
     provideAnimationsAsync(),
+    provideMonacoEditor({
+      baseUrl: '/monaco/vs',
+      defaultOptions: {
+        scrollBeyondLastLine: false, // Disable scrolling beyond the last line}
+        theme: 'vs-dark', // Default theme for Monaco Editor
+      },
+    }),
   ],
 };

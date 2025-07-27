@@ -1,1 +1,9 @@
-<p>code-editor-section works!</p>
+<div>
+  <h2>Code Editor Section</h2>
+  <p>Write your code here:</p>
+</div>
+
+<ngx-monaco-editor
+  [(ngModel)]="code"
+  [options]="editorOptions"
+></ngx-monaco-editor>
