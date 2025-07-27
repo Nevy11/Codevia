@@ -1,0 +1,30 @@
+.learning-container {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+
+  .video-section {
+    flex: 1;
+    padding: 0.5rem;
+  }
+
+  .editor-section {
+    flex: 1;
+    padding: 0.5rem;
+  }
+}
+
+/* Responsive for tablets & small screens */
+@media (max-width: 1280px) {
+  .learning-container {
+    flex-direction: column;
+
+    .video-section {
+      height: 40vh;
+    }
+
+    .editor-section {
+      height: 60vh;
+    }
+  }
+}
