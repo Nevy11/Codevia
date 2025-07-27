@@ -1,38 +1,36 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class ThemeChangeService {
-  private currentTheme: 'light' | 'dark' = 'light';
+  private themeSubject = new BehaviorSubject<'light' | 'dark'>('light');
+  theme$ = this.themeSubject.asObservable();
 
   constructor() {}
 
   toggleTheme(): void {
-    this.currentTheme = this.currentTheme === 'light' ? 'dark' : 'light';
+    const newTheme = this.themeSubject.value === 'light' ? 'dark' : 'light';
+    this.setTheme(newTheme);
+  }
+
+  setTheme(theme: 'light' | 'dark') {
+    this.themeSubject.next(theme);
+
+    // Update body classes
     document.body.classList.remove('light-theme', 'dark-theme');
-    document.body.classList.add(`${this.currentTheme}-theme`);
-    localStorage.setItem('theme', this.currentTheme);
+    document.body.classList.add(`${theme}-theme`);
+
+    // Save preference
+    localStorage.setItem('theme', theme);
   }
 
   loadTheme(): void {
-    if (localStorage.getItem('theme')) {
-      const savedTheme = localStorage.getItem('theme') as 'light' | 'dark';
-      if (savedTheme) {
-        this.currentTheme = savedTheme;
-      } else {
-        this.currentTheme = 'dark'; // Default theme
-      }
-      document.body.classList.add(`${this.currentTheme}-theme`);
-    } else {
-      document.body.classList.add('dark-theme');
-      this.currentTheme = 'dark'; // Default to dark theme if no preference is saved
-      localStorage.setItem('theme', this.currentTheme);
-      document.body.classList.add('dark-theme');
-    }
+    const savedTheme =
+      (localStorage.getItem('theme') as 'light' | 'dark') || 'dark';
+    this.setTheme(savedTheme);
   }
 
   getCurrentTheme(): 'light' | 'dark' {
-    return this.currentTheme;
+    return this.themeSubject.value;
   }
 }
