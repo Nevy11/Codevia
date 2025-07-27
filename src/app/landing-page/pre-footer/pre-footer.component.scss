@@ -27,17 +27,15 @@
   gap: 1.5rem;
   justify-content: center;
 }
-// .about-pre-footer {
-//   min-height: 25vh;
-//   padding: 2rem 1rem;
-//   text-align: center;
-//   background: linear-gradient(90deg, #0d47a1, #1976d2, #4caf50);
-//   color: white;
-// }
 
-// .about-actions {
-//   margin-top: 2rem;
-//   display: flex;
-//   justify-content: center;
-//   gap: 1rem;
-// }
+.login-btn {
+  color: white;
+  // border: 1px solid white;
+  padding: 0.5rem 1.5rem;
+  transition: background-color 0.3s, color 0.3s;
+
+  &:hover {
+    background-color: white;
+    color: #0d47a1;
+  }
+}
