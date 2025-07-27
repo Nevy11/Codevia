@@ -2,3 +2,10 @@
   [(ngModel)]="code"
   [options]="editorOptions"
 ></ngx-monaco-editor>
+<div class="btn">
+  <button mat-flat-button (click)="downloadCode()">Download Code</button>
+  <span class="spacer"></span>
+  <button mat-flat-button (click)="resetCode()">Reset Code</button>
+  <span class="spacer"></span>
+  <button mat-flat-button (click)="runCode()">Run Code</button>
+</div>

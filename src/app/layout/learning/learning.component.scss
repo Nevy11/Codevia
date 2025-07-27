@@ -1,7 +1,7 @@
 .learning-container {
   display: flex;
   flex-direction: row;
-  height: 100vh;
+  height: 90vh;
 
   .video-section {
     flex: 1;
@@ -11,6 +11,7 @@
   .editor-section {
     flex: 1;
     padding: 0.5rem;
+    // margin-top: 1rem;
   }
 }
 
