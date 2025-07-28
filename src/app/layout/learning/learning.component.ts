@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
 import { VideoSectionComponent } from './video-section/video-section.component';
 import { CodeEditorSectionComponent } from './code-editor-section/code-editor-section.component';
-import { CourseListComponent } from '../courses/course-list/course-list.component';
 import { ActivatedRoute } from '@angular/router';
+import { VideoFeedComponent } from '../courses/video-feed/video-feed.component';
 
 @Component({
   selector: 'nevy11-learning',
   imports: [
     VideoSectionComponent,
     CodeEditorSectionComponent,
-    CourseListComponent,
+    VideoFeedComponent,
   ],
   templateUrl: './learning.component.html',
   styleUrl: './learning.component.scss',
