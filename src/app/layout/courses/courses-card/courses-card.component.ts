@@ -11,4 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class CoursesCardComponent {
   @Input() course!: Course;
+  SendToLesson(url: string) {
+    console.log('Navigating to lesson:', url);
+  }
 }

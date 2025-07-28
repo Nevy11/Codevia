@@ -21,6 +21,7 @@ export class CourseListComponent implements OnInit {
         description: 'Learn Python basics and start building apps.',
         image: '/courses/python.png',
         level: 'Beginner',
+        url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
       },
       {
         id: 2,
@@ -28,6 +29,7 @@ export class CourseListComponent implements OnInit {
         description: 'Deep dive into advanced php features.',
         image: '/courses/php.jpeg',
         level: 'Advanced',
+        url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
       },
       {
         id: 3,
@@ -35,6 +37,7 @@ export class CourseListComponent implements OnInit {
         description: 'Deep dive into advanced js features.',
         image: '/courses/js.jpeg',
         level: 'Intermediate',
+        url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
       },
       {
         id: 4,
@@ -42,6 +45,7 @@ export class CourseListComponent implements OnInit {
         description: 'Deep dive into advanced java features.',
         image: '/courses/java.jpeg',
         level: 'Beginner',
+        url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
       },
     ];
   }

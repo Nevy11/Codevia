@@ -4,4 +4,5 @@ export interface Course {
   description: string;
   image: string;
   level: 'Beginner' | 'Intermediate' | 'Advanced';
+  url: string;
 }
