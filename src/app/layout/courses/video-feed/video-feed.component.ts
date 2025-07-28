@@ -16,19 +16,19 @@ export class VideoFeedComponent {
   private router = inject(Router);
   videos: Video[] = [
     {
-      id: 'dQw4w9WgXcQ',
+      id: 'rQ_J9WH6CGk',
       title: 'Sample Video 1',
-      thumbnailUrl: 'https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg',
+      thumbnailUrl: 'https://img.youtube.com/vi/rQ_J9WH6CGk/0.jpg',
     },
     {
-      id: '3JZ_D3ELwOQ',
+      id: 'rfscVS0vtbw',
       title: 'Sample Video 2',
-      thumbnailUrl: 'https://img.youtube.com/vi/3JZ_D3ELwOQ/0.jpg',
+      thumbnailUrl: 'https://img.youtube.com/vi/rfscVS0vtbw/0.jpg',
     },
     {
-      id: '9bZkp7q19f0',
+      id: 'PkZNo7MFNFg',
       title: 'Sample Video 3',
-      thumbnailUrl: 'https://img.youtube.com/vi/9bZkp7q19f0/0.jpg',
+      thumbnailUrl: 'https://img.youtube.com/vi/PkZNo7MFNFg/0.jpg',
     },
   ];
   playVideo(video: Video) {

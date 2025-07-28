@@ -15,13 +15,13 @@ import { VideoFeedComponent } from '../courses/video-feed/video-feed.component';
   styleUrl: './learning.component.scss',
 })
 export class LearningComponent {
-  videoId = 'dQw4w9WgXcQ';
+  videoId = 'rQ_J9WH6CGk';
 
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
-      this.videoId = params['video'] || 'dQw4w9WgXcQ';
+      this.videoId = params['video'] || 'rQ_J9WH6CGk';
     });
   }
 }
