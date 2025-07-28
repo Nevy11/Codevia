@@ -1,0 +1,27 @@
+.course-card {
+  max-width: 400px;
+  margin: auto;
+  transition: transform 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.course-card {
+  height: 100%; /* ensures equal height for all cards */
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+
+  mat-card-content {
+    flex-grow: 1; /* pushes actions to bottom */
+  }
+}
+
+.img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
