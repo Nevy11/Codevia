@@ -7,6 +7,7 @@ import { AboutUsComponent } from './landing-page/about-us/about-us.component';
 import { LayoutComponent } from './layout/layout.component';
 import { HomeComponent } from './layout/home/home.component';
 import { LearningComponent } from './layout/learning/learning.component';
+import { CoursesComponent } from './layout/courses/courses.component';
 
 export const routes: Routes = [
   {
@@ -37,6 +38,10 @@ export const routes: Routes = [
       {
         path: 'learning',
         component: LearningComponent,
+      },
+      {
+        path: 'courses',
+        component: CoursesComponent,
       },
     ],
   },
