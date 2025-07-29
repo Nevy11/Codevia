@@ -1,16 +1,27 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'nevy11-profile-settings',
-  imports: [MatCardModule, MatFormFieldModule, FormsModule, MatInputModule],
+  imports: [
+    MatCardModule,
+    MatFormFieldModule,
+    FormsModule,
+    MatInputModule,
+    CommonModule,
+    MatButtonModule,
+  ],
   templateUrl: './profile-settings.component.html',
   styleUrl: './profile-settings.component.scss',
 })
 export class ProfileSettingsComponent implements OnInit {
+  isEditing = false;
+
   name = '';
   email = '';
   bio = '';
@@ -41,5 +52,10 @@ export class ProfileSettingsComponent implements OnInit {
       this.avatarUrl = reader.result as string;
     };
     reader.readAsDataURL(file);
+  }
+
+  cancelEdit() {
+    this.loadProfile(); // reload old values
+    this.isEditing = false;
   }
 }

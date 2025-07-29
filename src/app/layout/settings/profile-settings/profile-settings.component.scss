@@ -2,7 +2,8 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  max-width: 500px;
+  max-width: 80rem;
+  align-items: center;
 }
 
 .avatar-card {
@@ -20,4 +21,43 @@
   input[type="file"] {
     margin-top: 1rem;
   }
+}
+
+mat-card {
+  max-width: 80rem;
+  width: 100%;
+}
+
+@media (min-width: 80rem) and (max-width: 960px) {
+  .profile-container {
+    margin-left: 5rem;
+  }
+
+  .avatar-card {
+    margin-left: 2rem;
+  }
+}
+
+.card-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.actions-right {
+  display: flex;
+  justify-content: flex-end; /* push buttons to the right */
+  gap: 10px; /* spacing between buttons */
+}
+
+mat-form-field {
+  width: 100%; /* make fields take full card width */
+}
+
+mat-card p {
+  padding: 20px;
 }

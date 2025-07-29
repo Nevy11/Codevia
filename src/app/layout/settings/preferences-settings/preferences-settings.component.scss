@@ -6,5 +6,19 @@
 }
 
 mat-card {
-  max-width: 500px;
+  max-width: 80rem;
+}
+mat-card-content {
+  display: flex;
+  flex-direction: column; /* stack elements vertically */
+  align-items: center; /* center horizontally */
+  justify-content: center; /* center vertically if it has height */
+  text-align: center;
+}
+
+mat-form-field,
+mat-slide-toggle,
+mat-slider {
+  width: 60%; /* optional: controls width */
+  max-width: 300px; /* prevents it from being too wide */
 }

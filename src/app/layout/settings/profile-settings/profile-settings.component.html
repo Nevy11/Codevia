@@ -10,12 +10,21 @@
     </mat-card-content>
   </mat-card>
 
-  <!-- Basic Info -->
   <mat-card>
+    <!-- Header -->
     <mat-card-header>
       <mat-card-title>Basic Information</mat-card-title>
     </mat-card-header>
-    <mat-card-content>
+
+    <!-- View Mode -->
+    <mat-card-content *ngIf="!isEditing">
+      <p><strong>Full Name:</strong> {{ name }}</p>
+      <p><strong>Email:</strong> {{ email }}</p>
+      <p><strong>Short Bio:</strong> {{ bio }}</p>
+    </mat-card-content>
+
+    <!-- Edit Mode -->
+    <mat-card-content *ngIf="isEditing">
       <form>
         <mat-form-field appearance="outline">
           <mat-label>Full Name</mat-label>
@@ -33,10 +42,27 @@
         </mat-form-field>
       </form>
     </mat-card-content>
-    <mat-card-actions>
-      <button mat-raised-button color="primary" (click)="saveProfile()">
-        Save Changes
+
+    <!-- Bottom Right Actions -->
+    <mat-card-actions class="actions-right">
+      <!-- Show Edit when NOT editing -->
+      <button
+        *ngIf="!isEditing"
+        mat-raised-button
+        color="primary"
+        (click)="isEditing = true"
+      >
+        Edit
       </button>
+
+      <!-- Show Save/Cancel when editing -->
+      <ng-container *ngIf="isEditing">
+        <button mat-button (click)="cancelEdit()">Cancel</button>
+        <span class="spacer"></span>
+        <button mat-raised-button color="primary" (click)="saveProfile()">
+          Save
+        </button>
+      </ng-container>
     </mat-card-actions>
   </mat-card>
 </div>
