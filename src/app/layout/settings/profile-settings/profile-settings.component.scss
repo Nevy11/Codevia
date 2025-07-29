@@ -61,3 +61,14 @@ mat-form-field {
 mat-card p {
   padding: 20px;
 }
+
+mat-card-content {
+  display: flex;
+  flex-direction: column; /* stack elements vertically */
+  align-items: center; /* center horizontally */
+  justify-content: center; /* center vertically if it has height */
+  text-align: center;
+}
+form {
+  margin-top: 2rem;
+}
