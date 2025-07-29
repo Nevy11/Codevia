@@ -16,7 +16,7 @@ import { VideoFeedComponent } from '../courses/video-feed/video-feed.component';
 })
 export class LearningComponent {
   videoId = 'rQ_J9WH6CGk';
-
+  playbackSpeed = parseFloat(localStorage.getItem('playbackSpeed') || '1.0');
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {

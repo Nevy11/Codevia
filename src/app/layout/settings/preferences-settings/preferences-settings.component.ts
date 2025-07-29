@@ -10,6 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { ThemeChangeService } from '../../../theme-change.service';
 import { Subscription } from 'rxjs';
+import { PlaybackSettingsService } from './playback-settings.service';
 @Component({
   selector: 'nevy11-preferences-settings',
   imports: [
@@ -35,10 +36,9 @@ export class PreferencesSettingsComponent implements OnInit, OnDestroy {
   speeds = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
 
   themeChangeService = inject(ThemeChangeService);
-
+  private playbackService = inject(PlaybackSettingsService);
   savePlaybackSpeed() {
-    localStorage.setItem('playbackSpeed', this.playbackSpeed);
-    // Optionally, you can apply the playback speed to video/audio elements here
+    this.playbackService.setSpeed(parseFloat(this.playbackSpeed));
   }
 
   saveFontSize() {
