@@ -26,10 +26,10 @@ export class ProfileSettingsComponent implements OnInit {
   isEditing = false;
   profile!: Profile;
 
-  name = '';
-  email = '';
-  bio = '';
-  avatarUrl = '/about/laptop.jpg';
+  // name = '';
+  // email = '';
+  // bio = '';
+  // avatarUrl = '/about/laptop.jpg';
   private profileService = inject(ProfileSettingsService);
   private router = inject(Router);
   ngOnInit(): void {
@@ -45,7 +45,7 @@ export class ProfileSettingsComponent implements OnInit {
     if (!file) return;
     const reader = new FileReader();
     reader.onload = () => {
-      this.avatarUrl = reader.result as string;
+      // this.avatarUrl = reader.result as string;
       const updated_image: Profile = {
         name: this.profile.name,
         email: this.profile.email,
@@ -66,10 +66,10 @@ export class ProfileSettingsComponent implements OnInit {
   }
   save() {
     const updatedProfile: Profile = {
-      name: this.name,
-      email: this.email,
-      bio: this.bio,
-      avatarUrl: this.avatarUrl,
+      name: this.profile.name,
+      email: this.profile.email,
+      bio: this.profile.bio,
+      avatarUrl: this.profile.avatarUrl,
     };
     this.profileService.updateProfile(updatedProfile);
     this.router.navigate(['/layout/settings']);

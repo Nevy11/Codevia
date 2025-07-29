@@ -5,7 +5,7 @@
       <mat-card-title>Profile Picture</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <img [src]="avatarUrl" alt="Profile Picture" class="avatar" />
+      <img [src]="profile.avatarUrl" alt="Profile Picture" class="avatar" />
       <input type="file" accept="image/*" (change)="onFileSelected($event)" />
     </mat-card-content>
   </mat-card>
