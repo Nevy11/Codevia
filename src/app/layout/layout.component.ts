@@ -5,9 +5,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
-import { NgOptimizedImage } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { ThemeChangeService } from '../theme-change.service';
+import { ProfileSettingsService } from './settings/profile-settings/profile-settings.service';
+import { Profile } from './settings/profile-settings/profile';
 @Component({
   selector: 'nevy11-layout',
   imports: [
@@ -17,7 +18,6 @@ import { ThemeChangeService } from '../theme-change.service';
     MatIconModule,
     MatListModule,
     RouterModule,
-    NgOptimizedImage,
     MatMenuModule,
   ],
   templateUrl: './layout.component.html',
@@ -25,8 +25,13 @@ import { ThemeChangeService } from '../theme-change.service';
 })
 export class LayoutComponent implements OnInit {
   username: string = 'User'; // Placeholder for username
+  profile!: Profile;
   themeChangeService = inject(ThemeChangeService);
+  profileSettings = inject(ProfileSettingsService);
   ngOnInit(): void {
     this.themeChangeService.loadTheme();
+    this.profileSettings.profile$.subscribe((profile) => {
+      this.profile = profile;
+    });
   }
 }

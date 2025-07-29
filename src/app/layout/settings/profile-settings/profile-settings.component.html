@@ -18,9 +18,9 @@
 
     <!-- View Mode -->
     <mat-card-content *ngIf="!isEditing">
-      <p><strong>Full Name:</strong> {{ name }}</p>
-      <p><strong>Email:</strong> {{ email }}</p>
-      <p><strong>Short Bio:</strong> {{ bio }}</p>
+      <p><strong>Full Name:</strong> {{ profile.name }}</p>
+      <p><strong>Email:</strong> {{ profile.email }}</p>
+      <p><strong>Short Bio:</strong> {{ profile.bio }}</p>
     </mat-card-content>
 
     <!-- Edit Mode -->
@@ -28,17 +28,22 @@
       <form>
         <mat-form-field appearance="outline">
           <mat-label>Full Name</mat-label>
-          <input matInput [(ngModel)]="name" name="name" />
+          <input matInput [(ngModel)]="profile.name" name="name" />
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>Email</mat-label>
-          <input matInput [(ngModel)]="email" name="email" />
+          <input matInput [(ngModel)]="profile.email" name="email" />
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>Short Bio</mat-label>
-          <textarea matInput rows="3" [(ngModel)]="bio" name="bio"></textarea>
+          <textarea
+            matInput
+            rows="3"
+            [(ngModel)]="profile.bio"
+            name="bio"
+          ></textarea>
         </mat-form-field>
       </form>
     </mat-card-content>
@@ -59,9 +64,7 @@
       <ng-container *ngIf="isEditing">
         <button mat-button (click)="cancelEdit()">Cancel</button>
         <span class="spacer"></span>
-        <button mat-raised-button color="primary" (click)="saveProfile()">
-          Save
-        </button>
+        <button mat-raised-button color="primary" (click)="save()">Save</button>
       </ng-container>
     </mat-card-actions>
   </mat-card>

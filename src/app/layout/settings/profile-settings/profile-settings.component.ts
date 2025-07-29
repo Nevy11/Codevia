@@ -1,10 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { ProfileSettingsService } from './profile-settings.service';
+import { Profile } from './profile';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'nevy11-profile-settings',
@@ -21,41 +24,54 @@ import { MatInputModule } from '@angular/material/input';
 })
 export class ProfileSettingsComponent implements OnInit {
   isEditing = false;
+  profile!: Profile;
 
   name = '';
   email = '';
   bio = '';
   avatarUrl = '/about/laptop.jpg';
+  private profileService = inject(ProfileSettingsService);
+  private router = inject(Router);
   ngOnInit(): void {
-    this.loadProfile();
+    // this.loadProfile();
+
+    this.profileService.profile$.subscribe((profile) => {
+      this.profile = profile;
+    });
   }
 
-  loadProfile() {
-    this.name = localStorage.getItem('profile_name') || '';
-    this.email = localStorage.getItem('profile_email') || '';
-    this.bio = localStorage.getItem('profile_bio') || '';
-    this.avatarUrl =
-      localStorage.getItem('profile_avatar') || '/about/laptop.jpg';
-  }
-
-  saveProfile() {
-    localStorage.setItem('profile_name', this.name);
-    localStorage.setItem('profile_email', this.email);
-    localStorage.setItem('profile_bio', this.bio);
-    localStorage.setItem('profile_avatar', this.avatarUrl);
-  }
   onFileSelected(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (!file) return;
     const reader = new FileReader();
     reader.onload = () => {
       this.avatarUrl = reader.result as string;
+      const updated_image: Profile = {
+        name: this.profile.name,
+        email: this.profile.email,
+        bio: this.profile.bio,
+        avatarUrl: reader.result as string,
+      };
+      this.profileService.updateProfile(updated_image);
     };
     reader.readAsDataURL(file);
   }
 
   cancelEdit() {
-    this.loadProfile(); // reload old values
+    // this.loadProfile(); // reload old values
+    this.profileService.profile$.subscribe((profile) => {
+      this.profile = profile;
+    });
     this.isEditing = false;
+  }
+  save() {
+    const updatedProfile: Profile = {
+      name: this.name,
+      email: this.email,
+      bio: this.bio,
+      avatarUrl: this.avatarUrl,
+    };
+    this.profileService.updateProfile(updatedProfile);
+    this.router.navigate(['/layout/settings']);
   }
 }
