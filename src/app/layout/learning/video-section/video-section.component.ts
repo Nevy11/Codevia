@@ -8,6 +8,8 @@ import {
 } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
+declare var YT: any; // YouTube Player API
+
 @Component({
   selector: 'nevy11-video-section',
   imports: [],

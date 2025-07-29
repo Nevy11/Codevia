@@ -8,6 +8,7 @@ import { LayoutComponent } from './layout/layout.component';
 import { HomeComponent } from './layout/home/home.component';
 import { LearningComponent } from './layout/learning/learning.component';
 import { CoursesComponent } from './layout/courses/courses.component';
+import { SettingsComponent } from './layout/settings/settings.component';
 
 export const routes: Routes = [
   {
@@ -42,6 +43,10 @@ export const routes: Routes = [
       {
         path: 'courses',
         component: CoursesComponent,
+      },
+      {
+        path: 'settings',
+        component: SettingsComponent,
       },
     ],
   },
