@@ -37,13 +37,9 @@
       <mat-card-title>Font Size</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <mat-slider
-        min="12"
-        max="24"
-        step="1"
-        [(ngModel)]="fontSize"
-        (input)="saveFontSize()"
-      ></mat-slider>
+      <mat-slider>
+        <input matSliderThumb [(ngModel)]="fontSize" (input)="saveFontSize()" />
+      </mat-slider>
       <p [style.fontSize.px]="fontSize">Preview Text</p>
     </mat-card-content>
   </mat-card>
