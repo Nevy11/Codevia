@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { ProfileSettingsService } from './profile-settings.service';
 import { Profile } from './profile';
 import { Router } from '@angular/router';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'nevy11-profile-settings',
@@ -18,6 +19,7 @@ import { Router } from '@angular/router';
     MatInputModule,
     CommonModule,
     MatButtonModule,
+    MatSnackBarModule,
   ],
   templateUrl: './profile-settings.component.html',
   styleUrl: './profile-settings.component.scss',
@@ -26,15 +28,10 @@ export class ProfileSettingsComponent implements OnInit {
   isEditing = false;
   profile!: Profile;
 
-  // name = '';
-  // email = '';
-  // bio = '';
-  // avatarUrl = '/about/laptop.jpg';
   private profileService = inject(ProfileSettingsService);
   private router = inject(Router);
+  snackBar = inject(MatSnackBar);
   ngOnInit(): void {
-    // this.loadProfile();
-
     this.profileService.profile$.subscribe((profile) => {
       this.profile = profile;
     });
@@ -45,7 +42,6 @@ export class ProfileSettingsComponent implements OnInit {
     if (!file) return;
     const reader = new FileReader();
     reader.onload = () => {
-      // this.avatarUrl = reader.result as string;
       const updated_image: Profile = {
         name: this.profile.name,
         email: this.profile.email,
@@ -72,6 +68,7 @@ export class ProfileSettingsComponent implements OnInit {
       avatarUrl: this.profile.avatarUrl,
     };
     this.profileService.updateProfile(updatedProfile);
+    this.snackBar.open('update successful', `Close`, { duration: 3000 });
     this.router.navigate(['/layout/settings']);
   }
 }
