@@ -9,6 +9,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { ThemeChangeService } from '../theme-change.service';
 import { ProfileSettingsService } from './settings/profile-settings/profile-settings.service';
 import { Profile } from './settings/profile-settings/profile';
+import { MatDialog } from '@angular/material/dialog';
+import { SearchDialogComponent } from './search-dialog/search-dialog.component';
 
 @Component({
   selector: 'nevy11-layout',
@@ -29,7 +31,9 @@ export class LayoutComponent implements OnInit {
   profile!: Profile;
   themeChangeService = inject(ThemeChangeService);
   profileSettings = inject(ProfileSettingsService);
-  router = inject(Router);
+  private router = inject(Router);
+  private dialog = inject(MatDialog);
+
   ngOnInit(): void {
     this.themeChangeService.loadTheme();
     this.profileSettings.profile$.subscribe((profile) => {
@@ -38,5 +42,22 @@ export class LayoutComponent implements OnInit {
   }
   goToTab(index: number) {
     this.router.navigate(['/layout/settings'], { queryParams: { tab: index } });
+  }
+
+  openSearch() {
+    const dialogRef = this.dialog.open(SearchDialogComponent, {
+      width: '800px',
+      height: '80vh',
+    });
+
+    dialogRef.afterClosed().subscribe((videoId: string) => {
+      if (videoId) {
+        this.router.navigate(['/layout/learning'], {
+          queryParams: {
+            video: videoId,
+          },
+        });
+      }
+    });
   }
 }

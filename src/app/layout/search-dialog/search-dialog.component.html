@@ -1,0 +1,37 @@
+<h2 mat-dialog-title>Search Videos</h2>
+<mat-dialog-content>
+  <mat-form-field appearance="outline" class="top-outline">
+    <mat-label>Search YouTube</mat-label>
+    <input matInput [(ngModel)]="query" (keyup.enter)="search()" />
+  </mat-form-field>
+
+  <div *ngIf="results.length > 0">
+    <!-- <mat-list>
+      <mat-list-item *ngFor="let video of results" (click)="selectVideo(video)">
+        <img matListAvatar [src]="video.snippet.thumbnails.default.url" />
+        <h4 matLine>{{ video.snippet.title }}</h4>
+        <p matLine>{{ video.snippet.channelTitle }}</p>
+      </mat-list-item>
+    </mat-list> -->
+    <div class="video-grid">
+      <mat-card
+        class="video-card"
+        *ngFor="let video of results"
+        (click)="selectVideo(video)"
+      >
+        <img
+          mat-card-image
+          [src]="video.snippet.thumbnails.medium.url"
+          alt="Thumbnail"
+        />
+        <mat-card-content>
+          <h4 class="video-title">{{ video.snippet.title }}</h4>
+          <p class="video-channel">{{ video.snippet.channelTitle }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>

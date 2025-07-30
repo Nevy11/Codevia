@@ -11,6 +11,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideServiceWorker } from '@angular/service-worker';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideMonacoEditor } from 'ngx-monaco-editor-v2';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -30,5 +31,6 @@ export const appConfig: ApplicationConfig = {
         theme: 'vs-dark', // Default theme for Monaco Editor
       },
     }),
+    provideHttpClient(withFetch()),
   ],
 };
