@@ -17,3 +17,19 @@
     font-weight: 500;
   }
 }
+
+.video-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%; // make card stretch
+}
+
+.card-actions {
+  margin-top: auto; // pushes button to the bottom
+  width: 100%;
+  padding: 0;
+
+  button {
+    width: 100%;
+  }
+}
