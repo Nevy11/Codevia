@@ -4,7 +4,7 @@
   @include mat.theme(
     (
       color: (
-        primary: mat.$azure-palette,
+        primary: mat.$blue-palette,
         theme-type: light,
       ),
       typography: Roboto,
@@ -28,12 +28,4 @@
   background-color: var(--mat-sys-surface);
 
   color: var(--mat-sys-on-surface);
-}
-
-:root {
-  --app-font-size: 16px;
-}
-
-body {
-  font-size: var(--app-font-size);
 }
