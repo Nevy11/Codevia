@@ -61,9 +61,25 @@
       <button mat-icon-button>
         <mat-icon>notifications</mat-icon>
       </button>
-      <button mat-icon-button>
-        <img src="{{ profile.avatarUrl }}" alt="" class="img" />
+
+      <button mat-icon-button [matMenuTriggerFor]="profileMenu">
+        <img [src]="profile.avatarUrl" alt="" class="img" />
       </button>
+
+      <mat-menu #profileMenu="matMenu">
+        <button mat-menu-item (click)="goToTab(0)">
+          <mat-icon>settings</mat-icon>
+          Preferences
+        </button>
+        <button mat-menu-item (click)="goToTab(1)">
+          <mat-icon>person</mat-icon>
+          Profile
+        </button>
+        <button mat-menu-item (click)="goToTab(2)">
+          <mat-icon>notifications</mat-icon>
+          Notifications
+        </button>
+      </mat-menu>
     </mat-toolbar>
 
     <!-- Routed Content -->

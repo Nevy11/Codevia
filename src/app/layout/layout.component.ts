@@ -4,11 +4,12 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
 import { ThemeChangeService } from '../theme-change.service';
 import { ProfileSettingsService } from './settings/profile-settings/profile-settings.service';
 import { Profile } from './settings/profile-settings/profile';
+
 @Component({
   selector: 'nevy11-layout',
   imports: [
@@ -28,10 +29,14 @@ export class LayoutComponent implements OnInit {
   profile!: Profile;
   themeChangeService = inject(ThemeChangeService);
   profileSettings = inject(ProfileSettingsService);
+  router = inject(Router);
   ngOnInit(): void {
     this.themeChangeService.loadTheme();
     this.profileSettings.profile$.subscribe((profile) => {
       this.profile = profile;
     });
+  }
+  goToTab(index: number) {
+    this.router.navigate(['/layout/settings'], { queryParams: { tab: index } });
   }
 }
