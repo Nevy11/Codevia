@@ -6,6 +6,7 @@
 
 mat-card {
   max-width: 80rem;
+  min-width: auto;
   //   min-height: 40rem;
   //   min-height: 500px;
   display: flex;
@@ -19,8 +20,8 @@ mat-card {
 }
 
 mat-card-content {
-  padding: 3rem;
+  padding: 4rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem; /* Space between toggles and dropdown */
+  gap: 2.5rem; /* Space between toggles and dropdown */
 }
