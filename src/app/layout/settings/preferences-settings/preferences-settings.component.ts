@@ -43,6 +43,10 @@ export class PreferencesSettingsComponent implements OnInit, OnDestroy {
 
   saveFontSize() {
     localStorage.setItem('fontSize', this.fontSize.toString());
+    document.documentElement.style.setProperty(
+      '--app-font-size',
+      `${this.fontSize}px`
+    );
   }
 
   ngOnInit(): void {
@@ -55,6 +59,10 @@ export class PreferencesSettingsComponent implements OnInit, OnDestroy {
     this.darkMode = this.themeChangeService.getCurrentTheme() === 'dark';
     this.playbackSpeed = localStorage.getItem('playbackSpeed') || '1.0';
     this.fontSize = parseInt(localStorage.getItem('fontSize') || '16', 10);
+    document.documentElement.style.setProperty(
+      '--app-font-size',
+      `${this.fontSize}px`
+    );
   }
   ngOnDestroy(): void {
     this.sub.unsubscribe();
