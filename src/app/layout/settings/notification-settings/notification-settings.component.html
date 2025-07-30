@@ -1,1 +1,49 @@
-<p>notification-settings works!</p>
+<div class="notifications-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Notifications</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-slide-toggle
+        [(ngModel)]="settings.learningReminders"
+        (change)="save()"
+      >
+        Learning Reminders
+      </mat-slide-toggle>
+
+      <mat-slide-toggle [(ngModel)]="settings.productUpdates" (change)="save()">
+        Product Updates
+      </mat-slide-toggle>
+
+      <mat-slide-toggle
+        [(ngModel)]="settings.emailNotifications"
+        (change)="save()"
+      >
+        Email Notifications
+      </mat-slide-toggle>
+
+      <mat-slide-toggle
+        [(ngModel)]="settings.pushNotifications"
+        (change)="save()"
+      >
+        Push Notifications
+      </mat-slide-toggle>
+
+      <mat-slide-toggle
+        [(ngModel)]="settings.inAppNotifications"
+        (change)="save()"
+      >
+        In-App Notifications
+      </mat-slide-toggle>
+
+      <mat-form-field appearance="outline" class="frequency-select">
+        <mat-label>Notification Frequency</mat-label>
+        <mat-select [(ngModel)]="settings.frequency" (selectionChange)="save()">
+          <mat-option *ngFor="let freq of frequencies" [value]="freq">
+            {{ freq | titlecase }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-card-content>
+  </mat-card>
+</div>

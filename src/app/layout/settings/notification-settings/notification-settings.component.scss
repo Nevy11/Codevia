@@ -1,0 +1,26 @@
+.notifications-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+mat-card {
+  max-width: 80rem;
+  //   min-height: 40rem;
+  //   min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+}
+
+.frequency-select {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+mat-card-content {
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* Space between toggles and dropdown */
+}
