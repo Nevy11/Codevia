@@ -3,7 +3,7 @@
   <h1>Login</h1>
   <p>Enter your email and password to log in.</p>
 </div>
-<form class="form-login">
+<form class="form-login" (ngSubmit)="login()">
   <div class="form-field">
     <!-- email field -->
     <mat-form-field>
@@ -30,6 +30,7 @@
         [formControl]="loginForm().password"
       />
       <button
+        type="button"
         matIconButton
         matSuffix
         (click)="clickEvent($event)"
@@ -44,15 +45,14 @@
     </mat-form-field>
   </div>
   <div class="button-holder">
-    <button (click)="login()" mat-stroked-button class="login-button">
-      login
-    </button>
+    <button type="submit" mat-stroked-button class="login-button">login</button>
   </div>
 </form>
 <div class="bottom-login">
   <span class="dont-have-account">Do not have an account?</span>
   <button
     mat-button
+    type="button"
     color="primary"
     (click)="toSignUp()"
     class="example-full-width"

@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, inject, PLATFORM_ID } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { SupabaseClientService } from './supabase-client.service';
+import { MatDialog } from '@angular/material/dialog';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'nevy11-root',
@@ -18,5 +20,39 @@ export class AppComponent {
         this.dialog.closeAll(); // Close dialogs on navigation
       }
     });
+  }
+  private platformId = inject(PLATFORM_ID);
+  private supabase = inject(SupabaseClientService);
+  // private router = inject(Router);
+
+  async ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      const hash = window.location.hash;
+      if (hash.includes('access_token')) {
+        const params = new URLSearchParams(hash.replace('#', ''));
+        const access_token = params.get('access_token');
+        const refresh_token = params.get('refresh_token');
+
+        if (access_token && refresh_token) {
+          // Restore session using tokens
+          const { data, error } = await this.supabase.client.auth.setSession({
+            access_token,
+            refresh_token,
+          });
+          if (!error) {
+            console.log('Session restored:', data);
+            window.history.replaceState({}, document.title, '/layout/home');
+            this.router.navigate(['/layout/home']);
+          }
+        }
+      } else {
+        // Check if there is already a session (auto-login)
+        const { data } = await this.supabase.client.auth.getSession();
+        if (data.session) {
+          console.log('User already logged in');
+          this.router.navigate(['/layout/home']);
+        }
+      }
+    }
   }
 }

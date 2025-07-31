@@ -105,13 +105,16 @@ export class SignupComponent {
       const { data, error } = await this.supabase.client.auth.signUp({
         email,
         password,
+        options: { emailRedirectTo: 'http://localhost:4200/layout/home' },
       });
       if (error) {
         this.snackbar.open('SignUp Error', `Close`, { duration: 3000 });
         console.error('SignUp error: ', error.message);
         alert(error.message);
       } else {
-        this.snackbar.open('SignUp Successfull', `Close`, { duration: 3000 });
+        this.snackbar.open("Please verify you're email to continue", `Close`, {
+          duration: 6000,
+        });
         console.log('SignUp Successful: ', data);
         this.router.navigate(['/login']);
       }

@@ -12,6 +12,7 @@ import { provideServiceWorker } from '@angular/service-worker';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideMonacoEditor } from 'ngx-monaco-editor-v2';
 import { provideHttpClient, withFetch } from '@angular/common/http';
+// import { provideServerRendering } from '@angular/ssr';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -32,5 +33,6 @@ export const appConfig: ApplicationConfig = {
       },
     }),
     provideHttpClient(withFetch()),
+    // provideServerRendering(),
   ],
 };
