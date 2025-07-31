@@ -19,6 +19,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { Router } from '@angular/router';
 import { TopLoginSignupComponent } from '../top-login-signup/top-login-signup.component';
+import { SupabaseClientService } from '../supabase-client.service';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 @Component({
   selector: 'nevy11-signup',
   imports: [
@@ -30,6 +32,7 @@ import { TopLoginSignupComponent } from '../top-login-signup/top-login-signup.co
     MatIconModule,
     MatCardModule,
     TopLoginSignupComponent,
+    MatSnackBarModule,
   ],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss',
@@ -37,6 +40,8 @@ import { TopLoginSignupComponent } from '../top-login-signup/top-login-signup.co
 })
 export class SignupComponent {
   router = inject(Router);
+  supabase = inject(SupabaseClientService);
+  snackbar = inject(MatSnackBar);
   // form group for the signup form
   formSignUp = signal({
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -92,13 +97,24 @@ export class SignupComponent {
     this.hide.set(!this.hide());
     event.stopPropagation();
   }
-  signUp() {
+  async signUp() {
     if (this.formSignUp().email.valid && this.formSignUp().password.valid) {
-      // Handle signup logic here
-      console.log('Signup successful', {
-        email: this.formSignUp().email.value,
-        password: this.formSignUp().password.value,
+      const email = this.formSignUp().email.value!;
+      const password = this.formSignUp().password.value!;
+
+      const { data, error } = await this.supabase.client.auth.signUp({
+        email,
+        password,
       });
+      if (error) {
+        this.snackbar.open('SignUp Error', `Close`, { duration: 3000 });
+        console.error('SignUp error: ', error.message);
+        alert(error.message);
+      } else {
+        this.snackbar.open('SignUp Successfull', `Close`, { duration: 3000 });
+        console.log('SignUp Successful: ', data);
+        this.router.navigate(['/login']);
+      }
     } else {
       this.updateErrorMessage();
       this.updatePasswordErrorMessage();

@@ -4,7 +4,7 @@
   <p class="description">Enter your email and password to sign up.</p>
 </div>
 
-<form class="signup-form">
+<form class="signup-form" (ngSubmit)="signUp()">
   <div class="example-container">
     <mat-form-field>
       <mat-label>Enter your email</mat-label>
@@ -51,13 +51,19 @@
   </div>
 
   <div class="button-container">
-    <button mat-raised-button (click)="signUp()">Sign Up</button>
-  </div>
-  <div class="button-container">
-    <span class="already-have-account">Already have an account?</span>
-
-    <button class="login-btn" mat-button (click)="goToLogin()" color="primary">
-      Login
-    </button>
+    <button mat-raised-button type="submit" (click)="signUp()">Sign Up</button>
   </div>
 </form>
+<div class="button-container">
+  <span class="already-have-account">Already have an account?</span>
+
+  <button
+    type="button"
+    class="login-btn"
+    mat-button
+    color="primary"
+    (click)="goToLogin()"
+  >
+    Login
+  </button>
+</div>
