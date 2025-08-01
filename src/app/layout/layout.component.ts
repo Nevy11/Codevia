@@ -11,6 +11,9 @@ import { ProfileSettingsService } from './settings/profile-settings/profile-sett
 import { Profile } from './settings/profile-settings/profile';
 import { MatDialog } from '@angular/material/dialog';
 import { SearchDialogComponent } from './search-dialog/search-dialog.component';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { map } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'nevy11-layout',
@@ -22,6 +25,7 @@ import { SearchDialogComponent } from './search-dialog/search-dialog.component';
     MatListModule,
     RouterModule,
     MatMenuModule,
+    AsyncPipe,
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss',
@@ -33,7 +37,49 @@ export class LayoutComponent implements OnInit {
   profileSettings = inject(ProfileSettingsService);
   private router = inject(Router);
   private dialog = inject(MatDialog);
-
+  private breakpointObserver = inject(BreakpointObserver);
+  cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
+    map(({ matches }) => {
+      if (matches) {
+        return [
+          {
+            mobile_device: true,
+          },
+        ];
+      } else {
+        // tablet potrait view
+        const isTabletPotrait = this.breakpointObserver.isMatched(
+          Breakpoints.TabletPortrait
+        );
+        if (isTabletPotrait) {
+          return [
+            {
+              mobile_device: false,
+            },
+          ];
+        } else {
+          // small laptop view
+          const isSmallLaptop = this.breakpointObserver.isMatched(
+            '(min-width: 840px) and (max-width: 1366px)'
+          );
+          if (isSmallLaptop) {
+            return [
+              {
+                mobile_device: false,
+              },
+            ];
+          } else {
+            return [
+              {
+                mobile_device: false,
+              },
+            ];
+            // Large laptop view
+          }
+        }
+      }
+    })
+  );
   ngOnInit(): void {
     this.themeChangeService.loadTheme();
     this.profileSettings.profile$.subscribe((profile) => {

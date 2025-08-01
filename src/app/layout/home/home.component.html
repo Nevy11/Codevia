@@ -1,3 +1,4 @@
+@for (card of cards|async; track card) { @if (card.mobile_device) {
 <div class="dashboard-grid">
   <mat-card class="welcome-card mat-elevation-z6">
     <mat-card-content>
@@ -78,3 +79,85 @@
     </mat-card-content>
   </mat-card>
 </div>
+} @else {
+<div class="dashboard-grid">
+  <mat-card class="welcome-card mat-elevation-z6">
+    <mat-card-content>
+      <div class="welcome-content">
+        <img src="/about/laptop.jpg" class="user-avatar" />
+        <div>
+          <h2>
+            Welcome back, <span>{{ username }}</span>
+          </h2>
+          <p>Continue where you left off or explore something new today.</p>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Continue Learning -->
+  <mat-card class="continue-learning mat-elevation-z6">
+    <mat-card-header>
+      <mat-icon color="primary">play_circle_filled</mat-icon>
+      <mat-card-title>Continue Learning</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p>You were learning <strong>Angular Basics</strong>.</p>
+      <p>Progress: <strong>60%</strong></p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button (click)="ToLearning()">Resume</button>
+    </mat-card-actions>
+  </mat-card>
+
+  <!-- <mat-card class="stats-card mat-elevation-z2">
+    <mat-card-title>Courses Enrolled</mat-card-title>
+    <mat-card-content><h2>3</h2></mat-card-content>
+  </mat-card>
+
+  <mat-card class="stats-card mat-elevation-z2">
+    <mat-card-title>Lessons Completed</mat-card-title>
+    <mat-card-content><h2>25</h2></mat-card-content>
+  </mat-card>
+
+  <mat-card class="stats-card mat-elevation-z2">
+    <mat-card-title>Time Spent</mat-card-title>
+    <mat-card-content><h2>12 hrs</h2></mat-card-content>
+  </mat-card>
+
+  <mat-card class="stats-card mat-elevation-z2">
+    <mat-card-title>Achievements</mat-card-title>
+    <mat-card-content><h2>4</h2></mat-card-content>
+  </mat-card> -->
+  <!-- Quick Stats Cards -->
+
+  <mat-card class="stats-card mat-elevation-z4">
+    <mat-icon color="primary">school</mat-icon>
+    <h5>Courses Enrolled</h5>
+    <p>3</p>
+  </mat-card>
+
+  <mat-card class="stats-card mat-elevation-z4">
+    <mat-icon color="accent">check_circle</mat-icon>
+    <h5>Lessons Completed</h5>
+    <p>25</p>
+  </mat-card>
+
+  <!-- Statistics Graph -->
+  <!-- <mat-card class="stats-graph mat-elevation-z4">
+    <mat-card-title>Weekly Progress</mat-card-title>
+    <mat-card-content>
+      <canvas baseChart ...></canvas>
+    </mat-card-content>
+  </mat-card> -->
+
+  <mat-card class="stats-graph mat-elevation-z2">
+    <mat-card-title>Weekly Progress</mat-card-title>
+    <mat-card-content>
+      <div class="chart-placeholder">
+        <p>Graph Placeholder</p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+} }

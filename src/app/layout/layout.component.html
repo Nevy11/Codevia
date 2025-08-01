@@ -1,6 +1,102 @@
+<!-- Just a test to detect mobile device detection-->
+@for (card of cards | async; track card) { @if (card.mobile_device) {
 <mat-sidenav-container class="sidenav-container">
   <!-- Side Navigation -->
-  <mat-sidenav #drawer class="sidenav" mode="side" opened>
+  <mat-sidenav #drawer class="sidenav" mode="side" closed style="width: 6.7rem">
+    <mat-toolbar color="primary">
+      <!-- <mat-icon style="color: #2196f3">star</mat-icon>
+      <mat-icon style="color: #2196f3">star</mat-icon> -->
+      <span class="logo">
+        <span style="color: #0d47a1">C</span>
+        <span style="color: #29b6f6">o</span>
+        <span style="color: #7e57c2">d</span>
+        <span style="color: #b39ddb">e</span>
+        <span style="color: #00e676">V</span>
+        <span style="color: #ffa726">i</span>
+        <span style="color: #e91e63">a</span>
+      </span>
+    </mat-toolbar>
+    <mat-nav-list>
+      <a mat-list-item routerLink="/layout/home" routerLinkActive="active">
+        <mat-icon class="mat-icon-align">home</mat-icon>
+        <span>Home</span>
+      </a>
+      <br />
+      <a mat-list-item routerLink="/layout/learning" routerLinkActive="active">
+        <mat-icon class="mat-icon-align">play_circle_filled</mat-icon>
+        <span>
+          <!-- Continue -->
+          Learning</span
+        >
+      </a>
+      <br />
+      <a mat-list-item routerLink="/statistics" routerLinkActive="active">
+        <mat-icon class="mat-icon-align">insert_chart</mat-icon>
+        <span>Statistics</span>
+      </a>
+      <br />
+      <a mat-list-item routerLink="/layout/courses" routerLinkActive="active">
+        <mat-icon class="mat-icon-align">school</mat-icon>
+        <span>Courses</span>
+      </a>
+      <br />
+      <a mat-list-item routerLink="/layout/settings" routerLinkActive="active">
+        <mat-icon class="mat-icon-align">settings</mat-icon>
+        <span>Settings</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <!-- Main Content -->
+  <mat-sidenav-content>
+    <!-- Top Bar -->
+    <mat-toolbar color="primary" class="topbar">
+      <button mat-icon-button (click)="drawer.toggle()" class="menu-button">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <!-- <span class="title">{{ username }}</span> -->
+      <span class="spacer"></span>
+
+      <button mat-icon-button (click)="themeChangeService.toggleTheme()">
+        <mat-icon>brightness_6</mat-icon>
+      </button>
+      <button mat-icon-button (click)="openSearch()">
+        <mat-icon>search</mat-icon>
+      </button>
+      <button mat-icon-button>
+        <mat-icon>notifications</mat-icon>
+      </button>
+
+      <button mat-icon-button [matMenuTriggerFor]="profileMenu">
+        <img [src]="profile.avatarUrl" alt="" class="img" />
+      </button>
+
+      <mat-menu #profileMenu="matMenu">
+        <button mat-menu-item (click)="goToTab(0)">
+          <mat-icon>settings</mat-icon>
+          Preferences
+        </button>
+        <button mat-menu-item (click)="goToTab(1)">
+          <mat-icon>person</mat-icon>
+          Profile
+        </button>
+        <button mat-menu-item (click)="goToTab(2)">
+          <mat-icon>notifications</mat-icon>
+          Notifications
+        </button>
+      </mat-menu>
+    </mat-toolbar>
+
+    <!-- Routed Content -->
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+} @else {
+<mat-sidenav-container class="sidenav-container">
+  <!-- Side Navigation -->
+  <mat-sidenav #drawer class="sidenav" mode="side" opened style="width: 200px">
     <mat-toolbar color="primary">
       <mat-icon style="color: #2196f3">star</mat-icon>
       <mat-icon style="color: #2196f3">star</mat-icon>
@@ -22,7 +118,7 @@
       <br />
       <a mat-list-item routerLink="/layout/learning" routerLinkActive="active">
         <mat-icon class="mat-icon-align">play_circle_filled</mat-icon>
-        <span>Continue Learning</span>
+        <span> Continue Learning</span>
       </a>
       <br />
       <a mat-list-item routerLink="/statistics" routerLinkActive="active">
@@ -88,3 +184,4 @@
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
+} }
