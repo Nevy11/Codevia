@@ -83,16 +83,18 @@ export class VideoSectionComponent implements OnChanges, OnInit, AfterViewInit {
   // }
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      (window as any).onYouTubeIframeAPIReady = () => {
-        this.player = new YT.Player(this.youtubePlayer.nativeElement, {
-          videoId: this.videoId,
-          events: {
-            onReady: (event: any) => {
-              event.target.setPlaybackRate(this.playbackSpeed);
+      if (typeof window !== 'undefined' && (window as any).YT) {
+        (window as any).onYouTubeIframeAPIReady = () => {
+          this.player = new YT.Player(this.youtubePlayer.nativeElement, {
+            videoId: this.videoId,
+            events: {
+              onReady: (event: any) => {
+                event.target.setPlaybackRate(this.playbackSpeed);
+              },
             },
-          },
-        });
-      };
+          });
+        };
+      }
     }
   }
 }
