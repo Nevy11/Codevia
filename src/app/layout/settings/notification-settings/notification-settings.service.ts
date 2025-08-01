@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { NotificationSettings } from './notification-settings';
 import { BehaviorSubject } from 'rxjs';
 
@@ -18,15 +19,23 @@ export class NotificationSettingsService {
   };
 
   private settingsSubject = new BehaviorSubject<NotificationSettings>(
-    this.loadSettings()
+    this.defaultSettings
   );
   settings$ = this.settingsSubject.asObservable();
-  private loadSettings(): NotificationSettings {
-    const data = localStorage.getItem(this.STORAGE_KEY);
-    return data ? JSON.parse(data) : this.defaultSettings;
+
+  constructor(@Inject(PLATFORM_ID) private platformId: object) {
+    if (isPlatformBrowser(this.platformId)) {
+      const data = localStorage.getItem(this.STORAGE_KEY);
+      if (data) {
+        this.settingsSubject.next(JSON.parse(data));
+      }
+    }
   }
+
   updateSettings(newSettings: NotificationSettings) {
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(newSettings));
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(newSettings));
+    }
     this.settingsSubject.next(newSettings);
   }
 

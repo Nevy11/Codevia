@@ -1,16 +1,39 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Profile } from './profile';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProfileSettingsService {
+  private isBrowser: boolean;
   private readonly defaultAvatar = '/about/laptop.jpg';
   private _profile = new BehaviorSubject<Profile>(this.loadFromStorage());
   profile$ = this._profile.asObservable();
   // load profileFrom localStorage
+  // private loadFromStorage(): Profile {
+  //   return {
+  //     name: localStorage.getItem('profile_name') || '',
+  //     email: localStorage.getItem('profile_email') || '',
+  //     bio: localStorage.getItem('profile_bio') || '',
+  //     avatarUrl: localStorage.getItem('profile_avatar') || this.defaultAvatar,
+  //   };
+  // }
+  constructor(@Inject(PLATFORM_ID) platformId: object) {
+    this.isBrowser = isPlatformBrowser(platformId);
+    this._profile = new BehaviorSubject<Profile>(this.loadFromStorage());
+  }
+
   private loadFromStorage(): Profile {
+    if (!this.isBrowser) {
+      return {
+        name: '',
+        email: '',
+        bio: '',
+        avatarUrl: this.defaultAvatar,
+      };
+    }
     return {
       name: localStorage.getItem('profile_name') || '',
       email: localStorage.getItem('profile_email') || '',
@@ -20,7 +43,14 @@ export class ProfileSettingsService {
   }
 
   // Save profile to local storage
+  // private saveToStorage(profile: Profile) {
+  //   localStorage.setItem('profile_name', profile.name);
+  //   localStorage.setItem('profile_email', profile.email);
+  //   localStorage.setItem('profile_bio', profile.bio);
+  //   localStorage.setItem('profile_avatar', profile.avatarUrl);
+  // }
   private saveToStorage(profile: Profile) {
+    if (!this.isBrowser) return;
     localStorage.setItem('profile_name', profile.name);
     localStorage.setItem('profile_email', profile.email);
     localStorage.setItem('profile_bio', profile.bio);
