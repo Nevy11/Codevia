@@ -14,6 +14,9 @@ export class AppComponent {
   title = 'Codevia';
   play = false;
 
+  private platformId = inject(PLATFORM_ID);
+  private supabase = inject(SupabaseClientService);
+
   constructor(private router: Router, private dialog: MatDialog) {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
@@ -21,37 +24,35 @@ export class AppComponent {
       }
     });
   }
-  private platformId = inject(PLATFORM_ID);
-  private supabase = inject(SupabaseClientService);
-  // private router = inject(Router);
 
   async ngOnInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      const hash = window.location.hash;
-      if (hash.includes('access_token')) {
-        const params = new URLSearchParams(hash.replace('#', ''));
-        const access_token = params.get('access_token');
-        const refresh_token = params.get('refresh_token');
+    // Only run browser-specific logic
+    if (!isPlatformBrowser(this.platformId)) return;
 
-        if (access_token && refresh_token) {
-          // Restore session using tokens
-          const { data, error } = await this.supabase.client.auth.setSession({
-            access_token,
-            refresh_token,
-          });
-          if (!error) {
-            console.log('Session restored:', data);
-            window.history.replaceState({}, document.title, '/layout/home');
-            this.router.navigate(['/layout/home']);
-          }
-        }
-      } else {
-        // Check if there is already a session (auto-login)
-        const { data } = await this.supabase.client.auth.getSession();
-        if (data.session) {
-          console.log('User already logged in');
+    const hash = window.location.hash;
+    if (hash.includes('access_token')) {
+      const params = new URLSearchParams(hash.replace('#', ''));
+      const access_token = params.get('access_token');
+      const refresh_token = params.get('refresh_token');
+
+      if (access_token && refresh_token) {
+        const { data, error } = await this.supabase.client.auth.setSession({
+          access_token,
+          refresh_token,
+        });
+
+        if (!error) {
+          console.log('Session restored:', data);
+          window.history.replaceState({}, document.title, '/layout/home');
           this.router.navigate(['/layout/home']);
         }
+      }
+    } else {
+      // Check existing session
+      const { data } = await this.supabase.client.auth.getSession();
+      if (data.session) {
+        console.log('User already logged in');
+        this.router.navigate(['/layout/home']);
       }
     }
   }

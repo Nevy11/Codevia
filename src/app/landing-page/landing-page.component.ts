@@ -56,71 +56,54 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   private intervalId: any;
 
   preloadImages() {
-    this.images.forEach((src) => {
-      const img = new Image();
-      img.src = src;
-    });
+    if (isPlatformBrowser(this.platformId)) {
+      this.images.forEach((src) => {
+        const img = new Image();
+        img.src = src;
+      });
+    }
   }
 
+  // ngOnInit() {
+  //   if (isPlatformBrowser(this.platformId)) {
+  //     // Start the interval only if the platform is a browser
+
+  //     this.intervalId = setInterval(() => {
+  //       this.currentImageIndex =
+  //         (this.currentImageIndex + 1) % this.images.length;
+  //     }, 5000);
+  //   }
+  // }
+  // ngOnDestroy() {
+  //   // Clear the interval when the component is destroyed
+  //   if (this.intervalId) {
+  //     clearInterval(this.intervalId);
+  //   }
+  // }
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
-      // Start the interval only if the platform is a browser
-
       this.intervalId = setInterval(() => {
         this.currentImageIndex =
           (this.currentImageIndex + 1) % this.images.length;
       }, 5000);
+
+      // Manually add scroll listener if in browser
+      window.addEventListener('scroll', this.handleScroll);
     }
   }
   ngOnDestroy() {
-    // Clear the interval when the component is destroyed
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
+    if (isPlatformBrowser(this.platformId)) {
+      window.removeEventListener('scroll', this.handleScroll);
+    }
   }
 
-  // cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
-  //   map(({ matches }) => {
-  //     if (matches) {
-  //       return [
-  //         {
-  //           mobile_device: true,
-  //         },
-  //       ];
-  //     } else {
-  //       // tablet potrait view
-  //       const isTabletPotrait = this.breakpointObserver.isMatched(
-  //         Breakpoints.TabletPortrait
-  //       );
-  //       if (isTabletPotrait) {
-  //         return [
-  //           {
-  //             mobile_device: false,
-  //           },
-  //         ];
-  //       } else {
-  //         // small laptop view
-  //         const isSmallLaptop = this.breakpointObserver.isMatched(
-  //           '(min-width: 840px) and (max-width: 1366px)'
-  //         );
-  //         if (isSmallLaptop) {
-  //           return [
-  //             {
-  //               mobile_device: false,
-  //             },
-  //           ];
-  //         } else {
-  //           return [
-  //             {
-  //               mobile_device: false,
-  //             },
-  //           ];
-  //           // Large laptop view
-  //         }
-  //       }
-  //     }
-  //   })
-  // );
+  handleScroll = () => {
+    const scrollTop = document.documentElement.scrollTop;
+    this.showScrollIndicator = scrollTop < 300;
+  };
 
   get currentBackground(): string {
     return `url(${this.images[this.currentImageIndex]})`;

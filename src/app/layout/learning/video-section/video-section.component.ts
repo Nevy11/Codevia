@@ -11,6 +11,8 @@ import {
 } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { PlaybackSettingsService } from '../../settings/preferences-settings/playback-settings.service';
+import { Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 declare var YT: any; // YouTube Player API
 
@@ -21,6 +23,8 @@ declare var YT: any; // YouTube Player API
   styleUrl: './video-section.component.scss',
 })
 export class VideoSectionComponent implements OnChanges, OnInit, AfterViewInit {
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+
   @Input() videoId: string | null = 'dQw4w9WgXcQ'; // Default video ID
   @Input() playbackSpeed: number = 1.0; // value from settings
   @ViewChild('youtubePlayer', { static: false }) youtubePlayer!: ElementRef;
@@ -65,16 +69,30 @@ export class VideoSectionComponent implements OnChanges, OnInit, AfterViewInit {
     }
   }
 
+  // ngAfterViewInit(): void {
+  //   (window as any).onYouTubeIframeAPIReady = () => {
+  //     this.player = new YT.Player(this.youtubePlayer.nativeElement, {
+  //       videoId: this.videoId,
+  //       events: {
+  //         onReady: (event: any) => {
+  //           event.target.setPlaybackRate(this.playbackSpeed);
+  //         },
+  //       },
+  //     });
+  //   };
+  // }
   ngAfterViewInit(): void {
-    (window as any).onYouTubeIframeAPIReady = () => {
-      this.player = new YT.Player(this.youtubePlayer.nativeElement, {
-        videoId: this.videoId,
-        events: {
-          onReady: (event: any) => {
-            event.target.setPlaybackRate(this.playbackSpeed);
+    if (isPlatformBrowser(this.platformId)) {
+      (window as any).onYouTubeIframeAPIReady = () => {
+        this.player = new YT.Player(this.youtubePlayer.nativeElement, {
+          videoId: this.videoId,
+          events: {
+            onReady: (event: any) => {
+              event.target.setPlaybackRate(this.playbackSpeed);
+            },
           },
-        },
-      });
-    };
+        });
+      };
+    }
   }
 }
