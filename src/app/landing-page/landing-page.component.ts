@@ -121,11 +121,11 @@ export class LandingPageComponent implements OnInit, OnDestroy {
 
   // Scroll indicator functionality
   showScrollIndicator = true;
-  @HostListener('window:scroll', ['$event'])
-  onWindowScroll(event: Event) {
-    const scrollTop = (event.target as Document).documentElement.scrollTop;
-    this.showScrollIndicator = scrollTop < 300; // Show indicator if scrolled less than 100px
-  }
+  // @HostListener('window:scroll', ['$event'])
+  // onWindowScroll(event: Event) {
+  //   const scrollTop = (event.target as Document).documentElement.scrollTop;
+  //   this.showScrollIndicator = scrollTop < 300; // Show indicator if scrolled less than 100px
+  // }
 
   // previewVideos = [
   //   { url: '/home_page/video1.mp4' },
