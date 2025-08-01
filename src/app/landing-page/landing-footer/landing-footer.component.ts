@@ -18,7 +18,9 @@ export class LandingFooterComponent {
 
   openLink(url: string) {
     if (isPlatformBrowser(this.platformId)) {
-      window.open(url, '_blank');
+      if (typeof window != 'undefined') {
+        window.open(url, '_blank');
+      }
     }
   }
 
