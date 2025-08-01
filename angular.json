@@ -20,7 +20,7 @@
             "outputPath": "dist/Codevia",
             "index": "src/index.html",
             "browser": "src/main.ts",
-            "polyfills": ["zone.js", "src/polyfills.ts"],
+            "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
