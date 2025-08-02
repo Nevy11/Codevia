@@ -16,8 +16,13 @@ It allows learners to **watch YouTube video lessons** while coding in a **Monaco
 
 ---
 
-## 📹 Demo Video
-(Coming soon – insert your video link here)
+## Prerequisites
+
+- Node.js ≥ 18
+
+- Angular CLI ≥ 17
+
+- Supabase account (for authentication setup)
 
 ---
 
