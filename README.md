@@ -27,26 +27,8 @@ It allows learners to **watch YouTube video lessons** while coding in a **Monaco
 - **Video Player**: YouTube iframe integration
 - **Backend**: Supabase (Auth + Database)
 - **Build Tool**: Vite (default with Angular 20+)
-
----
-
-## 📂 Folder Structure
-src/
-├── app/
-│ ├── auth/
-│ │ ├── login/ # Login page
-│ │ └── signup/ # Signup page
-│ ├── layout/
-│ │ └── home/ # Dashboard page with video + code editor
-│ ├── services/
-│ │ └── supabase-client.service.ts
-│ └── app.component.ts # App root component
-├── assets/
-├── environments/
-
-
-
----
+  
+ ---
 
 ## 📥 Installation
 
