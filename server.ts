@@ -23,3 +23,5 @@ export async function netlifyAppEngineHandler(
  * The request handler used by the Angular CLI (dev-server and during build).
  */
 export const reqHandler = createRequestHandler(netlifyAppEngineHandler);
+
+export default reqHandler;
