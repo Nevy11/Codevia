@@ -86,3 +86,7 @@ or build a **complete skeleton with all tabs** so we can expand later?
 
 
 Skyworth.95
+
+
+// don't forget to add this incase of anything: 
+            "server": "src/main.server.ts",
