@@ -1,4 +1,4 @@
-import { Component, inject, PLATFORM_ID } from '@angular/core';
+import { Component, inject, PLATFORM_ID, NgZone } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { SupabaseClientService } from './supabase-client.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -16,6 +16,7 @@ export class AppComponent {
 
   private platformId = inject(PLATFORM_ID);
   private supabase = inject(SupabaseClientService);
+  private ngZone = inject(NgZone);
 
   constructor(private router: Router, private dialog: MatDialog) {
     this.router.events.subscribe((event) => {
@@ -26,34 +27,39 @@ export class AppComponent {
   }
 
   async ngOnInit() {
-    // Only run browser-specific logic
     if (!isPlatformBrowser(this.platformId)) return;
 
-    const hash = window.location.hash;
-    if (hash.includes('access_token')) {
-      const params = new URLSearchParams(hash.replace('#', ''));
-      const access_token = params.get('access_token');
-      const refresh_token = params.get('refresh_token');
+    this.ngZone.runOutsideAngular(async () => {
+      const hash = window.location.hash;
 
-      if (access_token && refresh_token) {
-        const { data, error } = await this.supabase.client.auth.setSession({
-          access_token,
-          refresh_token,
-        });
+      if (hash.includes('access_token')) {
+        const params = new URLSearchParams(hash.replace('#', ''));
+        const access_token = params.get('access_token');
+        const refresh_token = params.get('refresh_token');
 
-        if (!error) {
-          console.log('Session restored:', data);
-          window.history.replaceState({}, document.title, '/layout/home');
-          this.router.navigate(['/layout/home']);
+        if (access_token && refresh_token) {
+          const { data, error } = await this.supabase.client.auth.setSession({
+            access_token,
+            refresh_token,
+          });
+
+          this.ngZone.run(() => {
+            if (!error) {
+              console.log('Session restored:', data);
+              window.history.replaceState({}, document.title, '/layout/home');
+              this.router.navigate(['/layout/home']);
+            }
+          });
         }
+      } else {
+        const { data } = await this.supabase.client.auth.getSession();
+        this.ngZone.run(() => {
+          if (data.session) {
+            console.log('User already logged in');
+            this.router.navigate(['/layout/home']);
+          }
+        });
       }
-    } else {
-      // Check existing session
-      const { data } = await this.supabase.client.auth.getSession();
-      if (data.session) {
-        console.log('User already logged in');
-        this.router.navigate(['/layout/home']);
-      }
-    }
+    });
   }
 }
