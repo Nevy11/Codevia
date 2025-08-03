@@ -93,8 +93,8 @@ Skyworth.95
 
 
 // remove this below the scripts in options flag: 
-,
-            "server": "server.ts",
+,,
+            "server": "main.server.ts",
             "prerender": true,
             "ssr": {
               "entry": "server.ts"
