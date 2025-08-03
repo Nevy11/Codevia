@@ -31,7 +31,7 @@
             ],
             "styles": ["src/styles.scss"],
             "scripts": [],
-            "server": "main.server.ts",
+            "server": "src/main.server.ts",
             "prerender": true,
             "ssr": {
               "entry": "server.ts"
