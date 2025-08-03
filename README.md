@@ -44,7 +44,7 @@ cd codevia
 ```
 ### 2. Install the Dependencies
 ```
-npm install
+npm install --legacy-peer-deps  
 ```
 ### 3. Run the application
 ```
