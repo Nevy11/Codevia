@@ -24,4 +24,4 @@ export async function netlifyAppEngineHandler(
  */
 export const reqHandler = createRequestHandler(netlifyAppEngineHandler);
 
-export default reqHandler;
+export default netlifyAppEngineHandler;
