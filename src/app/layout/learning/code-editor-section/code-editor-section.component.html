@@ -1,7 +1,9 @@
+@if (isBrowser) {
 <ngx-monaco-editor
   [(ngModel)]="code"
   [options]="editorOptions"
 ></ngx-monaco-editor>
+}
 <div class="btn">
   <button mat-flat-button (click)="downloadCode()">Download Code</button>
   <span class="spacer"></span>

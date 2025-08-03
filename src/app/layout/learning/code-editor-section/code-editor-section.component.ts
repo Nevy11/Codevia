@@ -1,9 +1,10 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, Inject, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { ThemeChangeService } from '../../../theme-change.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'nevy11-code-editor-section',
@@ -17,6 +18,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
   styleUrl: './code-editor-section.component.scss',
 })
 export class CodeEditorSectionComponent implements OnInit {
+  isBrowser = false;
   code: string = `// Write your code here`;
   themechangeService = inject(ThemeChangeService);
   matsnackbar = inject(MatSnackBar);
@@ -26,6 +28,9 @@ export class CodeEditorSectionComponent implements OnInit {
     automaticLayout: true,
   };
   themeSub: any;
+  constructor(@Inject(PLATFORM_ID) platformId: Object) {
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
   ngOnInit() {
     this.themechangeService.loadTheme();
     this.themeSub = this.themechangeService.theme$.subscribe((theme) => {
