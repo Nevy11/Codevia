@@ -18,6 +18,7 @@ import { VideoFeedComponent } from '../courses/video-feed/video-feed.component';
 export class LearningComponent {
   videoId = 'rQ_J9WH6CGk';
   playbackSpeed = 1.0; // default value
+  isBrowser = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -25,6 +26,8 @@ export class LearningComponent {
   ) {}
 
   ngOnInit() {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+
     // Load from localStorage only in browser
     if (isPlatformBrowser(this.platformId)) {
       const speed = parseFloat(localStorage.getItem('playbackSpeed') || '1.0');

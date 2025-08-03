@@ -64,22 +64,6 @@ export class LandingPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  // ngOnInit() {
-  //   if (isPlatformBrowser(this.platformId)) {
-  //     // Start the interval only if the platform is a browser
-
-  //     this.intervalId = setInterval(() => {
-  //       this.currentImageIndex =
-  //         (this.currentImageIndex + 1) % this.images.length;
-  //     }, 5000);
-  //   }
-  // }
-  // ngOnDestroy() {
-  //   // Clear the interval when the component is destroyed
-  //   if (this.intervalId) {
-  //     clearInterval(this.intervalId);
-  //   }
-  // }
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
       this.intervalId = setInterval(() => {

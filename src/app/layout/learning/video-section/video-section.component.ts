@@ -68,33 +68,74 @@ export class VideoSectionComponent implements OnChanges, OnInit, AfterViewInit {
       this.player.setPlaybackRate(this.playbackSpeed);
     }
   }
-
   // ngAfterViewInit(): void {
+  //   if (!isPlatformBrowser(this.platformId)) return;
+
+  //   // Dynamically load YT API if not already loaded
+  //   if (!(window as any).YT) {
+  //     const script = document.createElement('script');
+  //     script.src = 'https://www.youtube.com/iframe_api';
+  //     document.body.appendChild(script);
+  //   }
+
   //   (window as any).onYouTubeIframeAPIReady = () => {
-  //     this.player = new YT.Player(this.youtubePlayer.nativeElement, {
-  //       videoId: this.videoId,
-  //       events: {
-  //         onReady: (event: any) => {
-  //           event.target.setPlaybackRate(this.playbackSpeed);
+  //     this.player = new (window as any).YT.Player(
+  //       this.youtubePlayer.nativeElement,
+  //       {
+  //         videoId: this.videoId,
+  //         events: {
+  //           onReady: (event: any) =>
+  //             event.target.setPlaybackRate(this.playbackSpeed),
   //         },
-  //       },
-  //     });
+  //       }
+  //     );
   //   };
   // }
+
   ngAfterViewInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      if (typeof window !== 'undefined' && (window as any).YT) {
-        (window as any).onYouTubeIframeAPIReady = () => {
-          this.player = new YT.Player(this.youtubePlayer.nativeElement, {
-            videoId: this.videoId,
-            events: {
-              onReady: (event: any) => {
-                event.target.setPlaybackRate(this.playbackSpeed);
-              },
-            },
-          });
-        };
-      }
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    if ((window as any).YT) {
+      this.createPlayer();
+    } else {
+      (window as any).onYouTubeIframeAPIReady = () => this.createPlayer();
+      this.loadYouTubeApi();
     }
   }
+
+  private createPlayer() {
+    this.player = new (window as any).YT.Player(
+      this.youtubePlayer.nativeElement,
+      {
+        videoId: this.videoId,
+        events: {
+          onReady: (event: any) =>
+            event.target.setPlaybackRate(this.playbackSpeed),
+        },
+      }
+    );
+  }
+
+  private loadYouTubeApi() {
+    const script = document.createElement('script');
+    script.src = 'https://www.youtube.com/iframe_api';
+    document.body.appendChild(script);
+  }
+
+  // ngAfterViewInit(): void {
+  //   if (isPlatformBrowser(this.platformId)) {
+  //     if (typeof window !== 'undefined' && (window as any).YT) {
+  //       (window as any).onYouTubeIframeAPIReady = () => {
+  //         this.player = new YT.Player(this.youtubePlayer.nativeElement, {
+  //           videoId: this.videoId,
+  //           events: {
+  //             onReady: (event: any) => {
+  //               event.target.setPlaybackRate(this.playbackSpeed);
+  //             },
+  //           },
+  //         });
+  //       };
+  //     }
+  //   }
+  // }
 }

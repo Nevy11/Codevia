@@ -20,12 +20,6 @@ export class SettingsComponent implements OnInit {
   selectedIndex = 0;
   private route = inject(ActivatedRoute);
   ngOnInit(): void {
-    // this.route.queryParams.subscribe((params) => {
-    //   const tab = params['tab'] ? Number(params['tab']) : 0;
-    //   if (this.tabGroup) {
-    //     this.tabGroup.selectedIndex = tab;
-    //   }
-    // });
     this.route.queryParams.subscribe((params) => {
       this.selectedIndex = params['tab'] ? Number(params['tab']) : 0;
     });
