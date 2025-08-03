@@ -3,6 +3,10 @@
 Codevia is a modern **e-learning platform** built with **Angular** and **Supabase**, designed for interactive and adaptive learning.  
 It allows learners to **watch YouTube video lessons** while coding in a **Monaco code editor (like VS Code)** directly inside the browser.  
 
+## Live Demo
+Check out the deployed site: [Codevia](https://codevia.vercel.app/)
+
+
 ---
 
 ## ✨ Features
@@ -35,9 +39,6 @@ It allows learners to **watch YouTube video lessons** while coding in a **Monaco
   
  ---
 
- ## Found here:
- 
-[CodeVia](https://codevia.vercel.app/)
 
 
 
