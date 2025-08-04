@@ -3,6 +3,10 @@
 Codevia is a modern **e-learning platform** built with **Angular** and **Supabase**, designed for interactive and adaptive learning.  
 It allows learners to **watch YouTube video lessons** while coding in a **Monaco code editor (like VS Code)** directly inside the browser.  
 
+## Live Demo
+Check out the deployed site: [Codevia](https://codevia.vercel.app/)
+
+
 ---
 
 ## ✨ Features
@@ -35,21 +39,8 @@ It allows learners to **watch YouTube video lessons** while coding in a **Monaco
   
  ---
 
-## 📥 Installation
 
-### 1. Clone the Repository
-```bash
-git clone https://github.com/your-username/codevia.git
-cd codevia
-```
-### 2. Install the Dependencies
-```
-npm install --legacy-peer-deps  
-```
-### 3. Run the application
-```
-ng serve -o
-```
+
 
 Contributing
 Pull requests are welcome. For significant changes, open an issue first to discuss what you would like to change.
