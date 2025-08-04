@@ -9,6 +9,7 @@ import { ProfileSettingsService } from './profile-settings.service';
 import { Profile } from './profile';
 import { Router } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { SupabaseClientService } from '../../../supabase-client.service';
 
 @Component({
   selector: 'nevy11-profile-settings',
@@ -31,7 +32,16 @@ export class ProfileSettingsComponent implements OnInit {
   private profileService = inject(ProfileSettingsService);
   private router = inject(Router);
   snackBar = inject(MatSnackBar);
-  ngOnInit(): void {
+  supabaseService = inject(SupabaseClientService);
+  async ngOnInit() {
+    const {
+      data: { user },
+    } = await this.supabaseService.client.auth.getUser();
+    if (user && user.email) {
+      console.log(user.email); // <-- user's login email
+      this.profileService.loadProfile(user.email);
+    }
+
     this.profileService.profile$.subscribe((profile) => {
       this.profile = profile;
     });
