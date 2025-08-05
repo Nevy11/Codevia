@@ -1,1 +1,5 @@
+@for (card of cards | async; track card) { @if (card.mobile_device) {
 <nevy11-mobile-stepper></nevy11-mobile-stepper>
+}@else {
+<nevy11-non-mobile-stepper></nevy11-non-mobile-stepper>
+} }
