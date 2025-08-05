@@ -31,7 +31,7 @@
           required
         />
       </mat-form-field>
-      <div>
+      <div class="back_next">
         <button matButton matStepperPrevious>Back</button>
         <button matButton matStepperNext>Next</button>
       </div>
@@ -39,8 +39,8 @@
   </mat-step>
   <mat-step>
     <ng-template matStepLabel>Done</ng-template>
-    <p>You are now done.</p>
-    <div>
+    <p class="done">You are now done.</p>
+    <div class="back_next">
       <button matButton matStepperPrevious>Back</button>
       <button matButton (click)="stepper.reset()">Reset</button>
     </div>

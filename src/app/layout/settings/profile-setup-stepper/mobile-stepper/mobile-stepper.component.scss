@@ -5,3 +5,15 @@
 .mat-mdc-form-field {
   margin-top: 16px;
 }
+mat-form-field {
+  width: 100%;
+}
+.back_next {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.done {
+  display: flex;
+  justify-content: center;
+}
