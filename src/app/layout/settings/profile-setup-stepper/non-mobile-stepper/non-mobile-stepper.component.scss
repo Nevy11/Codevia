@@ -25,3 +25,29 @@ mat-form-field {
   display: flex;
   justify-content: center;
 }
+// .bottom-stepper {
+//   position: fixed;
+//   bottom: 0;
+//   left: 0;
+//   width: 100%;
+//   background: white; /* Ensures it doesn’t overlap with transparent background */
+//   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
+//   padding: 8px 16px;
+//   z-index: 1000;
+// }
+
+// ::ng-deep .mat-horizontal-stepper-header-container {
+//   position: fixed;
+//   bottom: 0;
+//   left: 0;
+//   width: 100%;
+//   background: white;
+//   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
+//   z-index: 1000;
+//   padding-bottom: 8px;
+// }
+
+// /* Add some bottom padding so your forms don't get hidden behind the fixed header */
+// form {
+//   padding-bottom: 80px;
+// }
