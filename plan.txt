@@ -85,17 +85,5 @@ Do you want me to **start with a working Angular Material “Preferences” tab*
 or build a **complete skeleton with all tabs** so we can expand later?
 
 
-Skyworth.95
 
 
-// don't forget to add this incase of anything: 
-            "server": "src/main.server.ts",
-
-
-// remove this below the scripts in options flag: 
-,,
-            "server": "main.server.ts",
-            "prerender": true,
-            "ssr": {
-              "entry": "server.ts"
-            }
