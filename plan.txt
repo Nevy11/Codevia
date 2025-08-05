@@ -81,8 +81,6 @@ Here’s what typically works well in an **e-learning app** like yours:
 
 ---
 
-Do you want me to **start with a working Angular Material “Preferences” tab** (dark mode toggle + playback speed + font size) as a foundation,
-or build a **complete skeleton with all tabs** so we can expand later?
 
 
 
