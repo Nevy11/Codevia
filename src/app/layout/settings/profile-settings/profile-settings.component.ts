@@ -38,7 +38,11 @@ export class ProfileSettingsComponent implements OnInit {
       data: { user },
     } = await this.supabaseService.client.auth.getUser();
     if (user && user.email) {
-      console.log(user.email); // <-- user's login email
+      console.log(
+        `User Email then loading profile from supabase: `,
+        user.email
+      ); // <-- user's login email
+
       this.profileService.loadProfile(user.email);
     }
 

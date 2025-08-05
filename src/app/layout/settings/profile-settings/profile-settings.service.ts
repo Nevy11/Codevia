@@ -42,12 +42,13 @@ export class ProfileSettingsService {
 
   /** Load profile from Supabase (or localStorage fallback) */
   async loadProfile(email: string) {
+    console.log('starting');
     const { data, error } = await this.supabaseService.client
       .from('profiles')
       .select('*')
       .eq('email', email)
       .single();
-
+    console.log('checking');
     if (!error && data) {
       const profile: Profile = {
         name: data.name,
@@ -55,9 +56,11 @@ export class ProfileSettingsService {
         bio: data.bio,
         avatarUrl: data.avatar_url || this.defaultAvatar,
       };
+      console.log('profile info: :', profile);
       this._profile.next(profile);
       this.saveToStorage(profile);
     } else {
+      console.log('there is an error');
       this._profile.next(this.loadFromStorage());
     }
   }
