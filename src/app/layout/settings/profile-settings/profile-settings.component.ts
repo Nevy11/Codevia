@@ -47,20 +47,53 @@ export class ProfileSettingsComponent implements OnInit {
     });
   }
 
-  onFileSelected(event: Event) {
+  // onFileSelected(event: Event) {
+  //   const file = (event.target as HTMLInputElement).files?.[0];
+  //   if (!file) return;
+  //   const reader = new FileReader();
+  //   reader.onload = () => {
+  //     const updated_image: Profile = {
+  //       name: this.profile.name,
+  //       email: this.profile.email,
+  //       bio: this.profile.bio,
+  //       avatarUrl: reader.result as string,
+  //     };
+  //     this.profileService.updateProfile(updated_image);
+  //   };
+  //   reader.readAsDataURL(file);
+  // }
+  async onFileSelected(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      const updated_image: Profile = {
-        name: this.profile.name,
-        email: this.profile.email,
-        bio: this.profile.bio,
-        avatarUrl: reader.result as string,
-      };
-      this.profileService.updateProfile(updated_image);
+
+    // 1. Upload to Supabase Storage
+    // const fileName = `avatars/${Date.now()}-${file.name}`;
+    const fileName = `${Date.now()}-${file.name}`;
+
+    const { data, error } = await this.supabaseService.client.storage
+      .from('avatars') // Make sure you created "avatars" bucket in Supabase
+      .upload(fileName, file, { upsert: true });
+
+    if (error) {
+      console.error('Avatar upload error:', error);
+      return;
+    }
+
+    // 2. Get the public URL for the avatar
+    const { data: publicUrlData } = this.supabaseService.client.storage
+      .from('avatars')
+      .getPublicUrl(fileName);
+
+    const avatarUrl = publicUrlData?.publicUrl || '';
+
+    // 3. Update profile with Supabase URL
+    const updated_image: Profile = {
+      name: this.profile.name,
+      email: this.profile.email,
+      bio: this.profile.bio,
+      avatarUrl,
     };
-    reader.readAsDataURL(file);
+    await this.profileService.updateProfile(updated_image);
   }
 
   cancelEdit() {
