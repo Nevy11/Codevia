@@ -5,6 +5,7 @@ import { ProfileSettingsComponent } from './profile-settings/profile-settings.co
 import { NotificationSettingsComponent } from './notification-settings/notification-settings.component';
 import { ActivatedRoute } from '@angular/router';
 import { SupabaseClientService } from '../../supabase-client.service';
+import { ProfileSetupStepperComponent } from './profile-setup-stepper/profile-setup-stepper.component';
 @Component({
   selector: 'nevy11-settings',
   imports: [
@@ -12,6 +13,7 @@ import { SupabaseClientService } from '../../supabase-client.service';
     MatTabsModule,
     ProfileSettingsComponent,
     NotificationSettingsComponent,
+    ProfileSetupStepperComponent,
   ],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',
