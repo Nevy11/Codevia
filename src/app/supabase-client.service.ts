@@ -132,4 +132,17 @@ export class SupabaseClientService {
     console.log('Updated profile:', data);
     return data;
   }
+
+  // sign out
+  async logout() {
+    const { error } = await this.client.auth.signOut();
+
+    if (error) {
+      console.error('Logout error:', error.message);
+      return false;
+    } else {
+      console.log('sign out successful');
+      return true;
+    }
+  }
 }
