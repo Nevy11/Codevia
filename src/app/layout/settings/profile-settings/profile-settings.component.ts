@@ -27,28 +27,31 @@ import { SupabaseClientService } from '../../../supabase-client.service';
 })
 export class ProfileSettingsComponent implements OnInit {
   isEditing = false;
-  profile!: Profile;
+  loading = true;
+  profile: Profile | null = null;
 
   private profileService = inject(ProfileSettingsService);
   private router = inject(Router);
-  snackBar = inject(MatSnackBar);
-  supabaseService = inject(SupabaseClientService);
+  private snackBar = inject(MatSnackBar);
+  private supabaseService = inject(SupabaseClientService);
   async ngOnInit() {
-    const {
-      data: { user },
-    } = await this.supabaseService.client.auth.getUser();
-    if (user && user.email) {
-      console.log(
-        `User Email then loading profile from supabase: `,
-        user.email
-      ); // <-- user's login email
+    // const {
+    //   data: { user },
+    // } = await this.supabaseService.client.auth.getUser();
+    // if (user && user.email) {
+    //   console.log(
+    //     `User Email then loading profile from supabase: `,
+    //     user.email
+    //   ); // <-- user's login email
 
-      this.profileService.loadProfile(user.email);
-    }
+    //   this.loading = false;
+    //   // this.profileService.loadProfile(user.email);
+    // }
+    this.profile = await this.supabaseService.getProfile();
 
-    this.profileService.profile$.subscribe((profile) => {
-      this.profile = profile;
-    });
+    // this.profileService.profile$.subscribe((profile) => {
+    //   this.profile = profile;
+    // });
   }
 
   // onFileSelected(event: Event) {
@@ -91,13 +94,13 @@ export class ProfileSettingsComponent implements OnInit {
     const avatarUrl = publicUrlData?.publicUrl || '';
 
     // 3. Update profile with Supabase URL
-    const updated_image: Profile = {
-      name: this.profile.name,
-      email: this.profile.email,
-      bio: this.profile.bio,
-      avatarUrl,
-    };
-    await this.profileService.updateProfile(updated_image);
+    // const updated_image: Profile = {
+    //   name: this.profile.name,
+    //   email: this.profile.email,
+    //   bio: this.profile.bio,
+    //   avatarUrl,
+    // };
+    // await this.profileService.updateProfile(updated_image);
   }
 
   cancelEdit() {
@@ -107,15 +110,35 @@ export class ProfileSettingsComponent implements OnInit {
     });
     this.isEditing = false;
   }
-  save() {
-    const updatedProfile: Profile = {
-      name: this.profile.name,
-      email: this.profile.email,
-      bio: this.profile.bio,
-      avatarUrl: this.profile.avatarUrl,
-    };
-    this.profileService.updateProfile(updatedProfile);
-    this.snackBar.open('update successful', `Close`, { duration: 3000 });
-    this.router.navigate(['/layout/settings']);
+  async save() {
+    if (this.profile) {
+      try {
+        const updatedData = await this.supabaseService.updateProfile(
+          this.profile.name,
+          this.profile.bio,
+          this.profile.avatarUrl
+        );
+
+        if (updatedData) {
+          this.snackBar.open('Update successful', 'Close', {
+            duration: 3000,
+          });
+          this.router.navigate(['/layout/settings']);
+        } else {
+          this.snackBar.open('Update failed. Please try again.', 'Close', {
+            duration: 3000,
+          });
+        }
+      } catch (error) {
+        console.error('Error while updating profile:', error);
+        this.snackBar.open('An error occurred.', 'Close', {
+          duration: 3000,
+        });
+      }
+    } else {
+      this.snackBar.open('No profile data to save.', 'Close', {
+        duration: 3000,
+      });
+    }
   }
 }

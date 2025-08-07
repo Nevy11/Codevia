@@ -1,3 +1,6 @@
+@if (loading) {
+<div>loading.......</div>
+} @if (!loading && profile) {
 <div class="profile-container">
   <!-- Avatar Section -->
   <mat-card class="avatar-card">
@@ -6,7 +9,7 @@
     </mat-card-header>
     <mat-card-content>
       <img [src]="profile.avatarUrl" alt="Profile Picture" class="avatar" />
-      <input type="file" accept="image/*" (change)="onFileSelected($event)" />
+      <!-- <input type="file" accept="image/*" (change)="onFileSelected($event)" /> -->
     </mat-card-content>
   </mat-card>
 
@@ -47,6 +50,10 @@
         </mat-form-field>
       </form>
     </mat-card-content>
+    <!--
+     don't foget to udpate this up here: 
+     "" 
+     -->
 
     <!-- Bottom Right Actions -->
     <mat-card-actions class="actions-right">
@@ -69,3 +76,5 @@
     </mat-card-actions>
   </mat-card>
 </div>
+
+}

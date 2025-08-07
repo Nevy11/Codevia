@@ -1,6 +1,7 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { Profile } from './layout/settings/profile-settings/profile';
 
 @Injectable({
   providedIn: 'root',
@@ -69,10 +70,11 @@ export class SupabaseClientService {
   }
 
   // Geting one single profile
-  async getProfile() {
+  async getProfile(): Promise<Profile | null> {
     const {
       data: { user },
     } = await this.client.auth.getUser();
+
     if (!user || !user.email) {
       console.error('No logged-in user found');
       return null;
@@ -80,17 +82,29 @@ export class SupabaseClientService {
 
     const { data, error } = await this.client
       .from('profiles')
-      .select('*') // fetch all columns
-      .eq('email', user.email) // filter by the logged-in user's email
-      .single(); // expect only one profile row
+      .select('*')
+      .eq('email', user.email)
+      .maybeSingle(); // safer: no error if no rows
 
     if (error) {
       console.error('Error fetching profile:', error);
       return null;
     }
 
-    console.log('Fetched profile:', data);
-    return data;
+    if (!data) {
+      console.warn('No profile found for email:', user.email);
+      return null;
+    }
+
+    const profile: Profile = {
+      name: data.name,
+      email: data.email,
+      bio: data.bio,
+      avatarUrl: data.avatar_url,
+    };
+
+    console.log('Fetched profile:', profile);
+    return profile;
   }
 
   // Getting all profiles
@@ -159,16 +173,21 @@ export class SupabaseClientService {
 
     const { data, error } = await this.client
       .from('profiles')
-      .select('id') // Only select the id or any lightweight column
+      .select('id')
       .eq('email', user.email)
       .maybeSingle();
 
     if (error) {
       console.error('Error checking profile existence:', error);
-      return true; // Fail-safe: treat as first time
+      return true;
     }
 
-    // return data === null; // If no data, it's a first-time update
+    if (data === null) {
+      console.log('First time user');
+      return true;
+    }
+
+    console.log('Not a first time user');
     return false;
   }
 }
