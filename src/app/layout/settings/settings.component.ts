@@ -23,6 +23,7 @@ export class SettingsComponent implements OnInit {
   selectedIndex = 0;
   private route = inject(ActivatedRoute);
   private supabaseService = inject(SupabaseClientService);
+  isFirstTime!: boolean;
   async ngOnInit() {
     this.route.queryParams.subscribe((params) => {
       this.selectedIndex = params['tab'] ? Number(params['tab']) : 0;
@@ -31,5 +32,7 @@ export class SettingsComponent implements OnInit {
       data: { user },
     } = await this.supabaseService.client.auth.getUser();
     console.log(`User: ${user?.email}`);
+
+    this.isFirstTime = await this.supabaseService.isFirstTimeProfileUpdate();
   }
 }

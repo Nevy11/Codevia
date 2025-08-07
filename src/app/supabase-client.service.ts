@@ -145,4 +145,30 @@ export class SupabaseClientService {
       return true;
     }
   }
+
+  // Checks if it's the first time the user is updating (i.e., no profile exists yet)
+  async isFirstTimeProfileUpdate(): Promise<boolean> {
+    const {
+      data: { user },
+    } = await this.client.auth.getUser();
+
+    if (!user || !user.email) {
+      console.error('No logged-in user found');
+      return true; // Treat as first time if no user
+    }
+
+    const { data, error } = await this.client
+      .from('profiles')
+      .select('id') // Only select the id or any lightweight column
+      .eq('email', user.email)
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error checking profile existence:', error);
+      return true; // Fail-safe: treat as first time
+    }
+
+    // return data === null; // If no data, it's a first-time update
+    return false;
+  }
 }
