@@ -48,8 +48,9 @@
 <div class="bottom-stepper">
   <mat-stepper headerPosition="bottom" #stepper>
     <mat-step [stepControl]="firstFormGroup">
+      <ng-template matStepLabel>choose a profile picture</ng-template>
       <!-- <form [formGroup]="firstFormGroup">
-        <ng-template matStepLabel>Fill out your name</ng-template>
+        
         <mat-form-field>
           <input
             matInput
@@ -78,7 +79,24 @@
     </mat-step>
     <mat-step [stepControl]="secondFormGroup" optional>
       <form [formGroup]="secondFormGroup">
-        <ng-template matStepLabel>Fill out your address</ng-template>
+        <ng-template matStepLabel>username</ng-template>
+        <mat-form-field>
+          <input
+            matInput
+            placeholder="Enter your username"
+            formControlName="secondCtrl"
+            required
+          />
+        </mat-form-field>
+        <div class="back_next">
+          <button matButton matStepperPrevious>Back</button>
+          <button matButton matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step [stepControl]="secondFormGroup">
+      <form [formGroup]="secondFormGroup">
+        <ng-template matStepLabel>short description</ng-template>
         <mat-form-field>
           <input
             matInput
