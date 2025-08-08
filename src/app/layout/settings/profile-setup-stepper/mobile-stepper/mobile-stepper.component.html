@@ -3,7 +3,7 @@
 </button>
 <mat-stepper orientation="vertical" [linear]="isLinear" #stepper>
   <mat-step [stepControl]="firstFormGroup">
-    <form [formGroup]="firstFormGroup">
+    <!-- <form [formGroup]="firstFormGroup">
       <ng-template matStepLabel>Fill out your name</ng-template>
       <mat-form-field>
         <mat-label>Name</mat-label>
@@ -17,7 +17,16 @@
       <div>
         <button matButton matStepperNext>Next</button>
       </div>
-    </form>
+    </form> -->
+    <mat-card class="avatar-card">
+      <mat-card-header>
+        <mat-card-title>Profile Picture</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <img src="/about/laptop.jpg" alt="Profile Picture" class="avatar" />
+        <input type="file" accept="image/*" (change)="onFileSelected($event)" />
+      </mat-card-content>
+    </mat-card>
   </mat-step>
   <mat-step [stepControl]="secondFormGroup">
     <form [formGroup]="secondFormGroup">

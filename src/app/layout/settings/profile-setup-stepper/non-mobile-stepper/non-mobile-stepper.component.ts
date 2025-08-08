@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 @Component({
   selector: 'nevy11-non-mobile-stepper',
   imports: [
@@ -18,6 +19,7 @@ import { MatButtonModule } from '@angular/material/button';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
+    MatCardModule,
   ],
   templateUrl: './non-mobile-stepper.component.html',
   styleUrl: './non-mobile-stepper.component.scss',
@@ -40,6 +42,7 @@ export class NonMobileStepperComponent {
     // 1. Upload to Supabase Storage
     // const fileName = `avatars/${Date.now()}-${file.name}`;
     const fileName = `${Date.now()}-${file.name}`;
+    console.log(`File name selected: ${fileName}`);
 
     // const { data, error } = await this.supabaseService.client.storage
     //   .from('avatars') // Make sure you created "avatars" bucket in Supabase
