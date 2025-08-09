@@ -1,68 +1,8 @@
-<!-- <button matButton="elevated" (click)="isLinear = !isLinear" id="toggle-linear">
-      {{ !isLinear ? "Enable linear mode" : "Disable linear mode" }}
-    </button>
-    <mat-stepper [linear]="isLinear" #stepper>
-      <mat-step [stepControl]="firstFormGroup">
-        <form [formGroup]="firstFormGroup">
-          <ng-template matStepLabel>Fill out your name</ng-template>
-          <mat-form-field>
-            <mat-label>Name</mat-label>
-            <input
-              matInput
-              placeholder="Last name, First name"
-              formControlName="firstCtrl"
-              required
-            />
-          </mat-form-field>
-          <div class="next_button">
-            <button matButton matStepperNext>Next</button>
-          </div>
-        </form>
-      </mat-step>
-      <mat-step [stepControl]="secondFormGroup" label="Fill out your address">
-        <form [formGroup]="secondFormGroup">
-          <mat-form-field>
-            <mat-label>Address</mat-label>
-            <input
-              matInput
-              formControlName="secondCtrl"
-              placeholder="Ex. 1 Main St, New York, NY"
-              required
-            />
-          </mat-form-field>
-          <div class="back_next">
-            <button matButton matStepperPrevious>Back</button>
-            <button matButton matStepperNext>Next</button>
-          </div>
-        </form>
-      </mat-step>
-      <mat-step>
-        <ng-template matStepLabel>Done</ng-template>
-        <p class="done">You are now done.</p>
-        <div class="back_next">
-          <button matButton matStepperPrevious>Back</button>
-          <button matButton (click)="stepper.reset()">Reset</button>
-        </div>
-      </mat-step>
-    </mat-stepper> -->
 <div class="bottom-stepper">
   <mat-stepper headerPosition="bottom" #stepper>
-    <mat-step [stepControl]="firstFormGroup">
+    <mat-step [stepControl]="profile_picture">
       <ng-template matStepLabel>choose a profile picture</ng-template>
-      <!-- <form [formGroup]="firstFormGroup">
-        
-        <mat-form-field>
-          <input
-            matInput
-            placeholder="Last name, First name"
-            formControlName="firstCtrl"
-            required
-          />
-        </mat-form-field>
-        <div class="next_button">
-          <button matButton matStepperNext>Next</button>
-        </div>
-      </form> -->
+
       <mat-card class="avatar-card">
         <mat-card-header>
           <mat-card-title>Profile Picture</mat-card-title>
@@ -77,37 +17,41 @@
         </mat-card-content>
       </mat-card>
     </mat-step>
-    <mat-step [stepControl]="secondFormGroup" optional>
-      <form [formGroup]="secondFormGroup">
+    <mat-step [stepControl]="username_group" optional>
+      <form [formGroup]="username_group">
         <ng-template matStepLabel>username</ng-template>
         <mat-form-field>
           <input
             matInput
             placeholder="Enter your username"
-            formControlName="secondCtrl"
+            formControlName="username"
             required
           />
         </mat-form-field>
         <div class="back_next">
           <button matButton matStepperPrevious>Back</button>
-          <button matButton matStepperNext>Next</button>
+          <button matButton matStepperNext (click)="validate_username()">
+            Next
+          </button>
         </div>
       </form>
     </mat-step>
-    <mat-step [stepControl]="secondFormGroup">
-      <form [formGroup]="secondFormGroup">
+    <mat-step [stepControl]="bio_group">
+      <form [formGroup]="bio_group">
         <ng-template matStepLabel>short description</ng-template>
         <mat-form-field>
           <input
             matInput
             placeholder="Give us a short bio about yourself"
-            formControlName="secondCtrl"
+            formControlName="bio"
             required
           />
         </mat-form-field>
         <div class="back_next">
           <button matButton matStepperPrevious>Back</button>
-          <button matButton matStepperNext>Next</button>
+          <button matButton matStepperNext (click)="validate_bio()">
+            Next
+          </button>
         </div>
       </form>
     </mat-step>
@@ -115,8 +59,8 @@
       <ng-template matStepLabel>Done</ng-template>
       <div class="done">You are now done.</div>
       <div class="back_next">
-        <button matButton matStepperPrevious>Back</button>
         <button matButton (click)="stepper.reset()">Reset</button>
+        <button matButton (click)="done()">Back</button>
       </div>
     </mat-step>
   </mat-stepper>
