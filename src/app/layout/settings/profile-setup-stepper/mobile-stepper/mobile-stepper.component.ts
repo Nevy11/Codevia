@@ -10,6 +10,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { SupabaseClientService } from '../../../../supabase-client.service';
+import { ProfileService } from '../profile.service';
 
 @Component({
   selector: 'nevy11-mobile-stepper',
@@ -27,12 +29,21 @@ import { MatCardModule } from '@angular/material/card';
 })
 export class MobileStepperComponent {
   private _formBuilder = inject(FormBuilder);
+  private profileService = inject(ProfileService);
+  private supabaseService = inject(SupabaseClientService);
 
-  firstFormGroup = this._formBuilder.group({
-    firstCtrl: ['', Validators.required],
+  username!: string;
+  bio!: string;
+  avatar_url!: string;
+
+  profile_picture = this._formBuilder.group({
+    profile_picture: ['', Validators.required],
   });
-  secondFormGroup = this._formBuilder.group({
-    secondCtrl: ['', Validators.required],
+  username_group = this._formBuilder.group({
+    username: ['', Validators.required],
+  });
+  bio_group = this._formBuilder.group({
+    bio: ['', Validators.required],
   });
   isLinear = false;
 
@@ -40,34 +51,47 @@ export class MobileStepperComponent {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (!file) return;
 
-    // 1. Upload to Supabase Storage
-    // const fileName = `avatars/${Date.now()}-${file.name}`;
     const fileName = `${Date.now()}-${file.name}`;
-
     console.log(`File name selected: ${fileName}`);
-    // const { data, error } = await this.supabaseService.client.storage
-    //   .from('avatars') // Make sure you created "avatars" bucket in Supabase
-    //   .upload(fileName, file, { upsert: true });
+    this.profileService.updateAvatarUrl(`${fileName}`);
+    // This one will upload it in supabase storage
+  }
 
-    // if (error) {
-    //   console.error('Avatar upload error:', error);
-    //   return;
-    // }
+  validate_username() {
+    if (this.username_group.get('username')?.value) {
+      console.log(`username: ${this.username_group.get('username')?.value}`);
+      this.profileService.updateName(
+        `${this.username_group.get('username')?.value}`
+      );
+    } else {
+      console.error('username not updated');
+    }
+  }
 
-    // 2. Get the public URL for the avatar
-    // const { data: publicUrlData } = this.supabaseService.client.storage
-    //   .from('avatars')
-    //   .getPublicUrl(fileName);
+  validate_bio() {
+    if (this.bio_group.get('bio')?.value) {
+      console.log(`Bio: ${this.bio_group.get(`bio`)?.value}`);
+      this.profileService.updateBio(`${this.bio_group.get(`bio`)?.value}`);
+    } else {
+      console.error('bio not updated');
+    }
+  }
+  done() {
+    const name$ = this.profileService.name$.subscribe((user_name) => {
+      console.log('username: ', user_name);
+      this.username = user_name;
+    });
+    const bio$ = this.profileService.bio$.subscribe((user_bio) => {
+      console.log(`Bio: ${user_bio}`);
+      this.bio = user_bio;
+    });
+    const avatar_url$ = this.profileService.avatarUrl$.subscribe(
+      (user_avatar_url) => {
+        console.log(`user_avatar_url: ${user_avatar_url}`);
+        this.avatar_url = user_avatar_url;
+      }
+    );
 
-    // const avatarUrl = publicUrlData?.publicUrl || '';
-
-    // 3. Update profile with Supabase URL
-    // const updated_image: Profile = {
-    //   name: this.profile.name,
-    //   email: this.profile.email,
-    //   bio: this.profile.bio,
-    //   avatarUrl,
-    // };
-    // await this.profileService.updateProfile(updated_image);
+    this.supabaseService.addProfile(this.username, this.bio, this.avatar_url);
   }
 }

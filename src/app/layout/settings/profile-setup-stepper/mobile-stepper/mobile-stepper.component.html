@@ -2,7 +2,7 @@
   {{ !isLinear ? "Enable linear mode" : "Disable linear mode" }}
 </button>
 <mat-stepper orientation="vertical" [linear]="isLinear" #stepper>
-  <mat-step [stepControl]="firstFormGroup">
+  <mat-step [stepControl]="profile_picture">
     <ng-template matStepLabel>choose a profile picture</ng-template>
     <!-- <form [formGroup]="firstFormGroup">
       <ng-template matStepLabel>Fill out your name</ng-template>
@@ -15,10 +15,9 @@
           required
         />
       </mat-form-field>
-      <div>
-        <button matButton matStepperNext>Next</button>
-      </div>
+      
     </form> -->
+
     <mat-card class="avatar-card">
       <mat-card-header>
         <mat-card-title>Profile Picture</mat-card-title>
@@ -28,15 +27,18 @@
         <input type="file" accept="image/*" (change)="onFileSelected($event)" />
       </mat-card-content>
     </mat-card>
+    <div>
+      <button matButton matStepperNext>Next</button>
+    </div>
   </mat-step>
-  <mat-step [stepControl]="secondFormGroup">
-    <form [formGroup]="secondFormGroup">
+  <mat-step [stepControl]="username_group">
+    <form [formGroup]="username_group">
       <ng-template matStepLabel>Enter your username</ng-template>
       <mat-form-field>
         <mat-label>username</mat-label>
         <input
           matInput
-          formControlName="secondCtrl"
+          formControlName="username"
           placeholder="Ex. username505"
           required
         />
@@ -47,14 +49,14 @@
       </div>
     </form>
   </mat-step>
-  <mat-step [stepControl]="secondFormGroup">
-    <form [formGroup]="secondFormGroup">
+  <mat-step [stepControl]="bio_group">
+    <form [formGroup]="bio_group">
       <ng-template matStepLabel>update a short description</ng-template>
       <mat-form-field>
         <mat-label>short bio</mat-label>
         <input
           matInput
-          formControlName="secondCtrl"
+          formControlName="bio"
           placeholder="Ex. i am the type of person who loves reading"
           required
         />
