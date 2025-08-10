@@ -35,23 +35,9 @@ export class ProfileSettingsComponent implements OnInit {
   private snackBar = inject(MatSnackBar);
   private supabaseService = inject(SupabaseClientService);
   async ngOnInit() {
-    // const {
-    //   data: { user },
-    // } = await this.supabaseService.client.auth.getUser();
-    // if (user && user.email) {
-    //   console.log(
-    //     `User Email then loading profile from supabase: `,
-    //     user.email
-    //   ); // <-- user's login email
+    this.loading = false;
 
-    //   this.loading = false;
-    //   // this.profileService.loadProfile(user.email);
-    // }
     this.profile = await this.supabaseService.getProfile();
-
-    // this.profileService.profile$.subscribe((profile) => {
-    //   this.profile = profile;
-    // });
   }
 
   // onFileSelected(event: Event) {

@@ -28,11 +28,8 @@ export class SettingsComponent implements OnInit {
     this.route.queryParams.subscribe((params) => {
       this.selectedIndex = params['tab'] ? Number(params['tab']) : 0;
     });
-    const {
-      data: { user },
-    } = await this.supabaseService.client.auth.getUser();
-    console.log(`User: ${user?.email}`);
 
     this.isFirstTime = await this.supabaseService.isFirstTimeProfileUpdate();
+    console.log(`Is first time login: ${this.isFirstTime}`);
   }
 }
