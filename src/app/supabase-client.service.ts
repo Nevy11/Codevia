@@ -174,7 +174,7 @@ export class SupabaseClientService {
     const { data, error } = await this.client
       .from('profiles')
       .select('id')
-      .eq('email', user.email)
+      .ilike('email', user.email)
       .maybeSingle();
 
     if (error) {
