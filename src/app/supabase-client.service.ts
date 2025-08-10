@@ -183,11 +183,11 @@ export class SupabaseClientService {
     }
 
     if (data === null) {
-      console.log('First time user');
+      // console.log('First time user');
       return true;
     }
 
-    console.log('Not a first time user');
+    // console.log('Not a first time user');
     return false;
   }
 }
