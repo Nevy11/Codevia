@@ -52,9 +52,20 @@ export class MobileStepperComponent {
     if (!file) return;
 
     const fileName = `${Date.now()}-${file.name}`;
-    console.log(`File name selected: ${fileName}`);
     this.profileService.updateAvatarUrl(`${fileName}`);
-    // This one will upload it in supabase storage
+    // console.log('Before the supabaseService');
+    const { data, error } = await this.supabaseService.client.storage
+      .from('avatars')
+      .upload(fileName, file, {
+        cacheControl: '3600',
+        upsert: false,
+      });
+    // console.log('After the upload');
+    if (error) {
+      console.error('Upload error: ', error.message);
+    } else {
+      console.log('File uploaded successfuly: ', data);
+    }
   }
 
   validate_username() {

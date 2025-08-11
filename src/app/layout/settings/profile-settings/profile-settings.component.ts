@@ -46,42 +46,58 @@ export class ProfileSettingsComponent implements OnInit {
     if (!file) return;
 
     const fileName = `${Date.now()}-${file.name}`;
-    console.log(`File name selected: ${fileName}`);
-    this.profileService.updateAvatarUrl(`${fileName}`);
-
-    if (this.profile) {
-      this.profileService.updateName(this.profile.name);
-      this.profileService.updateBio(this.profile.bio);
-      try {
-        const updatedData = await this.supabaseService.updateProfile(
-          this.profile.name,
-          this.profile.bio,
-          this.profile.avatarUrl
-        );
-
-        if (updatedData) {
-          this.snackBar.open('Update successful', 'Close', {
-            duration: 3000,
-          });
-          this.router.navigate(['/layout/settings']);
-        } else {
-          this.snackBar.open('Update failed. Please try again.', 'Close', {
-            duration: 3000,
-          });
-        }
-      } catch (error) {
-        console.error('Error while updating the image:', error);
-        this.snackBar.open('An error occurred.', 'Close', {
-          duration: 3000,
-        });
-      }
-    } else {
-      this.snackBar.open('No profile data to save.', 'Close', {
-        duration: 3000,
+    console.log('Before the supabaseService');
+    const { data, error } = await this.supabaseService.client.storage
+      .from('avatars')
+      .upload(fileName, file, {
+        cacheControl: '3600',
+        upsert: false,
       });
+    console.log('After the upload');
+    if (error) {
+      console.error('Upload error: ', error.message);
+    } else {
+      console.log('File uploaded successfuly: ', data);
     }
-    // This one will upload it in supabase storage
   }
+  //  The idea is to stop storing the file path and store the actual
+  //  image
+
+  // this.profileService.updateAvatarUrl(`${fileName}`);
+
+  // if (this.profile) {
+  //   this.profileService.updateName(this.profile.name);
+  //   this.profileService.updateBio(this.profile.bio);
+  //   try {
+  //     const updatedData = await this.supabaseService.updateProfile(
+  //       this.profile.name,
+  //       this.profile.bio,
+  //       this.profile.avatarUrl
+  //     );
+
+  //     if (updatedData) {
+  //       this.snackBar.open('Update successful', 'Close', {
+  //         duration: 3000,
+  //       });
+  //       this.router.navigate(['/layout/settings']);
+  //     } else {
+  //       this.snackBar.open('Update failed. Please try again.', 'Close', {
+  //         duration: 3000,
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error('Error while updating the image:', error);
+  //     this.snackBar.open('An error occurred.', 'Close', {
+  //       duration: 3000,
+  //     });
+  //   }
+  // } else {
+  //   this.snackBar.open('No profile data to save.', 'Close', {
+  //     duration: 3000,
+  //   });
+  // }
+  // This one will upload it in supabase storage
+  // }
 
   // onFileSelected(event: Event) {
   //   const file = (event.target as HTMLInputElement).files?.[0];
