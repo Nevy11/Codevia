@@ -30,6 +30,7 @@ export class ProfileSettingsComponent implements OnInit {
   isEditing = false;
   loading = true;
   profile: Profile | null = null;
+  imageUrl!: string;
 
   private profileService = inject(ProfileService);
   private router = inject(Router);
@@ -39,6 +40,7 @@ export class ProfileSettingsComponent implements OnInit {
     this.loading = false;
 
     this.profile = await this.supabaseService.getProfile();
+    console.log('Avatar url: ', this.profile?.avatarUrl);
   }
 
   async onFileSelected(event: Event) {
@@ -47,106 +49,56 @@ export class ProfileSettingsComponent implements OnInit {
 
     const fileName = `${Date.now()}-${file.name}`;
     console.log('Before the supabaseService');
+
+    // Upload the file once
     const { data, error } = await this.supabaseService.client.storage
       .from('avatars')
       .upload(fileName, file, {
         cacheControl: '3600',
-        upsert: false,
+        upsert: true, // overwrite if exists, or set to false to prevent overwriting
       });
+
     console.log('After the upload');
+
     if (error) {
       console.error('Upload error: ', error.message);
+      return; // stop if upload failed
+    }
+
+    console.log('File uploaded successfully: ', data);
+
+    // Get the public URL for the uploaded file
+    const { data: urlData } = this.supabaseService.client.storage
+      .from('avatars')
+      .getPublicUrl(fileName);
+
+    console.log('Public URL:', urlData.publicUrl);
+
+    // Use the URL to display the image
+    this.imageUrl = urlData.publicUrl;
+    let avatar_url: string | null = null;
+    let bio: string | null = null;
+    let name: string | null = null;
+    this.profileService.updateAvatarUrl(urlData.publicUrl);
+    this.profileService.avatarUrl$.subscribe((url) => {
+      avatar_url = url;
+      console.log(avatar_url);
+    });
+    this.profileService.bio$.subscribe((url) => {
+      bio = url;
+      console.log(bio);
+    });
+    this.profileService.name$.subscribe((url) => {
+      name = url;
+      console.log(name);
+    });
+    if (name && bio && avatar_url) {
+      this.supabaseService.updateProfile(name, bio, avatar_url);
+      console.log('update successful');
     } else {
-      console.log('File uploaded successfuly: ', data);
+      console.error(' error while updating the data');
     }
   }
-  //  The idea is to stop storing the file path and store the actual
-  //  image
-
-  // this.profileService.updateAvatarUrl(`${fileName}`);
-
-  // if (this.profile) {
-  //   this.profileService.updateName(this.profile.name);
-  //   this.profileService.updateBio(this.profile.bio);
-  //   try {
-  //     const updatedData = await this.supabaseService.updateProfile(
-  //       this.profile.name,
-  //       this.profile.bio,
-  //       this.profile.avatarUrl
-  //     );
-
-  //     if (updatedData) {
-  //       this.snackBar.open('Update successful', 'Close', {
-  //         duration: 3000,
-  //       });
-  //       this.router.navigate(['/layout/settings']);
-  //     } else {
-  //       this.snackBar.open('Update failed. Please try again.', 'Close', {
-  //         duration: 3000,
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.error('Error while updating the image:', error);
-  //     this.snackBar.open('An error occurred.', 'Close', {
-  //       duration: 3000,
-  //     });
-  //   }
-  // } else {
-  //   this.snackBar.open('No profile data to save.', 'Close', {
-  //     duration: 3000,
-  //   });
-  // }
-  // This one will upload it in supabase storage
-  // }
-
-  // onFileSelected(event: Event) {
-  //   const file = (event.target as HTMLInputElement).files?.[0];
-  //   if (!file) return;
-  //   const reader = new FileReader();
-  //   reader.onload = () => {
-  //     const updated_image: Profile = {
-  //       name: this.profile.name,
-  //       email: this.profile.email,
-  //       bio: this.profile.bio,
-  //       avatarUrl: reader.result as string,
-  //     };
-  //     this.profileService.updateProfile(updated_image);
-  //   };
-  //   reader.readAsDataURL(file);
-  // }
-  // async onFileSelected(event: Event) {
-  //   const file = (event.target as HTMLInputElement).files?.[0];
-  //   if (!file) return;
-
-  //   // 1. Upload to Supabase Storage
-  //   // const fileName = `avatars/${Date.now()}-${file.name}`;
-  //   const fileName = `${Date.now()}-${file.name}`;
-
-  //   const { data, error } = await this.supabaseService.client.storage
-  //     .from('avatars') // Make sure you created "avatars" bucket in Supabase
-  //     .upload(fileName, file, { upsert: true });
-
-  //   if (error) {
-  //     console.error('Avatar upload error:', error);
-  //     return;
-  //   }
-
-  //   // 2. Get the public URL for the avatar
-  //   const { data: publicUrlData } = this.supabaseService.client.storage
-  //     .from('avatars')
-  //     .getPublicUrl(fileName);
-
-  //   const avatarUrl = publicUrlData?.publicUrl || '';
-
-  //   // 3. Update profile with Supabase URL
-  //   // const updated_image: Profile = {
-  //   //   name: this.profile.name,
-  //   //   email: this.profile.email,
-  //   //   bio: this.profile.bio,
-  //   //   avatarUrl,
-  //   // };
-  //   // await this.profileService.updateProfile(updated_image);
-  // }
 
   cancelEdit() {
     // this.loadProfile(); // reload old values
