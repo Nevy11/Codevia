@@ -127,19 +127,36 @@ export class SupabaseClientService {
       console.error('No logged-in user found');
       return null;
     }
-
+    console.log(avatar_url);
+    // const { data, error } = await this.client
+    //   .from('profiles')
+    //   .update({
+    //     name: name,
+    //     bio: bio,
+    //     avatar_url: avatar_url,
+    //   })
+    //   .eq('id', user.id)
+    //   .select();
     const { data, error } = await this.client
       .from('profiles')
-      .update({
-        name: name,
-        bio: bio,
-        avatar_url: avatar_url,
-      })
-      .eq('email', user.email) // update the row for this user's email
+      .upsert(
+        {
+          email: user.email,
+          name,
+          bio,
+          avatar_url,
+        },
+        { onConflict: 'email' }
+      )
       .select();
 
     if (error) {
       console.error('Error updating profile:', error);
+      return null;
+    }
+
+    if (data.length === 0) {
+      console.warn('No profile found for this email:', user.email);
       return null;
     }
 
