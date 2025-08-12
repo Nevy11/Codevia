@@ -81,8 +81,7 @@ export class ProfileSettingsComponent implements OnInit {
     // Use the URL to display the image
     this.imageUrl = urlData.publicUrl;
     let avatar_url: string | null = null;
-    let bio: string | null = null;
-    let name: string | null = null;
+
     this.profileService.updateAvatarUrl(urlData.publicUrl);
 
     this.profileService.avatarUrl$.subscribe((url) => {

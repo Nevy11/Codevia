@@ -67,16 +67,6 @@ export class NonMobileStepperComponent {
     }
   }
 
-  // async onFileSelected(event: Event) {
-  //   const file = (event.target as HTMLInputElement).files?.[0];
-  //   if (!file) return;
-
-  //   const fileName = `${Date.now()}-${file.name}`;
-  //   console.log(`File name selected: ${fileName}`);
-  //   this.profileService.updateAvatarUrl(`${fileName}`);
-  //   // This one will upload it in supabase storage
-  // }
-
   validate_username() {
     if (this.username_group.get('username')?.value) {
       console.log(`username: ${this.username_group.get('username')?.value}`);

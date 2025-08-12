@@ -15,6 +15,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { map } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { SupabaseClientService } from '../supabase-client.service';
+import { ProfileService } from './settings/profile-setup-stepper/profile.service';
 
 @Component({
   selector: 'nevy11-layout',
@@ -35,11 +36,13 @@ export class LayoutComponent implements OnInit {
   username: string = 'User'; // Placeholder for username
   profile: Profile | null = null;
   themeChangeService = inject(ThemeChangeService);
-  profileSettings = inject(ProfileSettingsService);
+  avatar_url: string = '';
+
   private router = inject(Router);
   private dialog = inject(MatDialog);
   private breakpointObserver = inject(BreakpointObserver);
   private supabaseService = inject(SupabaseClientService);
+  private profileService = inject(ProfileService);
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {
       if (matches) {
@@ -85,6 +88,17 @@ export class LayoutComponent implements OnInit {
   async ngOnInit() {
     this.themeChangeService.loadTheme();
     this.profile = await this.supabaseService.getProfile();
+    if (this.profile) {
+      this.profileService.updateAvatarUrl(this.profile.avatarUrl);
+      this.profileService.updateName(this.profile.name);
+      this.profileService.updateBio(this.profile.bio);
+      console.log('updating the profile signals complete');
+    } else {
+      console.error('Error while updating the signals');
+    }
+    this.profileService.avatarUrl$.subscribe((url_avatar) => {
+      this.avatar_url = url_avatar;
+    });
     // this.profileSettings.profile$.subscribe((profile) => {
     //   this.profile = profile;
     // });

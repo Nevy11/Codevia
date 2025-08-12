@@ -59,6 +59,7 @@ export class ProfileService {
   }
 
   updateAvatarUrl(avatar_url: string) {
+    console.log(`Avatar url updated: ${avatar_url}`);
     if (avatar_url === this.currentProfile.avatar_url) return;
     this.profileSubject.next({ ...this.currentProfile, avatar_url });
   }
