@@ -30,7 +30,7 @@ export class ProfileSettingsComponent implements OnInit {
   isEditing = false;
   loading = true;
   profile: Profile | null = null;
-  imageUrl!: string;
+  imageUrl: string = '';
 
   private profileService = inject(ProfileService);
   private router = inject(Router);
@@ -40,6 +40,10 @@ export class ProfileSettingsComponent implements OnInit {
     this.loading = false;
 
     this.profile = await this.supabaseService.getProfile();
+    if (this.profile) {
+      this.imageUrl = this.profile.avatarUrl;
+    }
+
     console.log('Avatar url: ', this.profile?.avatarUrl);
   }
 
@@ -55,7 +59,7 @@ export class ProfileSettingsComponent implements OnInit {
       .from('avatars')
       .upload(fileName, file, {
         cacheControl: '3600',
-        upsert: true, // overwrite if exists, or set to false to prevent overwriting
+        upsert: false, // overwrite if exists, or set to false to prevent overwriting
       });
 
     console.log('After the upload');
@@ -80,24 +84,41 @@ export class ProfileSettingsComponent implements OnInit {
     let bio: string | null = null;
     let name: string | null = null;
     this.profileService.updateAvatarUrl(urlData.publicUrl);
+
     this.profileService.avatarUrl$.subscribe((url) => {
       avatar_url = url;
+      this.imageUrl = url;
       console.log(avatar_url);
     });
-    this.profileService.bio$.subscribe((url) => {
-      bio = url;
-      console.log(bio);
-    });
-    this.profileService.name$.subscribe((url) => {
-      name = url;
-      console.log(name);
-    });
-    if (name && bio && avatar_url) {
-      this.supabaseService.updateProfile(name, bio, avatar_url);
+    if (this.profile) {
+      this.profileService.updateName(this.profile.name);
+      this.profileService.updateBio(this.profile.bio);
+      console.log(this.profile.name);
+      console.log(this.profile.bio);
+      this.profile.avatarUrl = this.imageUrl;
+      this.supabaseService.updateProfile(
+        this.profile.name,
+        this.profile.bio,
+        this.imageUrl
+      );
       console.log('update successful');
     } else {
       console.error(' error while updating the data');
     }
+    // this.profileService.bio$.subscribe((url) => {
+    //   bio = url;
+    //   console.log(bio);
+    // });
+    // this.profileService.name$.subscribe((url) => {
+    //   name = url;
+    //   console.log(name);
+    // });
+    // if (name && bio && avatar_url) {
+    //   this.supabaseService.updateProfile(name, bio, avatar_url);
+    //   console.log('update successful');
+    // } else {
+    //   console.error(' error while updating the data');
+    // }
   }
 
   cancelEdit() {
