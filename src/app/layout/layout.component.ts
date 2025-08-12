@@ -14,6 +14,7 @@ import { SearchDialogComponent } from './search-dialog/search-dialog.component';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { map } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
+import { SupabaseClientService } from '../supabase-client.service';
 
 @Component({
   selector: 'nevy11-layout',
@@ -32,12 +33,13 @@ import { AsyncPipe } from '@angular/common';
 })
 export class LayoutComponent implements OnInit {
   username: string = 'User'; // Placeholder for username
-  profile!: Profile;
+  profile: Profile | null = null;
   themeChangeService = inject(ThemeChangeService);
   profileSettings = inject(ProfileSettingsService);
   private router = inject(Router);
   private dialog = inject(MatDialog);
   private breakpointObserver = inject(BreakpointObserver);
+  private supabaseService = inject(SupabaseClientService);
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {
       if (matches) {
@@ -80,11 +82,12 @@ export class LayoutComponent implements OnInit {
       }
     })
   );
-  ngOnInit(): void {
+  async ngOnInit() {
     this.themeChangeService.loadTheme();
-    this.profileSettings.profile$.subscribe((profile) => {
-      this.profile = profile;
-    });
+    this.profile = await this.supabaseService.getProfile();
+    // this.profileSettings.profile$.subscribe((profile) => {
+    //   this.profile = profile;
+    // });
   }
   goToTab(index: number) {
     this.router.navigate(['/layout/settings'], { queryParams: { tab: index } });
