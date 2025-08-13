@@ -51,73 +51,68 @@ export class ProfileSettingsComponent implements OnInit {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (!file) return;
 
-    const fileName = `${Date.now()}-${file.name}`;
-    console.log('Before the supabaseService');
+    const {
+      data: { user },
+    } = await this.supabaseService.client.auth.getUser();
+    const fileExt = file.name.split('.').pop();
+    if (user) {
+      const fileName = `${user.id}.${fileExt}`;
+      // const fileName = `${Date.now()}-${file.name}`;
+      console.log('Before the supabaseService');
 
-    // Upload the file once
-    const { data, error } = await this.supabaseService.client.storage
-      .from('avatars')
-      .upload(fileName, file, {
-        cacheControl: '3600',
-        upsert: false, // overwrite if exists, or set to false to prevent overwriting
+      // Upload the file once
+      const { data, error } = await this.supabaseService.client.storage
+        .from('avatars')
+        .upload(fileName, file, {
+          cacheControl: '3600',
+          upsert: true, // overwrite if exists, or set to false to prevent overwriting
+        });
+
+      console.log('After the upload');
+
+      if (error) {
+        console.error('Upload error: ', error.message);
+        return; // stop if upload failed
+      }
+
+      console.log('File uploaded successfully: ', data);
+
+      // Get the public URL for the uploaded file
+      const { data: urlData } = this.supabaseService.client.storage
+        .from('avatars')
+        .getPublicUrl(fileName);
+
+      console.log('Public URL:', urlData.publicUrl);
+
+      // Use the URL to display the image
+      this.imageUrl = urlData.publicUrl;
+      let avatar_url: string | null = null;
+
+      this.profileService.updateAvatarUrl(urlData.publicUrl);
+
+      this.profileService.avatarUrl$.subscribe((url) => {
+        avatar_url = url;
+        this.imageUrl = url;
+        console.log(avatar_url);
       });
-
-    console.log('After the upload');
-
-    if (error) {
-      console.error('Upload error: ', error.message);
-      return; // stop if upload failed
-    }
-
-    console.log('File uploaded successfully: ', data);
-
-    // Get the public URL for the uploaded file
-    const { data: urlData } = this.supabaseService.client.storage
-      .from('avatars')
-      .getPublicUrl(fileName);
-
-    console.log('Public URL:', urlData.publicUrl);
-
-    // Use the URL to display the image
-    this.imageUrl = urlData.publicUrl;
-    let avatar_url: string | null = null;
-
-    this.profileService.updateAvatarUrl(urlData.publicUrl);
-
-    this.profileService.avatarUrl$.subscribe((url) => {
-      avatar_url = url;
-      this.imageUrl = url;
-      console.log(avatar_url);
-    });
-    if (this.profile) {
-      this.profileService.updateName(this.profile.name);
-      this.profileService.updateBio(this.profile.bio);
-      console.log(this.profile.name);
-      console.log(this.profile.bio);
-      this.profile.avatarUrl = this.imageUrl;
-      this.supabaseService.updateProfile(
-        this.profile.name,
-        this.profile.bio,
-        this.imageUrl
-      );
-      console.log('update successful');
+      if (this.profile) {
+        this.profileService.updateName(this.profile.name);
+        this.profileService.updateBio(this.profile.bio);
+        console.log(this.profile.name);
+        console.log(this.profile.bio);
+        this.profile.avatarUrl = this.imageUrl;
+        this.supabaseService.updateProfile(
+          this.profile.name,
+          this.profile.bio,
+          this.imageUrl
+        );
+        console.log('update successful');
+      } else {
+        console.error(' error while updating the data');
+      }
     } else {
-      console.error(' error while updating the data');
+      console.error('the user data is null, cannot upload the file');
     }
-    // this.profileService.bio$.subscribe((url) => {
-    //   bio = url;
-    //   console.log(bio);
-    // });
-    // this.profileService.name$.subscribe((url) => {
-    //   name = url;
-    //   console.log(name);
-    // });
-    // if (name && bio && avatar_url) {
-    //   this.supabaseService.updateProfile(name, bio, avatar_url);
-    //   console.log('update successful');
-    // } else {
-    //   console.error(' error while updating the data');
-    // }
   }
 
   cancelEdit() {
