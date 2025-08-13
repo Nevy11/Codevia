@@ -22,6 +22,9 @@ export class SupabaseClientService {
 
   // adding a profile
   async addProfile(name: string, bio: string, avatar_url: string) {
+    //     if (!this.client) {
+    //   return null; // or throw an error, or skip the auth call
+    // }
     const {
       data: { user },
     } = await this.client.auth.getUser();
@@ -48,6 +51,9 @@ export class SupabaseClientService {
 
   // Removing a profile
   async removeProfile() {
+    //     if (!this.client) {
+    //   return null; // or throw an error, or skip the auth call
+    // }
     const {
       data: { user },
     } = await this.client.auth.getUser();
@@ -71,6 +77,9 @@ export class SupabaseClientService {
 
   // Geting one single profile
   async getProfile(): Promise<Profile | null> {
+    if (!this.client) {
+      return null;
+    }
     const {
       data: { user },
     } = await this.client.auth.getUser();
