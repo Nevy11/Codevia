@@ -81,6 +81,7 @@ form {
 }
 
 .delete_button {
+  color-scheme: light;
   @include mat.theme(
     (
       color: mat.$red-palette,
