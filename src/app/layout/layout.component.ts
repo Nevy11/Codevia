@@ -16,6 +16,7 @@ import { map } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { SupabaseClientService } from '../supabase-client.service';
 import { ProfileService } from './settings/profile-setup-stepper/profile.service';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'nevy11-layout',
@@ -28,6 +29,7 @@ import { ProfileService } from './settings/profile-setup-stepper/profile.service
     RouterModule,
     MatMenuModule,
     AsyncPipe,
+    MatSnackBarModule,
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss',
@@ -37,12 +39,15 @@ export class LayoutComponent implements OnInit {
   profile: Profile | null = null;
   themeChangeService = inject(ThemeChangeService);
   avatar_url: string = '';
+  islogged_out: boolean = false;
 
   private router = inject(Router);
   private dialog = inject(MatDialog);
   private breakpointObserver = inject(BreakpointObserver);
   private supabaseService = inject(SupabaseClientService);
   private profileService = inject(ProfileService);
+  private snackBar = inject(MatSnackBar);
+  private themeService = inject(ThemeChangeService);
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {
       if (matches) {
@@ -122,5 +127,20 @@ export class LayoutComponent implements OnInit {
         });
       }
     });
+  }
+
+  async logout() {
+    this.islogged_out = await this.supabaseService.logout();
+    if (this.islogged_out) {
+      this.snackBar.open('Logged out successfully', `Close`, {
+        duration: 3600,
+      });
+      this.themeChangeService.setTheme('light');
+      this.router.navigate(['']);
+    } else {
+      this.snackBar.open(`log out unsuccessfull`, `Close`, {
+        duration: 3600,
+      });
+    }
   }
 }

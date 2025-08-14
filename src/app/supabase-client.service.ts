@@ -137,15 +137,7 @@ export class SupabaseClientService {
       return null;
     }
     console.log(avatar_url);
-    // const { data, error } = await this.client
-    //   .from('profiles')
-    //   .update({
-    //     name: name,
-    //     bio: bio,
-    //     avatar_url: avatar_url,
-    //   })
-    //   .eq('id', user.id)
-    //   .select();
+
     const { data, error } = await this.client
       .from('profiles')
       .upsert(
