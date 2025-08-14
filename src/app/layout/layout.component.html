@@ -171,6 +171,16 @@
       </button>
 
       <mat-menu #profileMenu="matMenu">
+        <button mat-menu-item [matMenuTriggerFor]="settings">
+          <mat-menu> settings </mat-menu>
+          settings
+        </button>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          logout
+        </button>
+      </mat-menu>
+      <mat-menu #settings>
         <button mat-menu-item (click)="goToTab(0)">
           <mat-icon>settings</mat-icon>
           Preferences
@@ -182,10 +192,6 @@
         <button mat-menu-item (click)="goToTab(2)">
           <mat-icon>notifications</mat-icon>
           Notifications
-        </button>
-        <button mat-menu-item (click)="logout()">
-          <mat-icon>logout</mat-icon>
-          logout
         </button>
       </mat-menu>
     </mat-toolbar>
