@@ -1,3 +1,5 @@
+@use "@angular/material" as mat;
+
 .profile-container {
   display: flex;
   flex-direction: column;
@@ -72,3 +74,24 @@ mat-card-content {
 form {
   margin-top: 2rem;
 }
+
+.accountDeletion {
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+}
+
+.delete_button {
+  @include mat.theme(
+    (
+      color: mat.$red-palette,
+    )
+  );
+}
+// .delete_button {
+//   background-color: #e53935; // Material Red 600
+//   color: white;
+
+//   &:hover {
+//     background-color: #d32f2f; // darker red
+//   }
+// }

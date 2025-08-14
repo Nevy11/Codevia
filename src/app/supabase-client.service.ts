@@ -50,16 +50,13 @@ export class SupabaseClientService {
   }
 
   // Removing a profile
-  async removeProfile() {
-    //     if (!this.client) {
-    //   return null; // or throw an error, or skip the auth call
-    // }
+  async removeProfile(): Promise<boolean> {
     const {
       data: { user },
     } = await this.client.auth.getUser();
     if (!user || !user.email) {
       console.error('No logged-in user found');
-      return;
+      return false;
     }
 
     const { data, error } = await this.client
@@ -70,8 +67,10 @@ export class SupabaseClientService {
 
     if (error) {
       console.error('Error deleting profile:', error);
+      return false;
     } else {
       console.log('Deleted profile:', data);
+      return true;
     }
   }
 

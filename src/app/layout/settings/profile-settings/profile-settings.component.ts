@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { SupabaseClientService } from '../../../supabase-client.service';
 import { ProfileService } from '../profile-setup-stepper/profile.service';
+import { ThemeChangeService } from '../../../theme-change.service';
 
 @Component({
   selector: 'nevy11-profile-settings',
@@ -31,11 +32,13 @@ export class ProfileSettingsComponent implements OnInit {
   loading = true;
   profile: Profile | null = null;
   imageUrl: string = '';
+  delete_account: boolean = false;
 
   private profileService = inject(ProfileService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
   private supabaseService = inject(SupabaseClientService);
+  private themeService = inject(ThemeChangeService);
   async ngOnInit() {
     this.loading = false;
 
@@ -116,10 +119,6 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   cancelEdit() {
-    // this.loadProfile(); // reload old values
-    // this.profileService.profile$.subscribe((profile) => {
-    //   this.profile = profile;
-    // });
     this.isEditing = false;
   }
   async save() {
@@ -151,6 +150,21 @@ export class ProfileSettingsComponent implements OnInit {
       }
     } else {
       this.snackBar.open('No profile data to save.', 'Close', {
+        duration: 3000,
+      });
+    }
+  }
+
+  async deleteAccount() {
+    this.delete_account = await this.supabaseService.removeProfile();
+    if (this.delete_account) {
+      this.themeService.setTheme('light');
+      this.router.navigate(['']);
+      this.snackBar.open('Account deleted successfully', `Close`, {
+        duration: 3000,
+      });
+    } else {
+      this.snackBar.open(`Failed to delete an account`, `Close`, {
         duration: 3000,
       });
     }
