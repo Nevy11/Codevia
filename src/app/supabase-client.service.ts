@@ -24,9 +24,6 @@ export class SupabaseClientService {
 
   // adding a profile
   async addProfile(name: string, bio: string, avatar_url: string) {
-    //     if (!this.client) {
-    //   return null; // or throw an error, or skip the auth call
-    // }
     const {
       data: { user },
     } = await this.client.auth.getUser();
