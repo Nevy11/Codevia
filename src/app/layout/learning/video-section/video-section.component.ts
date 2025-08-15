@@ -30,7 +30,7 @@ export class VideoSectionComponent implements OnChanges, OnInit, AfterViewInit {
   @ViewChild('youtubePlayer', { static: false }) youtubePlayer!: ElementRef;
 
   videoUrl!: SafeResourceUrl;
-  private player: any; // YouTube Player instance
+  player: any; // YouTube Player instance
   sanitizer = inject(DomSanitizer);
   private playbackService = inject(PlaybackSettingsService);
 
@@ -68,29 +68,6 @@ export class VideoSectionComponent implements OnChanges, OnInit, AfterViewInit {
       this.player.setPlaybackRate(this.playbackSpeed);
     }
   }
-  // ngAfterViewInit(): void {
-  //   if (!isPlatformBrowser(this.platformId)) return;
-
-  //   // Dynamically load YT API if not already loaded
-  //   if (!(window as any).YT) {
-  //     const script = document.createElement('script');
-  //     script.src = 'https://www.youtube.com/iframe_api';
-  //     document.body.appendChild(script);
-  //   }
-
-  //   (window as any).onYouTubeIframeAPIReady = () => {
-  //     this.player = new (window as any).YT.Player(
-  //       this.youtubePlayer.nativeElement,
-  //       {
-  //         videoId: this.videoId,
-  //         events: {
-  //           onReady: (event: any) =>
-  //             event.target.setPlaybackRate(this.playbackSpeed),
-  //         },
-  //       }
-  //     );
-  //   };
-  // }
 
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;

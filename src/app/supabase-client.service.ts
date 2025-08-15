@@ -2,6 +2,8 @@ import { isPlatformBrowser } from '@angular/common';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Profile } from './layout/settings/profile-settings/profile';
+import { VideoSaving } from './layout/learning/video-section/video-saving';
+import { GetVideo } from './layout/learning/video-section/get-video';
 
 @Injectable({
   providedIn: 'root',
@@ -206,5 +208,42 @@ export class SupabaseClientService {
 
     // console.log('Not a first time user');
     return false;
+  }
+
+  // Save or update the user's video progress
+  async saveVideoProgress(video_data: VideoSaving): Promise<Boolean> {
+    const { data, error } = await this.client
+      .from('user_video_progress')
+      .upsert(
+        {
+          user_id: video_data.userId,
+          video_id: video_data.videoId,
+          current_time: video_data.currentTime,
+        },
+        {
+          onConflict: 'user_id, video_id', // Ensures update instead of duplicate data
+        }
+      );
+
+    if (error) {
+      console.error('Error saving video progress: ', error.message);
+      return false;
+    }
+    return true;
+  }
+
+  // Getting the saved video progress for resume
+  async getVideoProgress(video_data: GetVideo) {
+    const { data, error } = await this.client
+      .from('user_video_progress')
+      .select('current_time')
+      .eq('user_id', video_data.userId)
+      .eq('video_id', video_data.videoId)
+      .single();
+    if (error && error.code !== 'PGRST116') {
+      console.error('Error fetching video Progress: ', error.message);
+      return 0;
+    }
+    return data?.current_time || 0;
   }
 }
