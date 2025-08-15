@@ -218,7 +218,7 @@ export class SupabaseClientService {
         {
           user_id: video_data.userId,
           video_id: video_data.videoId,
-          current_time: video_data.currentTime,
+          playback_position: video_data.currentTime,
         },
         {
           onConflict: 'user_id, video_id', // Ensures update instead of duplicate data
@@ -236,7 +236,7 @@ export class SupabaseClientService {
   async getVideoProgress(video_data: GetVideo) {
     const { data, error } = await this.client
       .from('user_video_progress')
-      .select('current_time')
+      .select('playback_position')
       .eq('user_id', video_data.userId)
       .eq('video_id', video_data.videoId)
       .single();
@@ -244,6 +244,16 @@ export class SupabaseClientService {
       console.error('Error fetching video Progress: ', error.message);
       return 0;
     }
-    return data?.current_time || 0;
+    return data?.playback_position || 0;
+  }
+
+  // Getting user curren't id
+  async getCurrentUserId(): Promise<string | null> {
+    const { data, error } = await this.supabase.auth.getUser();
+    if (error) {
+      console.error('Error fetching current user:', error.message);
+      return null;
+    }
+    return data.user?.id || null;
   }
 }

@@ -5,6 +5,7 @@ import {
   inject,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   SimpleChanges,
   ViewChild,
@@ -13,6 +14,9 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { PlaybackSettingsService } from '../../settings/preferences-settings/playback-settings.service';
 import { Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { SupabaseClientService } from '../../../supabase-client.service';
+import { GetVideo } from './get-video';
+import { VideoSaving } from './video-saving';
 
 declare var YT: any; // YouTube Player API
 
@@ -22,7 +26,9 @@ declare var YT: any; // YouTube Player API
   templateUrl: './video-section.component.html',
   styleUrl: './video-section.component.scss',
 })
-export class VideoSectionComponent implements OnChanges, OnInit, AfterViewInit {
+export class VideoSectionComponent
+  implements OnChanges, OnInit, AfterViewInit, OnDestroy
+{
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   @Input() videoId: string | null = 'dQw4w9WgXcQ'; // Default video ID
@@ -31,8 +37,10 @@ export class VideoSectionComponent implements OnChanges, OnInit, AfterViewInit {
 
   videoUrl!: SafeResourceUrl;
   player: any; // YouTube Player instance
+  user_id: string = '';
   sanitizer = inject(DomSanitizer);
   private playbackService = inject(PlaybackSettingsService);
+  private supabaseService = inject(SupabaseClientService);
 
   updateVideoUrl(): void {
     if (this.videoId) {
@@ -44,11 +52,27 @@ export class VideoSectionComponent implements OnChanges, OnInit, AfterViewInit {
     }
   }
 
-  private setSafeUrl() {
-    const url = `https://www.youtube.com/embed/${this.videoId}?enablejsapi=1&autoplay=1&controls=1&modestbranding=1&rel=0`;
-    this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  // private setSafeUrl() {
+  //   const url = `https://www.youtube.com/embed/${this.videoId}?enablejsapi=1&autoplay=1&controls=1&modestbranding=1&rel=0`;
+  //   this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  // }
+  private async setSafeUrl() {
+    if (this.videoId) {
+      const video_data: GetVideo = {
+        userId: this.user_id,
+        videoId: this.videoId,
+      };
+      // get saved time from Supabase
+      const savedTime = await this.supabaseService.getVideoProgress(video_data);
+
+      const url = `https://www.youtube.com/embed/${this.videoId}?start=${savedTime}&enablejsapi=1&autoplay=1&controls=1&modestbranding=1&rel=0`;
+      this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    }
   }
-  ngOnInit(): void {
+
+  async ngOnInit(): Promise<void> {
+    this.user_id = (await this.supabaseService.getCurrentUserId()) || '';
+    console.log('User id: ', this.user_id);
     this.setSafeUrl();
     this.playbackService.speed$.subscribe((speed) => {
       this.playbackSpeed = speed;
@@ -80,18 +104,18 @@ export class VideoSectionComponent implements OnChanges, OnInit, AfterViewInit {
     }
   }
 
-  private createPlayer() {
-    this.player = new (window as any).YT.Player(
-      this.youtubePlayer.nativeElement,
-      {
-        videoId: this.videoId,
-        events: {
-          onReady: (event: any) =>
-            event.target.setPlaybackRate(this.playbackSpeed),
-        },
-      }
-    );
-  }
+  // private createPlayer() {
+  //   this.player = new (window as any).YT.Player(
+  //     this.youtubePlayer.nativeElement,
+  //     {
+  //       videoId: this.videoId,
+  //       events: {
+  //         onReady: (event: any) =>
+  //           event.target.setPlaybackRate(this.playbackSpeed),
+  //       },
+  //     }
+  //   );
+  // }
 
   private loadYouTubeApi() {
     const script = document.createElement('script');
@@ -99,20 +123,45 @@ export class VideoSectionComponent implements OnChanges, OnInit, AfterViewInit {
     document.body.appendChild(script);
   }
 
-  // ngAfterViewInit(): void {
-  //   if (isPlatformBrowser(this.platformId)) {
-  //     if (typeof window !== 'undefined' && (window as any).YT) {
-  //       (window as any).onYouTubeIframeAPIReady = () => {
-  //         this.player = new YT.Player(this.youtubePlayer.nativeElement, {
-  //           videoId: this.videoId,
-  //           events: {
-  //             onReady: (event: any) => {
-  //               event.target.setPlaybackRate(this.playbackSpeed);
-  //             },
-  //           },
-  //         });
-  //       };
-  //     }
-  //   }
-  // }
+  async ngOnDestroy() {
+    if (this.videoId) {
+      if (this.player && typeof this.player.getCurrentTime === 'function') {
+        const currentTime = Math.floor(this.player.getCurrentTime());
+        const video_data: VideoSaving = {
+          userId: this.user_id,
+          videoId: this.videoId,
+          currentTime: currentTime,
+        };
+        await this.supabaseService.saveVideoProgress(video_data);
+      }
+    }
+  }
+  private async createPlayer() {
+    const video_data: GetVideo = {
+      userId: this.user_id,
+      videoId: this.videoId!,
+    };
+
+    // fetch saved time from Supabase
+    const savedTime = await this.supabaseService.getVideoProgress(video_data);
+
+    this.player = new (window as any).YT.Player(
+      this.youtubePlayer.nativeElement,
+      {
+        videoId: this.videoId,
+        playerVars: {
+          start: savedTime,
+          autoplay: 1,
+          controls: 1,
+          modestbranding: 1,
+          rel: 0,
+        },
+        events: {
+          onReady: (event: any) => {
+            event.target.setPlaybackRate(this.playbackSpeed);
+          },
+        },
+      }
+    );
+  }
 }
