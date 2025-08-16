@@ -253,4 +253,40 @@ export class SupabaseClientService {
     }
     return data.user?.id || null;
   }
+  async store_video_thumbnail(
+    video_id: string,
+    thumbnail_url: string
+  ): Promise<boolean> {
+    const { error } = await this.client.from('video_thumbnails').upsert(
+      {
+        video_id: video_id,
+        thumbnail_url: thumbnail_url,
+      },
+      { onConflict: 'video_id' }
+    );
+
+    if (error) {
+      console.error('Error storing video thumbnail:', error.message);
+      return false;
+    }
+
+    return true;
+  }
+
+  async get_video_thumbnail(video_id: string): Promise<string | null> {
+    const { data, error } = await this.client
+      .from('video_thumbnails')
+      .select('thumbnail_url')
+      .eq('video_id', video_id)
+      .order('created_at', { ascending: false }) // in case multiple thumbnails exist
+      .limit(1)
+      .single();
+
+    if (error) {
+      console.error('Error fetching video thumbnail:', error.message);
+      return null;
+    }
+
+    return data?.thumbnail_url || null;
+  }
 }

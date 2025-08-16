@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { YoutubeService } from '../../youtube.service';
+import { SupabaseClientService } from '../../../supabase-client.service';
 
 @Component({
   selector: 'nevy11-video-feed',
@@ -16,6 +17,8 @@ import { YoutubeService } from '../../youtube.service';
 export class VideoFeedComponent implements OnInit {
   private router = inject(Router);
   private youtube = inject(YoutubeService);
+  private supabaseService = inject(SupabaseClientService);
+  is_thumbnail_stored: Boolean = false;
 
   videos: any[] = [];
 
@@ -25,9 +28,18 @@ export class VideoFeedComponent implements OnInit {
     });
   }
 
-  playVideo(video: any) {
-    this.router.navigate(['/layout/learning'], {
-      queryParams: { video: video.id },
-    });
+  async playVideo(video: any) {
+    this.is_thumbnail_stored = await this.supabaseService.store_video_thumbnail(
+      `${video.title}`,
+      `${video.thumbnailUrl}`
+    );
+    if (this.is_thumbnail_stored) {
+      console.log('Thumbnail stored');
+      this.router.navigate(['/layout/learning'], {
+        queryParams: { video: video.id },
+      });
+    } else {
+      console.error('Error while storing the thumbnail');
+    }
   }
 }
