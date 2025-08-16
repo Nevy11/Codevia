@@ -35,7 +35,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
   styleUrl: './layout.component.scss',
 })
 export class LayoutComponent implements OnInit {
-  username: string = 'User'; // Placeholder for username
+  username: string = ''; // Placeholder for username
   profile: Profile | null = null;
   themeChangeService = inject(ThemeChangeService);
   avatar_url: string = '';
@@ -97,6 +97,9 @@ export class LayoutComponent implements OnInit {
       this.profileService.updateAvatarUrl(this.profile.avatarUrl);
       this.profileService.updateName(this.profile.name);
       this.profileService.updateBio(this.profile.bio);
+      this.profileService.name$.subscribe((name) => {
+        this.username = name;
+      });
       console.log('updating the profile signals complete');
     } else {
       console.error('Error while updating the signals');

@@ -1,5 +1,5 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -7,6 +7,8 @@ import { Router } from '@angular/router';
 import { Breakpoints } from '@angular/cdk/layout';
 import { map } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
+import { SupabaseClientService } from '../../supabase-client.service';
+import { Profile } from '../settings/profile-settings/profile';
 
 @Component({
   selector: 'nevy11-home',
@@ -14,10 +16,12 @@ import { AsyncPipe } from '@angular/common';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
-export class HomeComponent {
-  username = 'User'; // Placeholder for username
+export class HomeComponent implements OnInit {
+  username = ''; // Placeholder for username
+  profile: Profile | null = null;
   private router = inject(Router);
   private breakpointObserver = inject(BreakpointObserver);
+  private supabaseService = inject(SupabaseClientService);
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {
       if (matches) {
@@ -62,5 +66,13 @@ export class HomeComponent {
   );
   ToLearning() {
     this.router.navigate(['/layout/learning']);
+  }
+
+  async ngOnInit(): Promise<void> {
+    this.profile = await this.supabaseService.getProfile();
+    if (this.profile) {
+      this.username = this.profile.name;
+      console.log('username: ', this.profile.name);
+    }
   }
 }
