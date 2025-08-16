@@ -7,7 +7,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { Router, RouterModule } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
 import { ThemeChangeService } from '../theme-change.service';
-import { ProfileSettingsService } from './settings/profile-settings/profile-settings.service';
 import { Profile } from './settings/profile-settings/profile';
 import { MatDialog } from '@angular/material/dialog';
 import { SearchDialogComponent } from './search-dialog/search-dialog.component';
@@ -47,7 +46,6 @@ export class LayoutComponent implements OnInit {
   private supabaseService = inject(SupabaseClientService);
   private profileService = inject(ProfileService);
   private snackBar = inject(MatSnackBar);
-  private themeService = inject(ThemeChangeService);
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {
       if (matches) {
