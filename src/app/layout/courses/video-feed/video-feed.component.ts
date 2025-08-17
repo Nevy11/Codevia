@@ -18,8 +18,9 @@ export class VideoFeedComponent implements OnInit {
   private router = inject(Router);
   private youtube = inject(YoutubeService);
   private supabaseService = inject(SupabaseClientService);
-  is_thumbnail_stored: Boolean = false;
+  private is_thumbnail_stored: Boolean = false;
   private userId: string | null = null;
+  private is_courses_enrolled: boolean = false;
 
   videos: any[] = [];
 
@@ -38,7 +39,16 @@ export class VideoFeedComponent implements OnInit {
       console.log('Thumbnail stored');
       this.userId = await this.supabaseService.getCurrentUserId();
       if (this.userId) {
-        this.supabaseService.enrollCourse(this.userId);
+        this.is_courses_enrolled = await this.supabaseService.enrollCourse(
+          this.userId
+        );
+        if (this.is_courses_enrolled) {
+          console.log('The course was updated successfully');
+        } else {
+          console.error('failed to update the course');
+        }
+      } else {
+        console.error('Failed to upload the number of courses enrolled');
       }
       this.router.navigate(['/layout/learning'], {
         queryParams: { video: video.id },

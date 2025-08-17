@@ -10,6 +10,7 @@ import { GetVideo } from './layout/learning/video-section/get-video';
 })
 export class SupabaseClientService {
   private supabase!: SupabaseClient;
+  private user_id: string | null = null;
   constructor(@Inject(PLATFORM_ID) private platformId: object) {
     if (isPlatformBrowser(this.platformId)) {
       this.supabase = createClient(
@@ -335,5 +336,27 @@ export class SupabaseClientService {
       enrolled: data.courses_enrolled,
       completed: data.courses_completed,
     };
+  }
+
+  // Initialize course stats when a user signs up for the first time
+  async first_time_enroll_0_course(): Promise<boolean> {
+    this.user_id = await this.getCurrentUserId();
+    if (this.user_id) {
+      const { error } = await this.client.from('user_course_stats').insert({
+        user_id: this.user_id,
+        courses_enrolled: 0,
+        courses_completed: 0,
+      });
+
+      if (error) {
+        console.error('Error initializing course stats:', error);
+        return false;
+      }
+
+      return true;
+    } else {
+      console.error('Failed to get user id');
+      return false;
+    }
   }
 }

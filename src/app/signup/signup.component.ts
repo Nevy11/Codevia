@@ -54,6 +54,7 @@ export class SignupComponent {
   // Email form control with validation
   // readonly email = new FormControl('', [Validators.required, Validators.email]);
   errorMessage = signal('');
+  is_course_init: boolean = false;
   constructor() {
     merge(
       this.formSignUp().email.valueChanges,
@@ -115,8 +116,13 @@ export class SignupComponent {
         this.snackbar.open("Please verify you're email to continue", `Close`, {
           duration: 6000,
         });
-        console.log('SignUp Successful: ', data);
-        this.router.navigate(['/login']);
+        this.is_course_init = await this.supabase.first_time_enroll_0_course();
+        if (this.is_course_init) {
+          console.log('SignUp Successful: ', data);
+          this.router.navigate(['/login']);
+        } else {
+          console.error('course init failed');
+        }
       }
     } else {
       this.updateErrorMessage();
