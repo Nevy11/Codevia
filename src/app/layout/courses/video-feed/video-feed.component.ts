@@ -19,6 +19,7 @@ export class VideoFeedComponent implements OnInit {
   private youtube = inject(YoutubeService);
   private supabaseService = inject(SupabaseClientService);
   is_thumbnail_stored: Boolean = false;
+  private userId: string | null = null;
 
   videos: any[] = [];
 
@@ -35,6 +36,10 @@ export class VideoFeedComponent implements OnInit {
     );
     if (this.is_thumbnail_stored) {
       console.log('Thumbnail stored');
+      this.userId = await this.supabaseService.getCurrentUserId();
+      if (this.userId) {
+        this.supabaseService.enrollCourse(this.userId);
+      }
       this.router.navigate(['/layout/learning'], {
         queryParams: { video: video.id },
       });

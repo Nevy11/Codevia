@@ -289,4 +289,51 @@ export class SupabaseClientService {
 
     return data?.thumbnail_url || null;
   }
+
+  // Enroll in a course (increment courses_enrolled by 1)
+  async enrollCourse(user_id: string): Promise<boolean> {
+    const { error } = await this.client.rpc('increment_enrolled', {
+      uid: user_id,
+    });
+
+    if (error) {
+      console.error('Error updating enrolled courses:', error);
+      return false;
+    }
+    return true;
+  }
+
+  // Complete a course (increment courses_completed by 1)
+  async completeCourse(user_id: string): Promise<boolean> {
+    const { error } = await this.client.rpc('increment_completed', {
+      uid: user_id,
+    });
+
+    if (error) {
+      console.error('Error updating completed courses:', error);
+      return false;
+    }
+    return true;
+  }
+
+  // Get courses enrolled & completed for a user
+  async getCourseStats(
+    user_id: string
+  ): Promise<{ enrolled: number; completed: number } | null> {
+    const { data, error } = await this.client
+      .from('user_course_stats')
+      .select('courses_enrolled, courses_completed')
+      .eq('user_id', user_id)
+      .single();
+
+    if (error) {
+      console.error('Error fetching course stats:', error);
+      return null;
+    }
+
+    return {
+      enrolled: data.courses_enrolled,
+      completed: data.courses_completed,
+    };
+  }
 }

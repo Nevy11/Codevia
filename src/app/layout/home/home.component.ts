@@ -9,6 +9,7 @@ import { map } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { SupabaseClientService } from '../../supabase-client.service';
 import { Profile } from '../settings/profile-settings/profile';
+import { Stats } from './home';
 
 @Component({
   selector: 'nevy11-home',
@@ -22,6 +23,8 @@ export class HomeComponent implements OnInit {
   private router = inject(Router);
   private breakpointObserver = inject(BreakpointObserver);
   private supabaseService = inject(SupabaseClientService);
+  user_id: string | null = null;
+  stats: Stats | null = null;
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {
       if (matches) {
@@ -73,6 +76,10 @@ export class HomeComponent implements OnInit {
     if (this.profile) {
       this.username = this.profile.name;
       console.log('username: ', this.profile.name);
+    }
+    this.user_id = await this.supabaseService.getCurrentUserId();
+    if (this.user_id) {
+      this.stats = await this.supabaseService.getCourseStats(this.user_id);
     }
   }
 }
