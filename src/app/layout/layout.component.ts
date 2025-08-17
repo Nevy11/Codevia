@@ -105,9 +105,6 @@ export class LayoutComponent implements OnInit {
     this.profileService.avatarUrl$.subscribe((url_avatar) => {
       this.avatar_url = url_avatar;
     });
-    // this.profileSettings.profile$.subscribe((profile) => {
-    //   this.profile = profile;
-    // });
   }
   goToTab(index: number) {
     this.router.navigate(['/layout/settings'], { queryParams: { tab: index } });
