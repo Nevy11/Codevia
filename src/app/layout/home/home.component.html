@@ -50,17 +50,31 @@
   </mat-card> -->
   <!-- Quick Stats Cards -->
 
+  @if (this.stats != null) {
   <mat-card class="stats-card mat-elevation-z4">
     <mat-icon color="primary">school</mat-icon>
     <h5>Courses Enrolled</h5>
-    <p>{{ this.stats?.enrolled }}</p>
+    <p>{{ this.stats.enrolled }}</p>
   </mat-card>
 
   <mat-card class="stats-card mat-elevation-z4">
     <mat-icon color="accent">check_circle</mat-icon>
     <h5>Lesssons Completed</h5>
-    <p>{{ this.stats?.completed }}</p>
+    <p>{{ this.stats.completed }}</p>
   </mat-card>
+  } @else{
+  <mat-card class="stats-card mat-elevation-z4">
+    <mat-icon color="primary">school</mat-icon>
+    <h5>Courses Enrolled</h5>
+    <p>0</p>
+  </mat-card>
+
+  <mat-card class="stats-card mat-elevation-z4">
+    <mat-icon color="accent">check_circle</mat-icon>
+    <h5>Lesssons Completed</h5>
+    <p>0</p>
+  </mat-card>
+  }
 
   <!-- Statistics Graph -->
   <!-- <mat-card class="stats-graph mat-elevation-z4">

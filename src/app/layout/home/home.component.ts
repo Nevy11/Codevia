@@ -80,6 +80,7 @@ export class HomeComponent implements OnInit {
     this.user_id = await this.supabaseService.getCurrentUserId();
     if (this.user_id) {
       this.stats = await this.supabaseService.getCourseStats(this.user_id);
+      console.log('stats: ', this.stats);
     }
   }
 }
