@@ -11,6 +11,7 @@ import { GetVideo } from './layout/learning/video-section/get-video';
 export class SupabaseClientService {
   private supabase!: SupabaseClient;
   private user_id: string | null = null;
+  private is_course_stat_init: boolean = false;
   constructor(@Inject(PLATFORM_ID) private platformId: object) {
     if (isPlatformBrowser(this.platformId)) {
       this.supabase = createClient(
@@ -325,10 +326,36 @@ export class SupabaseClientService {
       .from('user_course_stats')
       .select('courses_enrolled, courses_completed')
       .eq('user_id', user_id)
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error('Error fetching course stats:', error);
+      return null;
+    }
+
+    if (!data) {
+      this.is_course_stat_init = await this.initUserCourseStats();
+      if (this.is_course_stat_init) {
+        const { data, error } = await this.client
+          .from('user_course_stats')
+          .select('courses_enrolled, courses_completed')
+          .eq('user_id', user_id)
+          .maybeSingle();
+
+        if (error) {
+          console.error('Error fetching course stats:', error);
+          return null;
+        }
+        if (!data) {
+          console.error("Aaah, too bad, error can't be solved");
+          return null;
+        }
+        return {
+          enrolled: data.courses_enrolled,
+          completed: data.courses_completed,
+        };
+      }
+      console.error('Failed to initialize the data');
       return null;
     }
 
@@ -358,5 +385,28 @@ export class SupabaseClientService {
       console.error('Failed to get user id');
       return false;
     }
+  }
+
+  async initUserCourseStats(): Promise<boolean> {
+    this.user_id = await this.getCurrentUserId();
+    if (!this.user_id) {
+      console.error('Failed to initialize userid');
+      return false;
+    }
+    const { error } = await this.client.from('user_course_stats').upsert(
+      {
+        user_id: this.user_id,
+        courses_enrolled: 0,
+        courses_completed: 0,
+      },
+      { onConflict: 'user_id' } // ensures no duplicates if row exists
+    );
+
+    if (error) {
+      console.error('Error initializing course stats:', error);
+      return false;
+    }
+
+    return true;
   }
 }
