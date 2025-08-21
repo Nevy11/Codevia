@@ -17,12 +17,13 @@ import { isPlatformBrowser } from '@angular/common';
 import { SupabaseClientService } from '../../../supabase-client.service';
 import { GetVideo } from './get-video';
 import { VideoSaving } from './video-saving';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 declare var YT: any; // YouTube Player API
 
 @Component({
   selector: 'nevy11-video-section',
-  imports: [],
+  imports: [MatSnackBarModule],
   templateUrl: './video-section.component.html',
   styleUrl: './video-section.component.scss',
 })
@@ -39,8 +40,10 @@ export class VideoSectionComponent
   player: any; // YouTube Player instance
   user_id: string = '';
   sanitizer = inject(DomSanitizer);
+  private is_course_completed: boolean = false;
   private playbackService = inject(PlaybackSettingsService);
   private supabaseService = inject(SupabaseClientService);
+  private snackBar = inject(MatSnackBar);
 
   updateVideoUrl(): void {
     if (this.videoId) {
@@ -119,34 +122,6 @@ export class VideoSectionComponent
       }
     }
   }
-  // private async createPlayer() {
-  //   const video_data: GetVideo = {
-  //     userId: this.user_id,
-  //     videoId: this.videoId!,
-  //   };
-
-  //   // fetch saved time from Supabase
-  //   const savedTime = await this.supabaseService.getVideoProgress(video_data);
-
-  //   this.player = new (window as any).YT.Player(
-  //     this.youtubePlayer.nativeElement,
-  //     {
-  //       videoId: this.videoId,
-  //       playerVars: {
-  //         start: savedTime,
-  //         autoplay: 1,
-  //         controls: 1,
-  //         modestbranding: 1,
-  //         rel: 0,
-  //       },
-  //       events: {
-  //         onReady: (event: any) => {
-  //           event.target.setPlaybackRate(this.playbackSpeed);
-  //         },
-  //       },
-  //     }
-  //   );
-  // }
   private async createPlayer() {
     const video_data: GetVideo = {
       userId: this.user_id,
@@ -172,10 +147,11 @@ export class VideoSectionComponent
             event.target.setPlaybackRate(this.playbackSpeed);
             this.startProgressTracking(); // 👈 Start tracking progress
           },
-          onStateChange: (event: any) => {
+          onStateChange: async (event: any) => {
             if (event.data === YT.PlayerState.ENDED) {
               console.log('✅ Video finished!');
-              // You can save completion in Supabase here
+
+              await this.markCourseCompleted();
             }
           },
         },
@@ -191,13 +167,29 @@ export class VideoSectionComponent
 
         if (duration > 0) {
           const progress = (currentTime / duration) * 100;
-          if (progress >= 98) {
+
+          if (progress >= 98 && !this.is_course_completed) {
             console.log('🚀 User reached 98% of the video');
-            clearInterval(interval); // Stop checking once reached
-            // You can trigger Supabase save/update here
+            this.markCourseCompleted();
+            clearInterval(interval); // stop checking
           }
         }
       }
-    }, 2000); // check every 2 seconds
+    }, 2000);
+  }
+
+  private async markCourseCompleted() {
+    this.is_course_completed = await this.supabaseService.completeCourse();
+
+    if (this.is_course_completed) {
+      this.snackBar.open(`Congratulation for completing that course`, `Close`, {
+        duration: 3000,
+      });
+    } else {
+      console.error('❌ There was an issue saving completion');
+      this.snackBar.open(`Error while updating completed course`, `Close`, {
+        duration: 3000,
+      });
+    }
   }
 }
