@@ -306,16 +306,22 @@ export class SupabaseClientService {
   }
 
   // Complete a course (increment courses_completed by 1)
-  async completeCourse(user_id: string): Promise<boolean> {
-    const { error } = await this.client.rpc('increment_completed', {
-      uid: user_id,
-    });
+  async completeCourse(): Promise<boolean> {
+    this.user_id = await this.getCurrentUserId();
+    if (this.user_id) {
+      const { error } = await this.client.rpc('increment_completed', {
+        uid: this.user_id,
+      });
 
-    if (error) {
-      console.error('Error updating completed courses:', error);
+      if (error) {
+        console.error('Error updating completed courses:', error);
+        return false;
+      }
+      return true;
+    } else {
+      console.error('Error while initializing the user id');
       return false;
     }
-    return true;
   }
 
   // Get courses enrolled & completed for a user
