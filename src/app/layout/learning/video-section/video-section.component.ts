@@ -152,6 +152,7 @@ export class VideoSectionComponent
               console.log('✅ Video finished!');
 
               await this.markCourseCompleted();
+              await this.clear_save_time();
             }
           },
         },
@@ -190,6 +191,19 @@ export class VideoSectionComponent
       this.snackBar.open(`Error while updating completed course`, `Close`, {
         duration: 3000,
       });
+    }
+  }
+  async clear_save_time() {
+    if (this.videoId) {
+      if (this.player && typeof this.player.getCurrentTime === 'function') {
+        const currentTime = Math.floor(1);
+        const video_data: VideoSaving = {
+          userId: this.user_id,
+          videoId: this.videoId,
+          currentTime: currentTime,
+        };
+        await this.supabaseService.saveVideoProgress(video_data);
+      }
     }
   }
 }
