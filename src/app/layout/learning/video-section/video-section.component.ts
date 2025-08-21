@@ -52,10 +52,6 @@ export class VideoSectionComponent
     }
   }
 
-  // private setSafeUrl() {
-  //   const url = `https://www.youtube.com/embed/${this.videoId}?enablejsapi=1&autoplay=1&controls=1&modestbranding=1&rel=0`;
-  //   this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
-  // }
   private async setSafeUrl() {
     if (this.videoId) {
       const video_data: GetVideo = {
@@ -104,19 +100,6 @@ export class VideoSectionComponent
     }
   }
 
-  // private createPlayer() {
-  //   this.player = new (window as any).YT.Player(
-  //     this.youtubePlayer.nativeElement,
-  //     {
-  //       videoId: this.videoId,
-  //       events: {
-  //         onReady: (event: any) =>
-  //           event.target.setPlaybackRate(this.playbackSpeed),
-  //       },
-  //     }
-  //   );
-  // }
-
   private loadYouTubeApi() {
     const script = document.createElement('script');
     script.src = 'https://www.youtube.com/iframe_api';
@@ -136,6 +119,34 @@ export class VideoSectionComponent
       }
     }
   }
+  // private async createPlayer() {
+  //   const video_data: GetVideo = {
+  //     userId: this.user_id,
+  //     videoId: this.videoId!,
+  //   };
+
+  //   // fetch saved time from Supabase
+  //   const savedTime = await this.supabaseService.getVideoProgress(video_data);
+
+  //   this.player = new (window as any).YT.Player(
+  //     this.youtubePlayer.nativeElement,
+  //     {
+  //       videoId: this.videoId,
+  //       playerVars: {
+  //         start: savedTime,
+  //         autoplay: 1,
+  //         controls: 1,
+  //         modestbranding: 1,
+  //         rel: 0,
+  //       },
+  //       events: {
+  //         onReady: (event: any) => {
+  //           event.target.setPlaybackRate(this.playbackSpeed);
+  //         },
+  //       },
+  //     }
+  //   );
+  // }
   private async createPlayer() {
     const video_data: GetVideo = {
       userId: this.user_id,
@@ -159,9 +170,34 @@ export class VideoSectionComponent
         events: {
           onReady: (event: any) => {
             event.target.setPlaybackRate(this.playbackSpeed);
+            this.startProgressTracking(); // 👈 Start tracking progress
+          },
+          onStateChange: (event: any) => {
+            if (event.data === YT.PlayerState.ENDED) {
+              console.log('✅ Video finished!');
+              // You can save completion in Supabase here
+            }
           },
         },
       }
     );
+  }
+
+  private startProgressTracking() {
+    const interval = setInterval(() => {
+      if (this.player && typeof this.player.getCurrentTime === 'function') {
+        const currentTime = this.player.getCurrentTime();
+        const duration = this.player.getDuration();
+
+        if (duration > 0) {
+          const progress = (currentTime / duration) * 100;
+          if (progress >= 98) {
+            console.log('🚀 User reached 98% of the video');
+            clearInterval(interval); // Stop checking once reached
+            // You can trigger Supabase save/update here
+          }
+        }
+      }
+    }, 2000); // check every 2 seconds
   }
 }
