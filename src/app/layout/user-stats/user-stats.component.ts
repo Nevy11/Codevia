@@ -3,13 +3,14 @@ import { CourseStat } from './course-stat';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { DatePipe } from '@angular/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 import { VideoThumbnails } from './video-thumbnails';
 import { SupabaseClientService } from '../../supabase-client.service';
 import { YoutubeService } from '../youtube.service';
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { CoursesEnrolledComponent } from './courses-enrolled/courses-enrolled.component';
+import { from, of, switchMap } from 'rxjs';
 
 @Component({
   selector: 'nevy11-user-stats',
@@ -20,6 +21,7 @@ import { CoursesEnrolledComponent } from './courses-enrolled/courses-enrolled.co
     DatePipe,
     MatIconModule,
     CoursesEnrolledComponent,
+    AsyncPipe,
   ],
   templateUrl: './user-stats.component.html',
   styleUrl: './user-stats.component.scss',
@@ -32,8 +34,16 @@ export class UserStatsComponent implements OnInit {
   mostWatchedCourse = 'Angular Basics';
   averageWatchDuration = 12; // minutes per video
   videoThumbnails: VideoThumbnails[] | null = null;
-  private supabaseService = inject(SupabaseClientService);
 
+  private supabaseService = inject(SupabaseClientService);
+  userId$ = from(this.supabaseService.getCurrentUserId());
+
+  stats$ = this.userId$.pipe(
+    switchMap((userId) => {
+      if (!userId) return of(null);
+      return from(this.supabaseService.getCourseStats(userId));
+    })
+  );
   videos: any[] = [];
 
   courseStats: CourseStat[] = [

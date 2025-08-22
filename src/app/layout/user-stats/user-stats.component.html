@@ -4,18 +4,34 @@
     <mat-card-content>
       <!-- Responsive Grid -->
       <div class="stats-grid">
+        @if (stats$ | async; as stat) {
         <mat-card>
           <mat-card-content>
             <h3>Total Courses Enrolled</h3>
-            <p>{{ totalCoursesEnrolled }}</p>
+            <p>{{ stat.enrolled }}</p>
           </mat-card-content>
         </mat-card>
         <mat-card>
           <mat-card-content>
             <h3>Courses Completed</h3>
-            <p>{{ coursesCompleted }}</p>
+            <p>{{ stat.completed }}</p>
           </mat-card-content>
         </mat-card>
+        } @else{
+        <mat-card>
+          <mat-card-content>
+            <h3>Total Courses Enrolled</h3>
+            <p>0</p>
+          </mat-card-content>
+        </mat-card>
+        <mat-card>
+          <mat-card-content>
+            <h3>Courses Completed</h3>
+            <p>0</p>
+          </mat-card-content>
+        </mat-card>
+        }
+
         <mat-card>
           <mat-card-content>
             <h3>Completion Rate</h3>
