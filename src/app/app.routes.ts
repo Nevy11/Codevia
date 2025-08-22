@@ -9,6 +9,7 @@ import { HomeComponent } from './layout/home/home.component';
 import { LearningComponent } from './layout/learning/learning.component';
 import { CoursesComponent } from './layout/courses/courses.component';
 import { SettingsComponent } from './layout/settings/settings.component';
+import { UserStatsComponent } from './layout/user-stats/user-stats.component';
 
 export const routes: Routes = [
   {
@@ -47,6 +48,10 @@ export const routes: Routes = [
       {
         path: 'settings',
         component: SettingsComponent,
+      },
+      {
+        path: 'user-stats',
+        component: UserStatsComponent,
       },
     ],
   },

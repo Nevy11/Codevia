@@ -1,0 +1,91 @@
+<div class="p-4">
+  <mat-card class="mb-4">
+    <mat-card-title>User Learning Statistics</mat-card-title>
+    <mat-card-content>
+      <!-- Responsive Grid -->
+      <div class="stats-grid">
+        <mat-card>
+          <mat-card-content>
+            <h3>Total Courses Enrolled</h3>
+            <p>{{ totalCoursesEnrolled }}</p>
+          </mat-card-content>
+        </mat-card>
+        <mat-card>
+          <mat-card-content>
+            <h3>Courses Completed</h3>
+            <p>{{ coursesCompleted }}</p>
+          </mat-card-content>
+        </mat-card>
+        <mat-card>
+          <mat-card-content>
+            <h3>Completion Rate</h3>
+            <p>{{ completionRate }}%</p>
+          </mat-card-content>
+        </mat-card>
+        <mat-card>
+          <mat-card-content>
+            <h3>Last Active</h3>
+            <p>{{ lastActiveDate | date : "medium" }}</p>
+          </mat-card-content>
+        </mat-card>
+        <mat-card>
+          <mat-card-content>
+            <h3>Most Watched Course</h3>
+            <p>{{ mostWatchedCourse }}</p>
+          </mat-card-content>
+        </mat-card>
+        <mat-card>
+          <mat-card-content>
+            <h3>Avg. Watch Duration</h3>
+            <p>{{ averageWatchDuration }} min/video</p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Table stays the same -->
+  <mat-card>
+    <mat-card-title>Progress Per Course</mat-card-title>
+    <mat-card-content>
+      <table
+        mat-table
+        [dataSource]="courseStats"
+        class="mat-elevation-z8 w-full"
+      >
+        <ng-container matColumnDef="courseName">
+          <th mat-header-cell *matHeaderCellDef>Course</th>
+          <td mat-cell *matCellDef="let c">{{ c.courseName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="progress">
+          <th mat-header-cell *matHeaderCellDef>Progress</th>
+          <td mat-cell *matCellDef="let c">
+            <mat-progress-bar
+              mode="determinate"
+              [value]="c.progress"
+            ></mat-progress-bar>
+            <small>{{ c.watchedVideos }} / {{ c.totalVideos }} videos</small>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalWatchTime">
+          <th mat-header-cell *matHeaderCellDef>Time Spent</th>
+          <td mat-cell *matCellDef="let c">{{ c.totalWatchTime }} mins</td>
+        </ng-container>
+
+        <tr
+          mat-header-row
+          *matHeaderRowDef="['courseName', 'progress', 'totalWatchTime']"
+        ></tr>
+        <tr
+          mat-row
+          *matRowDef="
+            let row;
+            columns: ['courseName', 'progress', 'totalWatchTime']
+          "
+        ></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+</div>
