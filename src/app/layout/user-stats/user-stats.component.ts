@@ -1,13 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CourseStat } from './course-stat';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DatePipe } from '@angular/common';
+import { VideoThumbnails } from './video-thumbnails';
+import { SupabaseClientService } from '../../supabase-client.service';
+import { YoutubeService } from '../youtube.service';
+import { Router } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { CoursesEnrolledComponent } from './courses-enrolled/courses-enrolled.component';
 
 @Component({
   selector: 'nevy11-user-stats',
-  imports: [MatCardModule, MatTableModule, MatProgressBarModule, DatePipe],
+  imports: [
+    MatCardModule,
+    MatTableModule,
+    MatProgressBarModule,
+    DatePipe,
+    MatIconModule,
+    CoursesEnrolledComponent,
+  ],
   templateUrl: './user-stats.component.html',
   styleUrl: './user-stats.component.scss',
 })
@@ -18,6 +31,10 @@ export class UserStatsComponent implements OnInit {
   lastActiveDate = new Date('2025-08-20');
   mostWatchedCourse = 'Angular Basics';
   averageWatchDuration = 12; // minutes per video
+  videoThumbnails: VideoThumbnails[] | null = null;
+  private supabaseService = inject(SupabaseClientService);
+
+  videos: any[] = [];
 
   courseStats: CourseStat[] = [
     {
@@ -43,9 +60,15 @@ export class UserStatsComponent implements OnInit {
     },
   ];
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.completionRate = Math.round(
       (this.coursesCompleted / this.totalCoursesEnrolled) * 100
     );
+    this.videoThumbnails = await this.supabaseService.getAllVideoThumbnails();
+    if (this.videoThumbnails) {
+      console.log('Video thumbnails are returned: ', this.videoThumbnails);
+    } else {
+      console.log('No video thumbnails found');
+    }
   }
 }

@@ -1,0 +1,30 @@
+<div class="p-4">
+  <div class="video-grid">
+    @for (video of videoThumbnails; track $index) {
+    <mat-card class="video-card">
+      <img
+        mat-card-image
+        [src]="video.thumbnail_url"
+        alt="{{ video.video_id }}"
+      />
+      <mat-card-content>
+        <h3>{{ video.video_id }}</h3>
+      </mat-card-content>
+      <!-- <mat-card-actions class="card-actions">
+      <button
+        mat-flat-button
+        color="primary"
+        aria-label="Play"
+        (click)="playVideo(video)"
+      >
+        <mat-icon>play_arrow</mat-icon>
+        relearn
+      </button>
+    </mat-card-actions> -->
+      <p mat-line class="created-date">
+        {{ video.created_at | date : "medium" }}
+      </p>
+    </mat-card>
+    }
+  </div>
+</div>

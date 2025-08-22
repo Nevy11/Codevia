@@ -4,6 +4,7 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Profile } from './layout/settings/profile-settings/profile';
 import { VideoSaving } from './layout/learning/video-section/video-saving';
 import { GetVideo } from './layout/learning/video-section/get-video';
+import { VideoThumbnails } from './layout/user-stats/video-thumbnails';
 
 @Injectable({
   providedIn: 'root',
@@ -290,6 +291,21 @@ export class SupabaseClientService {
     }
 
     return data?.thumbnail_url || null;
+  }
+
+  // Getting all video thumbnails stored
+  async getAllVideoThumbnails(): Promise<VideoThumbnails[] | null> {
+    const { data, error } = await this.client
+      .from('video_thumbnails')
+      .select('video_id, thumbnail_url, created_at')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching video thumbnails:', error.message);
+      return null;
+    }
+
+    return data;
   }
 
   // Enroll in a course (increment courses_enrolled by 1)

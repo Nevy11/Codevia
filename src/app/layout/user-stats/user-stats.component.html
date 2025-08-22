@@ -88,4 +88,38 @@
       </table>
     </mat-card-content>
   </mat-card>
+
+  <mat-card class="watched_videos">
+    <mat-card-title>Watched Videos</mat-card-title>
+    <mat-card-content>
+      @if (videoThumbnails?.length) {
+      <nevy11-courses-enrolled></nevy11-courses-enrolled>
+      }@else {
+      <p>No videos found</p>
+      }
+    </mat-card-content>
+  </mat-card>
+
+  <!-- <mat-card class="mt-4">
+    <mat-card-title>Watched Videos</mat-card-title>
+    <mat-card-content>
+      @if (videoThumbnails?.length) {
+      <div class="thumbnails-grid">
+        @for (v of videoThumbnails; track v.video_id) {
+        <mat-card class="thumbnail-card">
+          <img mat-card-image [src]="v.thumbnail_url" alt="{{ v.video_id }}" />
+          <mat-card-content>
+            <h3 mat-line>{{ v.video_id }}</h3>
+            <p mat-line class="created-date">
+              {{ v.created_at | date : "medium" }}
+            </p>
+          </mat-card-content>
+        </mat-card>
+        }
+      </div>
+      } @else {
+      <p>No videos found</p>
+      }
+    </mat-card-content>
+  </mat-card> -->
 </div>
