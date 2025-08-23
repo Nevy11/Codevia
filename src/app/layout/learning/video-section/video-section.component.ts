@@ -73,7 +73,6 @@ export class VideoSectionComponent
   async ngOnInit(): Promise<void> {
     this.my_videos = await this.supabaseService.getUserVideos();
     this.videoId = this.my_videos[this.my_videos.length - 1].video_id;
-    // console.log("")
     console.log('My videos: ', this.my_videos);
     console.log('Video id on init: ', this.videoId);
     this.user_id = (await this.supabaseService.getCurrentUserId()) || '';
@@ -130,14 +129,18 @@ export class VideoSectionComponent
     }
   }
   private async createPlayer() {
+    console.log('Creating YouTube Player...');
     const video_data: GetVideo = {
       userId: this.user_id,
       videoId: this.videoId!,
     };
 
     // fetch saved time from Supabase
-    const savedTime = await this.supabaseService.getVideoProgress(video_data);
-
+    // const savedTime = await this.supabaseService.getVideoProgress(video_data);
+    this.my_videos = await this.supabaseService.getUserVideos();
+    const savedTime =
+      this.my_videos[this.my_videos.length - 1].playback_position;
+    console.log('Saved time: ', savedTime);
     this.player = new (window as any).YT.Player(
       this.youtubePlayer.nativeElement,
       {
