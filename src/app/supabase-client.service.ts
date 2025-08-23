@@ -5,6 +5,7 @@ import { Profile } from './layout/settings/profile-settings/profile';
 import { VideoSaving } from './layout/learning/video-section/video-saving';
 import { GetVideo } from './layout/learning/video-section/get-video';
 import { VideoThumbnails } from './layout/user-stats/video-thumbnails';
+import { VideoData } from './layout/learning/video-section/video-data';
 
 @Injectable({
   providedIn: 'root',
@@ -274,6 +275,25 @@ export class SupabaseClientService {
     }
 
     return true;
+  }
+
+  async getUserVideos(): Promise<any[]> {
+    this.user_id = await this.getCurrentUserId();
+    if (!this.user_id) {
+      console.error('No user logged in');
+      return [];
+    }
+    const { data, error } = await this.client
+      .from('user_video_progress')
+      .select('video_id, playback_position')
+      .eq('user_id', this.user_id);
+
+    if (error) {
+      console.error('Error fetching user videos: ', error.message);
+      return [];
+    }
+
+    return data || [];
   }
 
   async get_video_thumbnail(video_id: string): Promise<string | null> {

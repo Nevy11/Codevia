@@ -40,6 +40,7 @@ export class VideoSectionComponent
   player: any; // YouTube Player instance
   user_id: string = '';
   sanitizer = inject(DomSanitizer);
+  my_videos: any[] = [];
   private is_course_completed: boolean = false;
   private playbackService = inject(PlaybackSettingsService);
   private supabaseService = inject(SupabaseClientService);
@@ -70,6 +71,11 @@ export class VideoSectionComponent
   }
 
   async ngOnInit(): Promise<void> {
+    this.my_videos = await this.supabaseService.getUserVideos();
+    this.videoId = this.my_videos[this.my_videos.length - 1].video_id;
+    // console.log("")
+    console.log('My videos: ', this.my_videos);
+    console.log('Video id on init: ', this.videoId);
     this.user_id = (await this.supabaseService.getCurrentUserId()) || '';
     console.log('User id: ', this.user_id);
     this.setSafeUrl();
@@ -111,6 +117,7 @@ export class VideoSectionComponent
 
   async ngOnDestroy() {
     if (this.videoId) {
+      console.log('Video id on destroy: ', this.videoId);
       if (this.player && typeof this.player.getCurrentTime === 'function') {
         const currentTime = Math.floor(this.player.getCurrentTime());
         const video_data: VideoSaving = {
@@ -207,3 +214,10 @@ export class VideoSectionComponent
     }
   }
 }
+/* 
+There is an issue with posting the videoId input to the component.
+and getting the videoId on ngOnDestroy lifecycle hook.
+wierd.
+videoid is okay on ngoninit and ngondestroy but when you open again the component
+it returns a similar videoid
+*/
