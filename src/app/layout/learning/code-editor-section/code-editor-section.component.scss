@@ -1,18 +1,89 @@
+// :host {
+//   display: block;
+//   height: 100%;
+// }
+
+// ngx-monaco-editor {
+//   display: block;
+//   height: 90%; /* or 100% if parent has height */
+// }
+
+// .spacer {
+//   flex: 1 1 auto; /* allows the spacer to grow and fill available space */
+// }
+
+// .btn {
+//   display: flex;
+//   justify-content: space-between;
+// }
+
+//  side navigator
 :host {
   display: block;
   height: 100%;
 }
 
+/* Container that holds sidenav + editor */
+.editor-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+}
+
+/* Side navigation (Explorer panel) */
+.sidenav {
+  width: 250px;
+  background: #1e1e1e;
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidenav-header {
+  padding: 10px;
+  font-weight: bold;
+  background: #252526;
+  border-bottom: 1px solid #333;
+}
+
+/* File tree inside sidenav */
+mat-tree {
+  flex: 1;
+  padding: 5px;
+  font-size: 14px;
+}
+
+mat-icon {
+  font-size: 18px;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+/* Editor content area */
+.editor-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  background: #1e1e1e;
+  color: white;
+}
+
+/* Monaco editor */
 ngx-monaco-editor {
+  flex: 1;
   display: block;
-  height: 90%; /* or 100% if parent has height */
+  // border: 1px solid #333;
+  height: auto; /* will stretch because of flex */
 }
 
-.spacer {
-  flex: 1 1 auto; /* allows the spacer to grow and fill available space */
-}
-
+/* Action buttons row */
 .btn {
   display: flex;
   justify-content: space-between;
+  margin-top: 10px;
+}
+
+.spacer {
+  flex: 1 1 auto;
 }
