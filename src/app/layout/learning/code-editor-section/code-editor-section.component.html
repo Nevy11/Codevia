@@ -25,7 +25,9 @@
       <!-- This is the tree node template for leaf nodes -->
       <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
         <!-- use a disabled button to provide padding for tree leaf -->
-        <button matIconButton disabled></button>
+        <button matIconButton>
+          <mat-icon>insert_drive_file</mat-icon>
+        </button>
         {{ node.name }}
       </mat-tree-node>
       <!-- This is the tree node template for expandable nodes -->

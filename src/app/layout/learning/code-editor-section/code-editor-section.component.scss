@@ -33,7 +33,6 @@
 /* Side navigation (Explorer panel) */
 .sidenav {
   width: 200px;
-
   display: flex;
   flex-direction: column;
 }
@@ -41,8 +40,7 @@
 .sidenav-header {
   padding: 10px;
   font-weight: bold;
-  // background: #252526;
-  border-bottom: 1px solid #333;
+  // border-bottom: 1px solid #333;
 }
 
 /* File tree inside sidenav */
