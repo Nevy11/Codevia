@@ -6,6 +6,7 @@ import { VideoSaving } from './layout/learning/video-section/video-saving';
 import { GetVideo } from './layout/learning/video-section/get-video';
 import { VideoThumbnails } from './layout/user-stats/video-thumbnails';
 import { VideoData } from './layout/learning/video-section/video-data';
+import { FileData } from './layout/learning/code-editor-section/file-data';
 
 @Injectable({
   providedIn: 'root',
@@ -457,4 +458,26 @@ export class SupabaseClientService {
 
     return true;
   }
+
+  //   async saveFile(file: FileData) {
+  //   const { data, error } = await this.client
+  //     .from('files')
+  //     .upsert([
+  //       {
+  //         user_id: file.user_id,
+  //         folder_name: file.folder_name,
+  //         file_name: file.file_name,
+  //         file_type: file.file_type,
+  //         lines: file.lines,
+  //         children: file.children || []
+  //       }
+  //     ], { onConflict: ['user_id', 'folder_name', 'file_name'] });
+
+  //   if (error) {
+  //     console.error('Error saving file:', error);
+  //     return null;
+  //   }
+
+  //   return data;
+  // }
 }
