@@ -91,6 +91,10 @@ export class LayoutComponent implements OnInit {
   async ngOnInit() {
     this.themeChangeService.loadTheme();
     this.profile = await this.supabaseService.getProfile();
+    if (!this.supabaseService.client) {
+      // console.error('Supabase client is not initialized.');
+      return;
+    }
     if (this.profile) {
       this.profileService.updateAvatarUrl(this.profile.avatarUrl);
       this.profileService.updateName(this.profile.name);

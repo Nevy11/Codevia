@@ -235,6 +235,9 @@ export class SupabaseClientService {
 
   // Getting the saved video progress for resume
   async getVideoProgress(video_data: GetVideo) {
+    if (!this.client) {
+      return 0;
+    }
     const { data, error } = await this.client
       .from('user_video_progress')
       .select('playback_position')
@@ -250,6 +253,9 @@ export class SupabaseClientService {
 
   // Getting user curren't id
   async getCurrentUserId(): Promise<string | null> {
+    if (!this.client) {
+      return null;
+    }
     const { data, error } = await this.supabase.auth.getUser();
     if (error) {
       console.error('Error fetching current user:', error.message);
