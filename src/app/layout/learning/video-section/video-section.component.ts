@@ -32,7 +32,8 @@ export class VideoSectionComponent
 {
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
-  @Input() videoId: string | null = 'dQw4w9WgXcQ'; // Default video ID
+  @Input() videoId: string | null = null;
+  // 'dQw4w9WgXcQ'; // Default video ID
   @Input() playbackSpeed: number = 1.0; // value from settings
   @ViewChild('youtubePlayer', { static: false }) youtubePlayer!: ElementRef;
 
@@ -77,6 +78,11 @@ export class VideoSectionComponent
     console.log('Video id on init: ', this.videoId);
     this.user_id = (await this.supabaseService.getCurrentUserId()) || '';
     console.log('User id: ', this.user_id);
+    if (this.my_videos.length > 0) {
+      this.videoId = this.my_videos[this.my_videos.length - 1].video_id;
+    } else {
+      this.videoId = 'dQw4w9WgXcQ'; // fallback
+    }
     this.setSafeUrl();
     this.playbackService.speed$.subscribe((speed) => {
       this.playbackSpeed = speed;
@@ -217,10 +223,3 @@ export class VideoSectionComponent
     }
   }
 }
-/* 
-There is an issue with posting the videoId input to the component.
-and getting the videoId on ngOnDestroy lifecycle hook.
-wierd.
-videoid is okay on ngoninit and ngondestroy but when you open again the component
-it returns a similar videoid
-*/
