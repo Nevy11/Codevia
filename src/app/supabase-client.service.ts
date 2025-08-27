@@ -5,8 +5,6 @@ import { Profile } from './layout/settings/profile-settings/profile';
 import { VideoSaving } from './layout/learning/video-section/video-saving';
 import { GetVideo } from './layout/learning/video-section/get-video';
 import { VideoThumbnails } from './layout/user-stats/video-thumbnails';
-import { VideoData } from './layout/learning/video-section/video-data';
-import { FileData } from './layout/learning/code-editor-section/file-data';
 
 @Injectable({
   providedIn: 'root',
@@ -458,9 +456,11 @@ export class SupabaseClientService {
 
     return true;
   }
-
-  // Saving folders only
-  async createFolder(folderName: string, parentFolder: string | null = null) {
+  /// Create or update a folder
+  async createOrUpdateFolder(
+    folderName: string,
+    parentFolder: string | null = null
+  ) {
     this.user_id = await this.getCurrentUserId();
     if (!this.user_id) {
       console.error('No user logged in');
@@ -469,30 +469,35 @@ export class SupabaseClientService {
 
     const { data, error } = await this.client
       .from('files')
-      .insert([
+      .upsert(
+        [
+          {
+            user_id: this.user_id,
+            folder_name: folderName,
+            file_name: null, // always null for folders
+            file_type: 'folder',
+            lines: [],
+            children: [],
+            parent_folder: parentFolder,
+          },
+        ],
         {
-          user_id: this.user_id,
-          folder_name: folderName,
-          file_name: null,
-          file_type: 'folder',
-          lines: [],
-          children: [],
-          parent_folder: parentFolder,
-        },
-      ])
-      .select();
+          onConflict: 'user_id,parent_folder,folder_name', // 👈 match rule
+        }
+      )
+      .select(); // return updated row
 
     if (error) {
-      console.error('Error saving folder:', error);
+      console.error('Error creating/updating folder:', error);
       return null;
     }
 
-    if (!data) {
-      console.error('No folder data returned after insertion');
+    if (!data || data.length === 0) {
+      console.error('No folder data returned after upsert');
       return null;
     }
 
-    console.log('Folder created:', data[0]);
+    console.log('Folder created/updated:', data[0]);
     return data[0];
   }
 }

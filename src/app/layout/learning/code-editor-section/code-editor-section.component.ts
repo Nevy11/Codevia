@@ -79,7 +79,7 @@ export class CodeEditorSectionComponent implements OnInit {
     });
   }
   async new_folder() {
-    await this.supabaseService.createFolder('New Folder');
+    await this.supabaseService.createOrUpdateFolder('New Folder');
   }
 }
 
