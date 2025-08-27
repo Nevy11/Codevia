@@ -54,15 +54,28 @@ export class CodeEditorSectionComponent implements OnInit {
     });
   }
   runCode() {
-    this.matsnackbar.open('Code executed successfully!', 'Close', {
+    this.matsnackbar.open('This button is yet to be implemented', 'Close', {
       duration: 2000,
     });
   }
   resetCode() {
+    this.matsnackbar.open('This button is yet to be implemented', 'Close', {
+      duration: 2000,
+    });
     this.code = `// Write your code here`;
   }
   downloadCode() {
-    this.matsnackbar.open('Code downloaded successfully!', 'Close', {
+    this.matsnackbar.open('This button is yet to be implemented', 'Close', {
+      duration: 2000,
+    });
+  }
+  new_file() {
+    this.matsnackbar.open('This button is yet to be implemented', 'Close', {
+      duration: 2000,
+    });
+  }
+  new_folder() {
+    this.matsnackbar.open('This button is yet to be implemented', 'Close', {
       duration: 2000,
     });
   }
