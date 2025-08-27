@@ -73,6 +73,9 @@ export class VideoSectionComponent
 
   async ngOnInit(): Promise<void> {
     this.my_videos = await this.supabaseService.getUserVideos();
+    if (!this.videoId && this.my_videos.length > 0) {
+      return;
+    }
     this.videoId = this.my_videos[this.my_videos.length - 1].video_id;
     console.log('My videos: ', this.my_videos);
     console.log('Video id on init: ', this.videoId);
