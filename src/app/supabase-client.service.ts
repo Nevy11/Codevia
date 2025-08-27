@@ -467,54 +467,32 @@ export class SupabaseClientService {
       return null;
     }
 
-    const { data, error } = await this.client.from('files').upsert(
-      [
+    const { data, error } = await this.client
+      .from('files')
+      .insert([
         {
           user_id: this.user_id,
           folder_name: folderName,
-          file_name: null, // no file, only folder
-          file_type: 'folder', // mark it as a folder
-          lines: [], // no lines for folders
-          children: [], // empty children initially
-          parent_folder: parentFolder, // optional: to support nesting
+          file_name: null,
+          file_type: 'folder',
+          lines: [],
+          children: [],
+          parent_folder: parentFolder,
         },
-      ],
-      { onConflict: 'user_id,folder_name' } // prevent duplicates
-    );
+      ])
+      .select();
 
     if (error) {
       console.error('Error saving folder:', error);
       return null;
     }
-    console.log('Folder created:', data);
-    return data;
+
+    if (!data) {
+      console.error('No folder data returned after insertion');
+      return null;
+    }
+
+    console.log('Folder created:', data[0]);
+    return data[0];
   }
-
-  // async saveFile(file: FileData) {
-  //   this.user_id = await this.getCurrentUserId();
-  //   if (!this.user_id) {
-  //     console.error('No user logged in');
-  //     return null;
-  //   }
-  //   const { data, error } = await this.client.from('files').upsert(
-  //     [
-  //       {
-  //         user_id: this.user_id,
-  //         folder_name: file.folder_name,
-  //         file_name: file.file_name,
-  //         file_type: file.file_type,
-  //         lines: file.lines,
-  //         children: file.children || [],
-  //       },
-  //     ]
-  //     // { onConflict: ['folder_name'] }
-  //   );
-
-  //   if (error) {
-  //     console.error('Error saving file:', error);
-  //     return null;
-  //   }
-
-  //   return data;
-  // }
 }
