@@ -61,7 +61,12 @@
       <!-- <span class="title">{{ username }}</span> -->
       <span class="spacer"></span>
 
-      <button mat-icon-button (click)="themeChangeService.toggleTheme()">
+      <button
+        mat-icon-button
+        (click)="themeChangeService.toggleTheme()"
+        matTooltip="Change theme"
+        matTooltipPosition="below"
+      >
         <mat-icon>brightness_6</mat-icon>
       </button>
       <button mat-icon-button (click)="openSearch()">
@@ -154,13 +159,24 @@
   <mat-sidenav-content>
     <!-- Top Bar -->
     <mat-toolbar color="primary" class="topbar">
-      <button mat-icon-button (click)="drawer.toggle()" class="menu-button">
+      <button
+        mat-icon-button
+        (click)="drawer.toggle()"
+        class="menu-button"
+        matTooltip="Change theme"
+        matTooltipPosition="below"
+      >
         <mat-icon>menu</mat-icon>
       </button>
       <span class="title">{{ username }}</span>
       <span class="spacer"></span>
 
-      <button mat-icon-button (click)="themeChangeService.toggleTheme()">
+      <button
+        mat-icon-button
+        (click)="themeChangeService.toggleTheme()"
+        matTooltip="Change theme"
+        matTooltipPosition="below"
+      >
         <mat-icon>brightness_6</mat-icon>
       </button>
       <button mat-icon-button (click)="openSearch()">

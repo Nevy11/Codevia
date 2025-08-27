@@ -10,6 +10,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTreeModule } from '@angular/material/tree';
+import { SupabaseClientService } from '../../../supabase-client.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'nevy11-code-editor-section',
@@ -22,6 +24,7 @@ import { MatTreeModule } from '@angular/material/tree';
     MatSidenavModule,
     MatToolbarModule,
     MatTreeModule,
+    MatTooltipModule,
   ],
   templateUrl: './code-editor-section.component.html',
   styleUrl: './code-editor-section.component.scss',
@@ -29,8 +32,9 @@ import { MatTreeModule } from '@angular/material/tree';
 export class CodeEditorSectionComponent implements OnInit {
   isBrowser = false;
   code: string = `// Write your code here`;
-  themechangeService = inject(ThemeChangeService);
-  matsnackbar = inject(MatSnackBar);
+  private themechangeService = inject(ThemeChangeService);
+  private supabaseService = inject(SupabaseClientService);
+  private matsnackbar = inject(MatSnackBar);
   editorOptions = {
     theme: 'vs-dark',
     language: 'javascript',
@@ -74,10 +78,8 @@ export class CodeEditorSectionComponent implements OnInit {
       duration: 2000,
     });
   }
-  new_folder() {
-    this.matsnackbar.open('This button is yet to be implemented', 'Close', {
-      duration: 2000,
-    });
+  async new_folder() {
+    await this.supabaseService.createFolder('New Folder');
   }
 }
 

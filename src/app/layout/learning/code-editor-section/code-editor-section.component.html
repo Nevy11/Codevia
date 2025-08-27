@@ -18,10 +18,20 @@
       Explorers
       <span class="spacer"></span>
       <!-- <span> -->
-      <button mat-icon-button (click)="new_file()">
+      <button
+        mat-icon-button
+        (click)="new_file()"
+        matTooltip="New File"
+        matTooltipPosition="above"
+      >
         <mat-icon>note_add</mat-icon>
       </button>
-      <button mat-icon-button (click)="new_folder()">
+      <button
+        mat-icon-button
+        (click)="new_folder()"
+        matTooltip="New Folder"
+        matTooltipPosition="above"
+      >
         <mat-icon>create_new_folder</mat-icon>
       </button>
       <!-- </span> -->
@@ -65,7 +75,13 @@
   <!-- Main editor area -->
   <mat-sidenav-content class="editor-content">
     <mat-toolbar>
-      <button mat-icon-button (click)="sidenav.toggle()" class="menu-button">
+      <button
+        mat-icon-button
+        (click)="sidenav.toggle()"
+        class="menu-button"
+        matTooltip="minimize menu"
+        matTooltipPosition="above"
+      >
         <mat-icon>menu</mat-icon>
       </button>
       <span class="spacer"></span>

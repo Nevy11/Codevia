@@ -460,7 +460,7 @@ export class SupabaseClientService {
   }
 
   // Saving folders only
-  async saveFolder(folderName: string, parentFolder: string | null = null) {
+  async createFolder(folderName: string, parentFolder: string | null = null) {
     this.user_id = await this.getCurrentUserId();
     if (!this.user_id) {
       console.error('No user logged in');
@@ -486,7 +486,7 @@ export class SupabaseClientService {
       console.error('Error saving folder:', error);
       return null;
     }
-
+    console.log('Folder created:', data);
     return data;
   }
 
