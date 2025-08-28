@@ -24,7 +24,6 @@ export class VideoPromoComponent {
   private breakpointObserver = inject(BreakpointObserver);
   private dialog = inject(MatDialog);
   openVideo(): void {
-    console.log('Opening video dialog');
     this.dialog.open(VideoDialogComponent, {
       width: '80%',
       height: '80%',
@@ -43,7 +42,6 @@ greet()`,
     });
   }
   openJavaScriptHtml(): void {
-    console.log('Opening video dialog');
     this.dialog.open(VideoDialogComponent, {
       width: '80%',
       height: '80%',
@@ -64,7 +62,6 @@ greet();`,
   }
 
   openRustVideo(): void {
-    console.log('Opening video dialog');
     this.dialog.open(VideoDialogComponent, {
       width: '80%',
       height: '80%',

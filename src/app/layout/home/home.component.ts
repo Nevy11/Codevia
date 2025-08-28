@@ -93,7 +93,6 @@ export class HomeComponent implements OnInit {
       // if you still want the console log:
       this.stats$.subscribe((stat) => {
         this.stats = stat;
-        console.log('stats from observable:', stat);
       });
     }
   }

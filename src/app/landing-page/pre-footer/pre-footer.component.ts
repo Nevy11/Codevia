@@ -13,11 +13,9 @@ export class PreFooterComponent {
   router = inject(Router);
 
   login() {
-    console.log('Login button clicked');
     this.router.navigate(['login']);
   }
   signUp() {
-    console.log('Sign Up button clicked');
     this.router.navigate(['signup']);
   }
 }

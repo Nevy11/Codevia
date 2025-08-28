@@ -75,10 +75,5 @@ export class UserStatsComponent implements OnInit {
       (this.coursesCompleted / this.totalCoursesEnrolled) * 100
     );
     this.videoThumbnails = await this.supabaseService.getAllVideoThumbnails();
-    if (this.videoThumbnails) {
-      console.log('Video thumbnails are returned: ', this.videoThumbnails);
-    } else {
-      console.log('No video thumbnails found');
-    }
   }
 }

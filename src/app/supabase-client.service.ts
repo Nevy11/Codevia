@@ -71,7 +71,6 @@ export class SupabaseClientService {
       console.error('Error deleting profile:', error);
       return false;
     } else {
-      console.log('Deleted profile:', data);
       return true;
     }
   }
@@ -113,7 +112,6 @@ export class SupabaseClientService {
       avatarUrl: data.avatar_url,
     };
 
-    console.log('Fetched profile:', profile);
     return profile;
   }
 
@@ -125,7 +123,6 @@ export class SupabaseClientService {
       console.error('Error fetching all profiles:', error);
       return [];
     }
-    console.log('All profiles:', data);
     return data;
   }
   // Update profile
@@ -137,7 +134,6 @@ export class SupabaseClientService {
       console.error('No logged-in user found');
       return null;
     }
-    console.log(avatar_url);
 
     const { data, error } = await this.client
       .from('profiles')
@@ -162,7 +158,6 @@ export class SupabaseClientService {
       return null;
     }
 
-    console.log('Updated profile:', data);
     return data;
   }
 
@@ -174,7 +169,6 @@ export class SupabaseClientService {
       console.error('Logout error:', error.message);
       return false;
     } else {
-      console.log('sign out successful');
       return true;
     }
   }
@@ -202,11 +196,9 @@ export class SupabaseClientService {
     }
 
     if (data === null) {
-      // console.log('First time user');
       return true;
     }
 
-    // console.log('Not a first time user');
     return false;
   }
 
@@ -497,7 +489,6 @@ export class SupabaseClientService {
       return null;
     }
 
-    console.log('Folder created/updated:', data[0]);
     return data[0];
   }
 }

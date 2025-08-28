@@ -30,6 +30,5 @@ export class SettingsComponent implements OnInit {
     });
 
     this.isFirstTime = await this.supabaseService.isFirstTimeProfileUpdate();
-    console.log(`Is first time login: ${this.isFirstTime}`);
   }
 }

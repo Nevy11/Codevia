@@ -37,14 +37,11 @@ export class VideoDialogComponent implements OnInit {
   }
 
   signUp() {
-    console.log('Starting closing btns');
     try {
       this.dialog.closeAll();
-      console.log('Dialogs closed');
     } catch (e) {
       console.error('Error while closing dialogs', e);
     }
     this.router.navigate(['signup']);
-    console.log('Finished');
   }
 }

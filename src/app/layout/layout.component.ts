@@ -102,7 +102,6 @@ export class LayoutComponent implements OnInit {
       this.profileService.name$.subscribe((name) => {
         this.username = name;
       });
-      console.log('updating the profile signals complete');
     } else {
       console.error('Error while updating the signals');
     }

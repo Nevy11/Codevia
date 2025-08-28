@@ -45,7 +45,6 @@ export class AppComponent {
 
           this.ngZone.run(() => {
             if (!error) {
-              console.log('Session restored:', data);
               window.history.replaceState({}, document.title, '/layout/home');
               this.router.navigate(['/layout/home']);
             }
@@ -55,7 +54,6 @@ export class AppComponent {
         const { data } = await this.supabase.client.auth.getSession();
         this.ngZone.run(() => {
           if (data.session) {
-            console.log('User already logged in');
             this.router.navigate(['/layout/home']);
           }
         });

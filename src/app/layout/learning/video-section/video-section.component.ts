@@ -77,10 +77,7 @@ export class VideoSectionComponent
       return;
     }
     this.videoId = this.my_videos[this.my_videos.length - 1].video_id;
-    console.log('My videos: ', this.my_videos);
-    console.log('Video id on init: ', this.videoId);
     this.user_id = (await this.supabaseService.getCurrentUserId()) || '';
-    console.log('User id: ', this.user_id);
     if (this.my_videos.length > 0) {
       this.videoId = this.my_videos[this.my_videos.length - 1].video_id;
     } else {
@@ -125,7 +122,6 @@ export class VideoSectionComponent
 
   async ngOnDestroy() {
     if (this.videoId) {
-      console.log('Video id on destroy: ', this.videoId);
       if (this.player && typeof this.player.getCurrentTime === 'function') {
         const currentTime = Math.floor(this.player.getCurrentTime());
         const video_data: VideoSaving = {
@@ -138,7 +134,6 @@ export class VideoSectionComponent
     }
   }
   private async createPlayer() {
-    console.log('Creating YouTube Player...');
     const video_data: GetVideo = {
       userId: this.user_id,
       videoId: this.videoId!,
@@ -149,7 +144,6 @@ export class VideoSectionComponent
     this.my_videos = await this.supabaseService.getUserVideos();
     const savedTime =
       this.my_videos[this.my_videos.length - 1].playback_position;
-    console.log('Saved time: ', savedTime);
     this.player = new (window as any).YT.Player(
       this.youtubePlayer.nativeElement,
       {
@@ -168,8 +162,6 @@ export class VideoSectionComponent
           },
           onStateChange: async (event: any) => {
             if (event.data === YT.PlayerState.ENDED) {
-              console.log('✅ Video finished!');
-
               await this.markCourseCompleted();
               await this.clear_save_time();
             }
@@ -189,7 +181,6 @@ export class VideoSectionComponent
           const progress = (currentTime / duration) * 100;
 
           if (progress >= 98 && !this.is_course_completed) {
-            console.log('🚀 User reached 98% of the video');
             this.markCourseCompleted();
             clearInterval(interval); // stop checking
           }
