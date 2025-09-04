@@ -12,6 +12,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTreeModule } from '@angular/material/tree';
 import { SupabaseClientService } from '../../../supabase-client.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { PythonRunnerService } from '../../../python-runner.service';
 
 @Component({
   selector: 'nevy11-code-editor-section',
@@ -31,10 +32,12 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 })
 export class CodeEditorSectionComponent implements OnInit {
   isBrowser = false;
-  code: string = `// Write your code here`;
+  code: string = `print("Hello, World!")`;
+  result: string = '';
   private themechangeService = inject(ThemeChangeService);
   private supabaseService = inject(SupabaseClientService);
   private matsnackbar = inject(MatSnackBar);
+  private pythonService = inject(PythonRunnerService);
   editorOptions = {
     theme: 'vs-dark',
     language: 'javascript',
@@ -57,15 +60,22 @@ export class CodeEditorSectionComponent implements OnInit {
       };
     });
   }
-  runCode() {
-    this.matsnackbar.open('This button is yet to be implemented', 'Close', {
-      duration: 2000,
-    });
+  async runCode() {
+    // this.matsnackbar.open('This button is yet to be implemented', 'Close', {
+    //   duration: 2000,
+    // });
+    if (this.isBrowser) {
+      console.log('Running code: ', this.code);
+      this.result = await this.pythonService.sendPythonCode(this.code);
+      console.log('result: ', this.result);
+      this.matsnackbar.open('Code executed', 'Close', { duration: 2000 });
+    } else {
+      this.matsnackbar.open('This button is yet to be implemented', 'Close', {
+        duration: 2000,
+      });
+    }
   }
   resetCode() {
-    this.matsnackbar.open('This button is yet to be implemented', 'Close', {
-      duration: 2000,
-    });
     this.code = `// Write your code here`;
   }
   downloadCode() {

@@ -72,6 +72,9 @@ export class VideoSectionComponent
   }
 
   async ngOnInit(): Promise<void> {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
     this.my_videos = await this.supabaseService.getUserVideos();
     if (!this.videoId && this.my_videos.length > 0) {
       return;
