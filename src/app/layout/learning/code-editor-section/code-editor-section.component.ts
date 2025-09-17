@@ -65,9 +65,20 @@ export class CodeEditorSectionComponent implements OnInit {
     //   duration: 2000,
     // });
     if (this.isBrowser) {
-      console.log('Running code: ', this.code);
-      this.result = await this.pythonService.sendPythonCode(this.code);
-      console.log('result: ', this.result);
+      const worker = new Worker(
+        new URL('./code-editor-section.worker', import.meta.url)
+      );
+      worker.postMessage(this.code);
+      worker.onmessage = ({ data }) => {
+        if (data.success) {
+          console.log('Result:', data.result); // 4
+        } else {
+          console.error('Error:', data.error);
+        }
+      };
+      // console.log('Running code: ', this.code);
+      // this.result = await this.pythonService.sendPythonCode(this.code);
+      // console.log('result: ', this.result);
       this.matsnackbar.open('Code executed', 'Close', { duration: 2000 });
     } else {
       this.matsnackbar.open('This button is yet to be implemented', 'Close', {
@@ -116,3 +127,17 @@ const EXAMPLE_DATA: Folders[] = [
     ],
   },
 ];
+
+if (typeof Worker !== 'undefined') {
+  // Create a new
+  const worker = new Worker(
+    new URL('./code-editor-section.worker', import.meta.url)
+  );
+  worker.onmessage = ({ data }) => {
+    console.log(`page got message: ${data}`);
+  };
+  worker.postMessage('hello');
+} else {
+  // Web Workers are not supported in this environment.
+  // You should add a fallback so that your program still executes correctly.
+}
