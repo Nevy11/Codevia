@@ -12,7 +12,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTreeModule } from '@angular/material/tree';
 import { SupabaseClientService } from '../../../supabase-client.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { PythonRunnerService } from '../../../python-runner.service';
 
 @Component({
   selector: 'nevy11-code-editor-section',
@@ -32,12 +31,11 @@ import { PythonRunnerService } from '../../../python-runner.service';
 })
 export class CodeEditorSectionComponent implements OnInit {
   isBrowser = false;
-  code: string = `print("Hello, World!")`;
+  code: string = `console.log("Hello world")`;
   result: string = '';
   private themechangeService = inject(ThemeChangeService);
   private supabaseService = inject(SupabaseClientService);
   private matsnackbar = inject(MatSnackBar);
-  private pythonService = inject(PythonRunnerService);
   editorOptions = {
     theme: 'vs-dark',
     language: 'javascript',
@@ -71,15 +69,19 @@ export class CodeEditorSectionComponent implements OnInit {
       worker.postMessage(this.code);
       worker.onmessage = ({ data }) => {
         if (data.success) {
-          console.log('Result:', data.result); // 4
+          this.matsnackbar.open(`${data.output}`, 'Close', {
+            duration: 2000,
+          });
+          console.log('Result:', data.output); // 4
         } else {
+          this.matsnackbar.open(
+            `Error while executing code: ${data.error}`,
+            'Close',
+            { duration: 2000 }
+          );
           console.error('Error:', data.error);
         }
       };
-      // console.log('Running code: ', this.code);
-      // this.result = await this.pythonService.sendPythonCode(this.code);
-      // console.log('result: ', this.result);
-      this.matsnackbar.open('Code executed', 'Close', { duration: 2000 });
     } else {
       this.matsnackbar.open('This button is yet to be implemented', 'Close', {
         duration: 2000,
@@ -127,17 +129,3 @@ const EXAMPLE_DATA: Folders[] = [
     ],
   },
 ];
-
-if (typeof Worker !== 'undefined') {
-  // Create a new
-  const worker = new Worker(
-    new URL('./code-editor-section.worker', import.meta.url)
-  );
-  worker.onmessage = ({ data }) => {
-    console.log(`page got message: ${data}`);
-  };
-  worker.postMessage('hello');
-} else {
-  // Web Workers are not supported in this environment.
-  // You should add a fallback so that your program still executes correctly.
-}
