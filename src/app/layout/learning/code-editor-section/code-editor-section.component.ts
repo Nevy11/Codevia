@@ -31,7 +31,16 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 })
 export class CodeEditorSectionComponent implements OnInit {
   isBrowser = false;
-  code: string = `console.log("Hello world")`;
+  code: string = `
+ 
+  let x = 5;
+  let y = 10;
+  console.log("Sum:", x + y);
+  z = x * y;
+  console.log("z: ", z)
+
+  
+  `;
   result: string = '';
   private themechangeService = inject(ThemeChangeService);
   private supabaseService = inject(SupabaseClientService);
@@ -69,10 +78,12 @@ export class CodeEditorSectionComponent implements OnInit {
       worker.postMessage(this.code);
       worker.onmessage = ({ data }) => {
         if (data.success) {
-          this.matsnackbar.open(`${data.output}`, 'Close', {
+          let output = data.logs.join('\n');
+          this.matsnackbar.open(`${output}`, 'Close', {
             duration: 2000,
           });
-          console.log('Result:', data.output); // 4
+          console.log('', data.logs);
+          console.log('Result:', data); // 4
         } else {
           this.matsnackbar.open(
             `Error while executing code: ${data.error}`,
