@@ -32,14 +32,11 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 export class CodeEditorSectionComponent implements OnInit {
   isBrowser = false;
   code: string = `
- 
   let x = 5;
   let y = 10;
   console.log("Sum:", x + y);
   z = x * y;
   console.log("z: ", z)
-
-  
   `;
   result: string = '';
   private themechangeService = inject(ThemeChangeService);
