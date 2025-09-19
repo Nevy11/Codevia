@@ -12,6 +12,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTreeModule } from '@angular/material/tree';
 import { SupabaseClientService } from '../../../supabase-client.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TerminalComponent } from './terminal/terminal.component';
 
 @Component({
   selector: 'nevy11-code-editor-section',
@@ -25,6 +26,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatToolbarModule,
     MatTreeModule,
     MatTooltipModule,
+    TerminalComponent,
   ],
   templateUrl: './code-editor-section.component.html',
   styleUrl: './code-editor-section.component.scss',
@@ -39,6 +41,7 @@ export class CodeEditorSectionComponent implements OnInit {
   console.log("z: ", z)
   `;
   result: string = '';
+  logs: string[] = [];
   private themechangeService = inject(ThemeChangeService);
   private supabaseService = inject(SupabaseClientService);
   private matsnackbar = inject(MatSnackBar);
@@ -76,10 +79,12 @@ export class CodeEditorSectionComponent implements OnInit {
       worker.onmessage = ({ data }) => {
         if (data.success) {
           let output = data.logs.join('\n');
+          this.logs = data.logs;
           this.matsnackbar.open(`${output}`, 'Close', {
             duration: 2000,
           });
           console.log('', data.logs);
+
           console.log('Result:', data); // 4
         } else {
           this.matsnackbar.open(

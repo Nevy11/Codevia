@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'nevy11-terminal',
   imports: [],
   templateUrl: './terminal.component.html',
-  styleUrl: './terminal.component.scss'
+  styleUrl: './terminal.component.scss',
 })
 export class TerminalComponent {
-
+  @Input() logs: string[] = [];
 }
