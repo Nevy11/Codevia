@@ -106,6 +106,8 @@
       <span class="spacer"></span>
       <button mat-flat-button color="warn" (click)="runCode()">Run Code</button>
     </div>
+    <div>
+      <nevy11-terminal [logs]="this.logs"></nevy11-terminal>
+    </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
-<nevy11-terminal [logs]="this.logs"></nevy11-terminal>
