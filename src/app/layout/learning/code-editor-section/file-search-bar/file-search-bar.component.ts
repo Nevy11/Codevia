@@ -30,7 +30,10 @@ export class FileSearchBarComponent implements OnInit {
   }
   onSearch() {
     console.log('Search term:', this.searchQuery);
-    this.found = this.codeEditorService.findFolder(this.data, this.searchQuery);
+    this.found = this.codeEditorService.findFolderOrFile(
+      this.data,
+      this.searchQuery
+    );
     console.log('Found:', this.found);
   }
 
