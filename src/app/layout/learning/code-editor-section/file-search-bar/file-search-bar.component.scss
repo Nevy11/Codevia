@@ -1,0 +1,14 @@
+.search-container {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.search-field {
+  width: 100%;
+  max-width: 400px;
+}
+
+mat-form-field {
+  border-radius: 8px;
+}

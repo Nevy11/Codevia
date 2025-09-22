@@ -13,6 +13,7 @@ import { MatTreeModule } from '@angular/material/tree';
 import { SupabaseClientService } from '../../../supabase-client.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TerminalComponent } from './terminal/terminal.component';
+import { FileSearchBarComponent } from './file-search-bar/file-search-bar.component';
 
 @Component({
   selector: 'nevy11-code-editor-section',
@@ -27,6 +28,7 @@ import { TerminalComponent } from './terminal/terminal.component';
     MatTreeModule,
     MatTooltipModule,
     TerminalComponent,
+    FileSearchBarComponent,
   ],
   templateUrl: './code-editor-section.component.html',
   styleUrl: './code-editor-section.component.scss',
