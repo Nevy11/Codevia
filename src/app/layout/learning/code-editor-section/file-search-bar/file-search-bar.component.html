@@ -7,13 +7,11 @@
       [(ngModel)]="searchQuery"
       (keyup.enter)="onSearch()"
     />
-    <button
-      mat-icon-button
-      matSuffix
-      *ngIf="searchQuery"
-      (click)="clearSearch()"
-    >
+
+    @if (searchQuery) {
+    <button mat-icon-button matSuffix (click)="clearSearch()">
       <mat-icon>close</mat-icon>
     </button>
+    }
   </mat-form-field>
 </div>

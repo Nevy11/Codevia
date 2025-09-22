@@ -6,6 +6,7 @@ import { Folders } from './folders';
 })
 export class CodeEditorSectionService {
   findFolder(data: Folders[], targetName: string): Folders | null {
+    console.log('folders data: ', data);
     for (const folder of data) {
       if (folder.name === targetName) return folder;
       if (folder.children) {
@@ -36,4 +37,31 @@ export class CodeEditorSectionService {
 
     return parentFolder.children.length !== initialLength;
   }
+
+  get_initial_data(): Folders[] {
+    return EXAMPLE_DATA;
+  }
 }
+const EXAMPLE_DATA: Folders[] = [
+  {
+    name: 'CodeVia',
+    children: [
+      { name: 'Python.py' },
+      { name: 'javascript.js' },
+      { name: 'typescript.ts' },
+    ],
+  },
+  {
+    name: 'lessons',
+    children: [
+      {
+        name: 'week1',
+        children: [{ name: 'intro.sh' }, { name: 'loop.sh' }],
+      },
+      {
+        name: 'week2',
+        children: [{ name: 'if.sh' }, { name: 'switch.sh' }],
+      },
+    ],
+  },
+];

@@ -14,6 +14,7 @@ import { SupabaseClientService } from '../../../supabase-client.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TerminalComponent } from './terminal/terminal.component';
 import { FileSearchBarComponent } from './file-search-bar/file-search-bar.component';
+import { CodeEditorSectionService } from './code-editor-section.service';
 
 @Component({
   selector: 'nevy11-code-editor-section',
@@ -35,6 +36,7 @@ import { FileSearchBarComponent } from './file-search-bar/file-search-bar.compon
 })
 export class CodeEditorSectionComponent implements OnInit {
   isBrowser = false;
+
   code: string = `
   let x = 5;
   let y = 10;
@@ -47,13 +49,15 @@ export class CodeEditorSectionComponent implements OnInit {
   private themechangeService = inject(ThemeChangeService);
   private supabaseService = inject(SupabaseClientService);
   private matsnackbar = inject(MatSnackBar);
+  private codeEditorService = inject(CodeEditorSectionService);
+  initial_data: Folders[] = this.codeEditorService.get_initial_data();
   editorOptions = {
     theme: 'vs-dark',
     language: 'javascript',
     automaticLayout: true,
   };
   themeSub: any;
-  dataSource = EXAMPLE_DATA;
+  dataSource = this.codeEditorService.get_initial_data();
   childrenAccessor = (node: Folders) => node.children ?? [];
   hasChild = (_: number, node: Folders) =>
     !!node.children && node.children.length > 0;
@@ -120,27 +124,3 @@ export class CodeEditorSectionComponent implements OnInit {
     await this.supabaseService.createOrUpdateFolder('New Folder');
   }
 }
-
-const EXAMPLE_DATA: Folders[] = [
-  {
-    name: 'CodeVia',
-    children: [
-      { name: 'Python.py' },
-      { name: 'javascript.js' },
-      { name: 'typescript.ts' },
-    ],
-  },
-  {
-    name: 'lessons',
-    children: [
-      {
-        name: 'week1',
-        children: [{ name: 'intro.sh' }, { name: 'loop.sh' }],
-      },
-      {
-        name: 'week2',
-        children: [{ name: 'if.sh' }, { name: 'switch.sh' }],
-      },
-    ],
-  },
-];
