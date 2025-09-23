@@ -6,6 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { CodeEditorSectionService } from '../code-editor-section.service';
 import { Folders } from '../folders';
+import { MatListModule } from '@angular/material/list';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'nevy11-file-search-bar',
@@ -15,29 +17,70 @@ import { Folders } from '../folders';
     MatFormFieldModule,
     MatButtonModule,
     FormsModule,
+    MatListModule,
+    CommonModule,
   ],
   templateUrl: './file-search-bar.component.html',
   styleUrl: './file-search-bar.component.scss',
 })
 export class FileSearchBarComponent implements OnInit {
+  // searchQuery: string = '';
+  // found!: any;
+  // private codeEditorService = inject(CodeEditorSectionService);
+
+  // data = this.codeEditorService.get_initial_data();
+  // ngOnInit(): void {
+  //   console.log('Input data:', this.data);
+  // }
+  // onSearch() {
+  //   console.log('Search term:', this.searchQuery);
+  //   this.found = this.codeEditorService.findFolderOrFile(
+  //     this.data,
+  //     this.searchQuery
+  //   );
+  //   console.log('Found:', this.found);
+  // }
+
+  // clearSearch() {
+  //   this.searchQuery = '';
+  // }
+
+  // selectResult(result: string) {
+  //   console.log('Selected file:', result);
+  // }
   searchQuery: string = '';
-  found!: any;
+  foundResults: any[] = []; // Now supports multiple search results
+
   private codeEditorService = inject(CodeEditorSectionService);
 
   data = this.codeEditorService.get_initial_data();
+
   ngOnInit(): void {
     console.log('Input data:', this.data);
   }
+
   onSearch() {
     console.log('Search term:', this.searchQuery);
-    this.found = this.codeEditorService.findFolderOrFile(
+
+    // Call your service function to search
+    const result = this.codeEditorService.findFolderOrFile(
       this.data,
       this.searchQuery
     );
-    console.log('Found:', this.found);
+
+    console.log('Found:', result);
+
+    // If the service returns a single object, wrap it in an array
+    this.foundResults = result ? [result] : [];
   }
 
   clearSearch() {
     this.searchQuery = '';
+    this.foundResults = [];
+  }
+
+  selectResult(result: any) {
+    console.log('Selected file:', result);
+    // Optional: do something when a file is selected
   }
 }

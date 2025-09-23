@@ -6,14 +6,14 @@
 
 .search-field {
   width: 100%;
-  max-width: 400px;
+  // max-width: 400px;
 }
 
 mat-form-field {
   border-radius: 8px;
 }
 .search-container {
-  width: 300px;
+  // width: 300px;
   margin: 0 auto;
   position: relative;
 }
@@ -33,8 +33,15 @@ mat-form-field {
   cursor: pointer;
 }
 
+// .search-results mat-list-item:hover {
+//   background-color: rgb(192, 76, 61);
+// }
 .no-results {
   margin-top: 8px;
   text-align: center;
   font-size: 14px;
 }
+
+// .result-container {
+//   background-color: rgb(80, 133, 83);
+// }
