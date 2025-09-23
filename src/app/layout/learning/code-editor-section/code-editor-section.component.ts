@@ -86,9 +86,9 @@ export class CodeEditorSectionComponent implements OnInit {
         if (data.success) {
           let output = data.logs.join('\n');
           this.logs = data.logs;
-          this.matsnackbar.open(`${output}`, 'Close', {
-            duration: 2000,
-          });
+          // this.matsnackbar.open(`${output}`, 'Close', {
+          //   duration: 2000,
+          // });
           console.log('', data.logs);
 
           console.log('Result:', data); // 4
