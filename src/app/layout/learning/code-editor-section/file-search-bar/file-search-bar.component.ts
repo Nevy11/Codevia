@@ -24,30 +24,6 @@ import { CommonModule } from '@angular/common';
   styleUrl: './file-search-bar.component.scss',
 })
 export class FileSearchBarComponent implements OnInit {
-  // searchQuery: string = '';
-  // found!: any;
-  // private codeEditorService = inject(CodeEditorSectionService);
-
-  // data = this.codeEditorService.get_initial_data();
-  // ngOnInit(): void {
-  //   console.log('Input data:', this.data);
-  // }
-  // onSearch() {
-  //   console.log('Search term:', this.searchQuery);
-  //   this.found = this.codeEditorService.findFolderOrFile(
-  //     this.data,
-  //     this.searchQuery
-  //   );
-  //   console.log('Found:', this.found);
-  // }
-
-  // clearSearch() {
-  //   this.searchQuery = '';
-  // }
-
-  // selectResult(result: string) {
-  //   console.log('Selected file:', result);
-  // }
   searchQuery: string = '';
   foundResults: any[] = []; // Now supports multiple search results
 
@@ -55,9 +31,7 @@ export class FileSearchBarComponent implements OnInit {
 
   data = this.codeEditorService.get_initial_data();
 
-  ngOnInit(): void {
-    console.log('Input data:', this.data);
-  }
+  ngOnInit(): void {}
 
   onSearch() {
     console.log('Search term:', this.searchQuery);
@@ -72,6 +46,10 @@ export class FileSearchBarComponent implements OnInit {
 
     // If the service returns a single object, wrap it in an array
     this.foundResults = result ? [result] : [];
+
+    if (result) {
+      this.codeEditorService.setSearchResults(this.foundResults.length);
+    }
   }
 
   clearSearch() {

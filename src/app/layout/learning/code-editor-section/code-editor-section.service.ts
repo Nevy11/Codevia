@@ -5,18 +5,7 @@ import { Folders } from './folders';
   providedIn: 'root',
 })
 export class CodeEditorSectionService {
-  // findFolder(data: Folders[], targetName: string): Folders | null {
-  //   console.log('folders data: ', data);
-  //   for (const folder of data) {
-  //     if (folder.name.toLowerCase() === targetName.toLowerCase()) return folder;
-  //     if (folder.children) {
-  //       const found = this.findFolder(folder.children, targetName);
-  //       if (found) return found;
-  //     }
-  //   }
-  //   return null;
-  // }
-
+  private search_results = 0;
   findFolderOrFile(
     data: Folders[],
     targetName: string
@@ -89,6 +78,14 @@ export class CodeEditorSectionService {
 
   get_initial_data(): Folders[] {
     return EXAMPLE_DATA;
+  }
+
+  setSearchResults(results: number) {
+    this.search_results = results;
+  }
+
+  getSearchResults() {
+    return this.search_results;
   }
 }
 const EXAMPLE_DATA: Folders[] = [

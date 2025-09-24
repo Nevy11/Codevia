@@ -14,20 +14,18 @@
     </button>
     }
   </mat-form-field>
-  <div class="result-container">
-    @if (foundResults.length > 0) {
-    <div class="search-results result-container">
-      <mat-list>
-        @for (item of foundResults; track item) {
-        <mat-list-item (click)="selectResult(item)">
-          {{ item.name }}
-        </mat-list-item>
-        }
-      </mat-list>
-    </div>
-    } @if (searchQuery && foundResults.length === 0) {
-    <!-- No result message -->
-    <div class="no-results">No results found</div>
-    }
+  @if (foundResults.length > 0) {
+  <div class="search-results">
+    <mat-list>
+      @for (item of foundResults; track item) {
+      <mat-list-item (click)="selectResult(item)">
+        {{ item.name }}
+      </mat-list-item>
+      }
+    </mat-list>
   </div>
+  } @if (searchQuery && foundResults.length === 0) {
+  <!-- No result message -->
+  <div class="no-results">No results found</div>
+  }
 </div>

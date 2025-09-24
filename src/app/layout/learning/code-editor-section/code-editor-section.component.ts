@@ -35,8 +35,12 @@ import { CodeEditorSectionService } from './code-editor-section.service';
   styleUrl: './code-editor-section.component.scss',
 })
 export class CodeEditorSectionComponent implements OnInit {
+  private themechangeService = inject(ThemeChangeService);
+  private supabaseService = inject(SupabaseClientService);
+  private matsnackbar = inject(MatSnackBar);
+  private codeEditorService = inject(CodeEditorSectionService);
   isBrowser = false;
-
+  number_of_search_results = this.codeEditorService.getSearchResults();
   code: string = `
   let x = 5;
   let y = 10;
@@ -46,10 +50,7 @@ export class CodeEditorSectionComponent implements OnInit {
   `;
   result: string = '';
   logs: string[] = [];
-  private themechangeService = inject(ThemeChangeService);
-  private supabaseService = inject(SupabaseClientService);
-  private matsnackbar = inject(MatSnackBar);
-  private codeEditorService = inject(CodeEditorSectionService);
+
   initial_data: Folders[] = this.codeEditorService.get_initial_data();
   editorOptions = {
     theme: 'vs-dark',
