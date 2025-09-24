@@ -42,13 +42,7 @@
     <div>
       <nevy11-file-search-bar></nevy11-file-search-bar>
     </div>
-    @if (number_of_search_results == 1) {
-    <div class="search-results-info-container">
-      <div class="search-results-info">
-        {{ number_of_search_results }} search result found
-      </div>
-    </div>
-    }
+
     <mat-tree
       #tree
       [dataSource]="dataSource"
