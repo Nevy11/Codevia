@@ -25,7 +25,7 @@ import { CommonModule } from '@angular/common';
 })
 export class FileSearchBarComponent implements OnInit {
   searchQuery: string = '';
-  foundResults: any[] = []; // Now supports multiple search results
+  foundResults: any[] = [];
 
   private codeEditorService = inject(CodeEditorSectionService);
 

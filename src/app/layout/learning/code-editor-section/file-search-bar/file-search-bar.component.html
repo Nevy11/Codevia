@@ -5,7 +5,7 @@
       matInput
       placeholder="Search..."
       [(ngModel)]="searchQuery"
-      (keyup.enter)="onSearch()"
+      (keyup)="onSearch()"
     />
 
     @if (searchQuery) {
@@ -14,7 +14,7 @@
     </button>
     }
   </mat-form-field>
-  @if (foundResults.length > 0) {
+  @if (searchQuery) { @if (foundResults.length > 0) {
   <div class="search-results">
     <mat-list>
       @for (item of foundResults; track item) {
@@ -24,7 +24,7 @@
       }
     </mat-list>
   </div>
-  } @if (searchQuery && foundResults.length === 0) {
+  } } @if (searchQuery && foundResults.length === 0) {
   <!-- No result message -->
   <div class="no-results">No results found</div>
   }
