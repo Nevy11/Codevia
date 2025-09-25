@@ -116,14 +116,29 @@ export class CodeEditorSectionComponent implements OnInit {
       duration: 2000,
     });
   }
-  new_file() {
-    this.matsnackbar.open('This button is yet to be implemented', 'Close', {
-      duration: 2000,
+  newFile() {
+    const success = this.codeEditorService.createNewFile(this.dataSource);
+
+    if (!success) {
+      this.matsnackbar.open('Select a valid folder first!', 'Close', {
+        duration: 2000,
+      });
+      return;
+    }
+
+    // Refresh UI
+    this.dataSource = [...this.dataSource];
+
+    this.matsnackbar.open('New file placeholder created', 'Close', {
+      duration: 1500,
     });
   }
+
   async new_folder() {
     await this.supabaseService.createOrUpdateFolder('New Folder');
   }
+
+  // A function to add custom keybindings to the monaco editor
   async onEditorInit(editor: any) {
     if (!this.isBrowser) {
       return; // Prevent Monaco code from running on the server
@@ -138,5 +153,85 @@ export class CodeEditorSectionComponent implements OnInit {
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
       this.runCode();
     });
+  }
+
+  /// a function to read the name of the folder selected
+  onNodeToggle(node: Folders, isExpanded: boolean) {
+    if (!isExpanded) {
+      // This means the node is about to open
+      console.log('Node opened:', node.name);
+      this.codeEditorService.setfolder_name_selected(node.name);
+      this.matsnackbar.open(`Opened folder: ${node.name}`, 'Close', {
+        duration: 2000,
+      });
+    } else {
+      // This means the node is about to close
+      console.log('Node closed:', node.name);
+      this.matsnackbar.open(`Closed folder: ${node.name}`, 'Close', {
+        duration: 2000,
+      });
+    }
+  }
+
+  // finishEditing(node: Folders) {
+  //   if (!node.name.trim()) {
+  //     this.matsnackbar.open('File name cannot be empty', 'Close', {
+  //       duration: 2000,
+  //     });
+  //     return;
+  //   }
+
+  //   node.isEditing = false;
+
+  //   // Update FileData entry
+  //   const fileType = node.name.includes('.')
+  //     ? node.name.split('.').pop() || ''
+  //     : '';
+
+  //   // this.codeEditorService.updateFileData(node.name, fileType);
+
+  //   this.matsnackbar.open(`File "${node.name}" created successfully`, 'Close', {
+  //     duration: 2000,
+  //   });
+  // }
+
+  finishEditing(node: Folders) {
+    // Validate the file name
+    if (!node.name || !node.name.trim()) {
+      this.matsnackbar.open('File name cannot be empty.', 'Close', {
+        duration: 2000,
+      });
+      return;
+    }
+
+    // Split file name into name and extension
+    const parts = node.name.trim().split('.');
+    const fileType = parts.length > 1 ? parts.pop()! : 'txt'; // default to txt if no extension
+    const fileNameWithoutExt = parts.join('.');
+
+    const success = this.codeEditorService.finalizeNewFile(
+      this.dataSource,
+      fileNameWithoutExt,
+      fileType
+    );
+
+    if (success) {
+      this.matsnackbar.open(
+        `File "${node.name}" created successfully.`,
+        'Close',
+        {
+          duration: 2000,
+        }
+      );
+      this.dataSource = [...this.dataSource]; // Refresh the tree view
+    } else {
+      this.matsnackbar.open(
+        'Failed to create file. Please select a valid folder.',
+        'Close',
+        {
+          duration: 2000,
+        }
+      );
+    }
   }
 }

@@ -1,16 +1,3 @@
-<!-- @if (isBrowser) {
-<ngx-monaco-editor
-  [(ngModel)]="code"
-  [options]="editorOptions"
-></ngx-monaco-editor>
-}
-<div class="btn">
-  <button mat-flat-button (click)="downloadCode()">Download Code</button>
-  <span class="spacer"></span>
-  <button mat-flat-button (click)="resetCode()">Reset Code</button>
-  <span class="spacer"></span>
-  <button mat-flat-button (click)="runCode()">Run Code</button>
-</div> -->
 <mat-sidenav-container class="editor-container">
   <!-- Collapsible side navigation -->
   <mat-sidenav #sidenav mode="side" opened class="sidenav">
@@ -20,7 +7,7 @@
       <!-- <span> -->
       <button
         mat-icon-button
-        (click)="new_file()"
+        (click)="newFile()"
         matTooltip="New File"
         matTooltipPosition="above"
       >
@@ -48,15 +35,28 @@
       [dataSource]="dataSource"
       [childrenAccessor]="childrenAccessor"
     >
-      <!-- This is the tree node template for leaf nodes -->
+      <!-- Leaf node template -->
       <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
-        <!-- use a disabled button to provide padding for tree leaf -->
         <button matIconButton>
           <mat-icon>insert_drive_file</mat-icon>
         </button>
-        {{ node.name }}
+        @if (node.isEditing) {
+        <input
+          [(ngModel)]="node.name"
+          (blur)="finishEditing(node)"
+          (keyup.enter)="finishEditing(node)"
+          placeholder="Enter file name"
+          autofocus
+        />
+        }
+
+        <!-- Show file name normally -->
+        @if (!node.isEditing) {
+        <span> {{ node.name }} </span>
+        }
       </mat-tree-node>
-      <!-- This is the tree node template for expandable nodes -->
+
+      <!-- Expandable node template -->
       <mat-tree-node
         *matTreeNodeDef="let node; when: hasChild"
         matTreeNodePadding
@@ -67,6 +67,7 @@
           matIconButton
           matTreeNodeToggle
           [attr.aria-label]="'Toggle ' + node.name"
+          (click)="onNodeToggle(node, tree.isExpanded(node))"
         >
           <mat-icon class="mat-icon-rtl-mirror">
             {{ tree.isExpanded(node) ? "expand_more" : "chevron_right" }}

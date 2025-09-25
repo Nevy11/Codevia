@@ -1,3 +1,4 @@
+// File data interface for specific file details
 export interface FileData {
   folder_name: string;
   file_name: string;
