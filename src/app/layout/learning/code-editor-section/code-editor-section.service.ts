@@ -111,3 +111,10 @@ const EXAMPLE_DATA: Folders[] = [
     ],
   },
 ];
+
+// Today's task
+// 1. ctrl + enter => run code
+// 2. ctrl + s => save code
+// 3. ctrl + f => find in file
+// in monaco code editor
+// Create a method to add new files and folders

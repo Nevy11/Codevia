@@ -96,6 +96,7 @@
     <ngx-monaco-editor
       [(ngModel)]="code"
       [options]="editorOptions"
+      (onInit)="onEditorInit($event)"
     ></ngx-monaco-editor>
     }
 
