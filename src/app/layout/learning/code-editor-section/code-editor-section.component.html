@@ -45,6 +45,7 @@
           [(ngModel)]="node.name"
           (blur)="finishEditing(node)"
           (keyup.enter)="finishEditing(node)"
+          (keyup.escape)="cancelEditing(node)"
           placeholder="Enter file name"
           autofocus
         />

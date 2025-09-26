@@ -118,17 +118,14 @@ export class CodeEditorSectionComponent implements OnInit {
   }
   newFile() {
     const success = this.codeEditorService.createNewFile(this.dataSource);
-
     if (!success) {
       this.matsnackbar.open('Select a valid folder first!', 'Close', {
         duration: 2000,
       });
       return;
     }
-
     // Refresh UI
     this.dataSource = [...this.dataSource];
-
     this.matsnackbar.open('New file placeholder created', 'Close', {
       duration: 1500,
     });
@@ -194,6 +191,18 @@ export class CodeEditorSectionComponent implements OnInit {
   //     duration: 2000,
   //   });
   // }
+
+  cancelEditing(node: Folders) {
+    // Remove placeholder if user cancels
+    const folder = this.codeEditorService.findFolderOrFile(
+      this.dataSource,
+      this.codeEditorService.getfolder_name_selected()
+    );
+    if (folder?.children) {
+      folder.children = folder.children.filter((child) => child !== node);
+      this.dataSource = [...this.dataSource];
+    }
+  }
 
   finishEditing(node: Folders) {
     // Validate the file name

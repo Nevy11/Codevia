@@ -214,16 +214,7 @@ export class CodeEditorSectionService {
       isEditing: true, // <-- UI will display editable input
     });
 
-    // Also create placeholder metadata
-    const newFileData: FileData = {
-      folder_name: folderName,
-      file_name: '',
-      file_type: '',
-      lines: [],
-    };
-
-    this.fileDataList.push(newFileData);
-
+    // ❌ Do NOT add metadata here anymore
     return true;
   }
 
@@ -343,3 +334,5 @@ const EXAMPLE_DATA: Folders[] = [
     ],
   },
 ];
+
+//  When someone clicks a file it creates the file two times
