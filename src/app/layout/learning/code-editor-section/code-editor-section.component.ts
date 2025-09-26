@@ -204,20 +204,30 @@ export class CodeEditorSectionComponent implements OnInit {
     }
   }
 
+  private editingInProgress = false;
+
   finishEditing(node: Folders) {
+    // If already processing, do nothing
+    if (this.editingInProgress) return;
+    this.editingInProgress = true;
+
     // Validate the file name
     if (!node.name || !node.name.trim()) {
       this.matsnackbar.open('File name cannot be empty.', 'Close', {
         duration: 2000,
       });
+      this.editingInProgress = false;
       return;
     }
 
-    // Split file name into name and extension
-    const parts = node.name.trim().split('.');
-    const fileType = parts.length > 1 ? parts.pop()! : 'txt'; // default to txt if no extension
-    const fileNameWithoutExt = parts.join('.');
+    // Extract file name and type
+    const lastDotIndex = node.name.lastIndexOf('.');
+    const fileNameWithoutExt =
+      lastDotIndex !== -1 ? node.name.slice(0, lastDotIndex) : node.name;
+    const fileType =
+      lastDotIndex !== -1 ? node.name.slice(lastDotIndex + 1) : 'txt';
 
+    // Call the service
     const success = this.codeEditorService.finalizeNewFile(
       this.dataSource,
       fileNameWithoutExt,
@@ -228,11 +238,9 @@ export class CodeEditorSectionComponent implements OnInit {
       this.matsnackbar.open(
         `File "${node.name}" created successfully.`,
         'Close',
-        {
-          duration: 2000,
-        }
+        { duration: 2000 }
       );
-      this.dataSource = [...this.dataSource]; // Refresh the tree view
+      this.dataSource = [...this.dataSource]; // Refresh the tree
     } else {
       this.matsnackbar.open(
         'Failed to create file. Please select a valid folder.',
@@ -242,5 +250,8 @@ export class CodeEditorSectionComponent implements OnInit {
         }
       );
     }
+
+    // Allow editing again after a short delay
+    setTimeout(() => (this.editingInProgress = false), 100);
   }
 }
