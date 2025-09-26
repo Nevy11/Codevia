@@ -154,17 +154,17 @@ export class CodeEditorSectionComponent implements OnInit {
 
   /// a function to read the name of the folder selected
   onNodeToggle(node: Folders, isExpanded: boolean) {
-    if (!isExpanded) {
+    if (isExpanded) {
+      // This means the node is about to close
+      console.log('Node closed:', node.name);
+      this.matsnackbar.open(`Closed folder: ${node.name}`, 'Close', {
+        duration: 2000,
+      });
+    } else {
       // This means the node is about to open
       console.log('Node opened:', node.name);
       this.codeEditorService.setfolder_name_selected(node.name);
       this.matsnackbar.open(`Opened folder: ${node.name}`, 'Close', {
-        duration: 2000,
-      });
-    } else {
-      // This means the node is about to close
-      console.log('Node closed:', node.name);
-      this.matsnackbar.open(`Closed folder: ${node.name}`, 'Close', {
         duration: 2000,
       });
     }
