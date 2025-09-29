@@ -299,6 +299,34 @@ export class CodeEditorSectionService {
 
     return true;
   }
+
+  /** ---------------------------------
+   * Delete a Specific File by Name
+   * --------------------------------- */
+  deleteFile(
+    dataSource: Folders[],
+    folderName: string,
+    fileName: string
+  ): boolean {
+    const parentFolder = this.findFolderOrFile(dataSource, folderName);
+
+    if (
+      !parentFolder ||
+      parentFolder.type !== 'folder' ||
+      !parentFolder.children
+    ) {
+      return false;
+    }
+
+    const initialLength = parentFolder.children.length;
+
+    // ✅ Replace with a new array reference
+    parentFolder.children = parentFolder.children.filter(
+      (child) => !(child.type === 'file' && child.name === fileName)
+    );
+
+    return parentFolder.children.length !== initialLength; // true if something was deleted
+  }
 }
 
 const EXAMPLE_DATA: Folders[] = [

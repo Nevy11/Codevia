@@ -170,28 +170,6 @@ export class CodeEditorSectionComponent implements OnInit {
     }
   }
 
-  // finishEditing(node: Folders) {
-  //   if (!node.name.trim()) {
-  //     this.matsnackbar.open('File name cannot be empty', 'Close', {
-  //       duration: 2000,
-  //     });
-  //     return;
-  //   }
-
-  //   node.isEditing = false;
-
-  //   // Update FileData entry
-  //   const fileType = node.name.includes('.')
-  //     ? node.name.split('.').pop() || ''
-  //     : '';
-
-  //   // this.codeEditorService.updateFileData(node.name, fileType);
-
-  //   this.matsnackbar.open(`File "${node.name}" created successfully`, 'Close', {
-  //     duration: 2000,
-  //   });
-  // }
-
   cancelEditing(node: Folders) {
     // Remove placeholder if user cancels
     const folder = this.codeEditorService.findFolderOrFile(
@@ -253,5 +231,22 @@ export class CodeEditorSectionComponent implements OnInit {
 
     // Allow editing again after a short delay
     setTimeout(() => (this.editingInProgress = false), 100);
+  }
+
+  delete_file(node: Folders) {
+    const folderName = this.codeEditorService.getfolder_name_selected();
+
+    const deleted = this.codeEditorService.deleteFile(
+      this.dataSource, // Root folder data
+      folderName, // Parent folder where the file is
+      node.name // File name to delete
+    );
+
+    if (deleted) {
+      console.log(`File '${node.name}' deleted successfully!`);
+      this.dataSource = [...this.dataSource];
+    } else {
+      console.log(`File '${node.name}' could not be deleted.`);
+    }
   }
 }

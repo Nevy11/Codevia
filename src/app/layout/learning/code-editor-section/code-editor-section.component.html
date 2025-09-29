@@ -53,7 +53,18 @@
 
         <!-- Show file name normally -->
         @if (!node.isEditing) {
-        <span> {{ node.name }} </span>
+        <span class="node">
+          <span class="spacer"></span>
+          {{ node.name }}
+          <button
+            class="delete-file-btn"
+            mat-icon-button
+            (click)="delete_file(node)"
+            matTooltip="delete"
+          >
+            <mat-icon> delete </mat-icon>
+          </button>
+        </span>
         }
       </mat-tree-node>
 
