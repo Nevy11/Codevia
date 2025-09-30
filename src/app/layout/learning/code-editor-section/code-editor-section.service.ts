@@ -205,21 +205,6 @@ export class CodeEditorSectionService {
     return parentFolder.children.length !== initialLength; // true if something was deleted
   }
 
-  // createNewFolder(dataSource: Folders[], folderName: string): boolean {
-  //   const parentFolder = this.findFolderOrFile(dataSource, folderName);
-
-  //   if (!parentFolder || parentFolder.type !== 'folder') return false;
-
-  //   if (!parentFolder.children) parentFolder.children = [];
-
-  //   parentFolder.children.push({
-  //     name: 'New Folder',
-  //     type: 'folder',
-  //     children: [],
-  //   });
-
-  //   return true;
-  // }
   createNewFolder(dataSource: Folders[], folderName: string): boolean {
     const parentFolder = this.findFolderOrFile(dataSource, folderName);
 
@@ -232,6 +217,18 @@ export class CodeEditorSectionService {
       type: 'folder',
       children: [],
       isEditing: true, // 👈 allows UI to render input
+    });
+
+    return true;
+  }
+  createNewRootFolder(dataSource: Folders[]): boolean {
+    if (!dataSource) return false;
+
+    dataSource.push({
+      name: '',
+      type: 'folder',
+      children: [],
+      isEditing: true, // 👈 UI: editable input
     });
 
     return true;

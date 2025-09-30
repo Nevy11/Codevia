@@ -253,7 +253,13 @@ export class CodeEditorSectionComponent implements OnInit {
     const folderName = this.codeEditorService.getfolder_name_selected();
 
     if (!folderName) {
-      this.matsnackbar.open('Select a folder first!', 'Close', {
+      // this.matsnackbar.open('Select a folder first!', 'Close', {
+      //   duration: 2000,
+      // });
+      // return;
+      this.codeEditorService.createNewRootFolder(this.dataSource);
+      this.dataSource = [...this.dataSource]; // Refresh UI
+      this.matsnackbar.open('New root folder created successfully!', 'Close', {
         duration: 2000,
       });
       return;
