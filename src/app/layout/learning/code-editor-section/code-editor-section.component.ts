@@ -15,6 +15,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TerminalComponent } from './terminal/terminal.component';
 import { FileSearchBarComponent } from './file-search-bar/file-search-bar.component';
 import { CodeEditorSectionService } from './code-editor-section.service';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'nevy11-code-editor-section',
@@ -30,6 +31,7 @@ import { CodeEditorSectionService } from './code-editor-section.service';
     MatTooltipModule,
     TerminalComponent,
     FileSearchBarComponent,
+    MatInputModule,
   ],
   templateUrl: './code-editor-section.component.html',
   styleUrl: './code-editor-section.component.scss',
@@ -286,6 +288,7 @@ export class CodeEditorSectionComponent implements OnInit {
       this.matsnackbar.open('Folder name cannot be empty.', 'Close', {
         duration: 2000,
       });
+      // this.cancelEditing(node);
       return;
     }
 

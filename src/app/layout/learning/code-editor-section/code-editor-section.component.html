@@ -41,6 +41,7 @@
           <mat-icon>insert_drive_file</mat-icon>
         </button>
         <input
+          matInput
           [(ngModel)]="node.name"
           (blur)="finishEditing(node)"
           (keyup.enter)="finishEditing(node)"
@@ -79,6 +80,7 @@
         @if (node.isEditing) {
         <mat-icon>create_new_folder</mat-icon>
         <input
+          matInput
           [(ngModel)]="node.name"
           (blur)="finishEditingFolder(node)"
           (keyup.enter)="finishEditingFolder(node)"
