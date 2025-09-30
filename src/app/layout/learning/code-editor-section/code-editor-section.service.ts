@@ -204,6 +204,22 @@ export class CodeEditorSectionService {
 
     return parentFolder.children.length !== initialLength; // true if something was deleted
   }
+
+  createNewFolder(dataSource: Folders[], folderName: string): boolean {
+    const parentFolder = this.findFolderOrFile(dataSource, folderName);
+
+    if (!parentFolder || parentFolder.type !== 'folder') return false;
+
+    if (!parentFolder.children) parentFolder.children = [];
+
+    parentFolder.children.push({
+      name: 'New Folder',
+      type: 'folder',
+      children: [],
+    });
+
+    return true;
+  }
 }
 
 const EXAMPLE_DATA: Folders[] = [
@@ -239,5 +255,3 @@ const EXAMPLE_DATA: Folders[] = [
     ],
   },
 ];
-
-//  When someone clicks a file it creates the file two times

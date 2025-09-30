@@ -60,8 +60,9 @@ export class CodeEditorSectionComponent implements OnInit {
   themeSub: any;
   dataSource = this.codeEditorService.get_initial_data();
   childrenAccessor = (node: Folders) => node.children ?? [];
-  hasChild = (_: number, node: Folders) =>
-    !!node.children && node.children.length > 0;
+  // hasChild = (_: number, node: Folders) =>
+  //   !!node.children && node.children.length > 0;
+  hasChild = (_: number, node: Folders) => node.type === 'folder';
   constructor(@Inject(PLATFORM_ID) platformId: Object) {
     this.isBrowser = isPlatformBrowser(platformId);
   }
@@ -73,6 +74,8 @@ export class CodeEditorSectionComponent implements OnInit {
         theme: theme === 'dark' ? 'vs-dark' : 'vs-light',
       };
     });
+
+    console.log('data source: ', this.dataSource);
   }
   async runCode() {
     // this.matsnackbar.open('This button is yet to be implemented', 'Close', {
@@ -129,10 +132,6 @@ export class CodeEditorSectionComponent implements OnInit {
     this.matsnackbar.open('New file placeholder created', 'Close', {
       duration: 1500,
     });
-  }
-
-  async new_folder() {
-    await this.supabaseService.createOrUpdateFolder('New Folder');
   }
 
   // A function to add custom keybindings to the monaco editor
@@ -247,6 +246,33 @@ export class CodeEditorSectionComponent implements OnInit {
       this.dataSource = [...this.dataSource];
     } else {
       console.log(`File '${node.name}' could not be deleted.`);
+    }
+  }
+
+  async new_folder() {
+    const folderName = this.codeEditorService.getfolder_name_selected();
+
+    if (!folderName) {
+      this.matsnackbar.open('Select a folder first!', 'Close', {
+        duration: 2000,
+      });
+      return;
+    }
+
+    const success = this.codeEditorService.createNewFolder(
+      this.dataSource,
+      folderName
+    );
+
+    if (success) {
+      this.dataSource = [...this.dataSource]; // Refresh UI
+      this.matsnackbar.open('New folder created successfully!', 'Close', {
+        duration: 2000,
+      });
+    } else {
+      this.matsnackbar.open('Failed to create folder.', 'Close', {
+        duration: 2000,
+      });
     }
   }
 }

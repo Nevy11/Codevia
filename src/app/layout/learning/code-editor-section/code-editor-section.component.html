@@ -18,7 +18,6 @@
         (click)="new_folder()"
         matTooltip="New Folder"
         matTooltipPosition="above"
-        disabled
       >
         <mat-icon>create_new_folder</mat-icon>
       </button>
@@ -37,10 +36,10 @@
     >
       <!-- Leaf node template -->
       <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+        @if (node.isEditing) {
         <button matIconButton>
           <mat-icon>insert_drive_file</mat-icon>
         </button>
-        @if (node.isEditing) {
         <input
           [(ngModel)]="node.name"
           (blur)="finishEditing(node)"
@@ -53,6 +52,10 @@
 
         <!-- Show file name normally -->
         @if (!node.isEditing) {
+        <button matIconButton>
+          <mat-icon>insert_drive_file</mat-icon>
+          <!-- {{ node.name }} -->
+        </button>
         <span class="node">
           <span class="spacer"></span>
           {{ node.name }}
