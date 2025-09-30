@@ -70,15 +70,25 @@
         }
       </mat-tree-node>
 
-      <!-- Expandable node template -->
       <mat-tree-node
         *matTreeNodeDef="let node; when: hasChild"
         matTreeNodePadding
         matTreeNodeToggle
         [cdkTreeNodeTypeaheadLabel]="node.name"
       >
+        @if (node.isEditing) {
+        <mat-icon>create_new_folder</mat-icon>
+        <input
+          [(ngModel)]="node.name"
+          (blur)="finishEditingFolder(node)"
+          (keyup.enter)="finishEditingFolder(node)"
+          (keyup.escape)="cancelEditing(node)"
+          placeholder="Enter folder name"
+          autofocus
+        />
+        } @else {
         <button
-          matIconButton
+          mat-icon-button
           matTreeNodeToggle
           [attr.aria-label]="'Toggle ' + node.name"
           (click)="onNodeToggle(node, !tree.isExpanded(node))"
@@ -88,7 +98,9 @@
           </mat-icon>
         </button>
 
+        <mat-icon>folder</mat-icon>
         {{ node.name }}
+        }
       </mat-tree-node>
     </mat-tree>
   </mat-sidenav>

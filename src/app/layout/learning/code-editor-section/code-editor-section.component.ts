@@ -275,4 +275,22 @@ export class CodeEditorSectionComponent implements OnInit {
       });
     }
   }
+  finishEditingFolder(node: Folders) {
+    if (!node.name || !node.name.trim()) {
+      this.matsnackbar.open('Folder name cannot be empty.', 'Close', {
+        duration: 2000,
+      });
+      return;
+    }
+
+    node.isEditing = false;
+    this.dataSource = [...this.dataSource]; // Refresh UI
+    this.matsnackbar.open(
+      `Folder "${node.name}" created successfully.`,
+      'Close',
+      {
+        duration: 2000,
+      }
+    );
+  }
 }
