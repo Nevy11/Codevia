@@ -4,7 +4,6 @@
     <mat-toolbar color="primary" class="sidenav-header">
       Explorers
       <span class="spacer"></span>
-      <!-- <span> -->
       <button
         mat-icon-button
         (click)="newFile()"
@@ -21,7 +20,6 @@
       >
         <mat-icon>create_new_folder</mat-icon>
       </button>
-      <!-- </span> -->
     </mat-toolbar>
 
     <!-- File Explorer Tree -->
@@ -55,7 +53,6 @@
         @if (!node.isEditing) {
         <button matIconButton>
           <mat-icon>insert_drive_file</mat-icon>
-          <!-- {{ node.name }} -->
         </button>
         <span class="node">
           <span class="spacer"></span>
