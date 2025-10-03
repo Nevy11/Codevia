@@ -10,7 +10,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTreeModule } from '@angular/material/tree';
-import { SupabaseClientService } from '../../../supabase-client.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TerminalComponent } from './terminal/terminal.component';
 import { FileSearchBarComponent } from './file-search-bar/file-search-bar.component';
@@ -38,7 +37,6 @@ import { MatInputModule } from '@angular/material/input';
 })
 export class CodeEditorSectionComponent implements OnInit {
   private themechangeService = inject(ThemeChangeService);
-  private supabaseService = inject(SupabaseClientService);
   private matsnackbar = inject(MatSnackBar);
   private codeEditorService = inject(CodeEditorSectionService);
   isBrowser = false;
