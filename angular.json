@@ -27,14 +27,9 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              },
-              {
-                "glob": "**/*",
-                "input": "node_modules/monaco-editor/esm/vs/base/browser/ui/codicons/codicon",
-                "output": "assets/codicon/"
               }
             ],
-            "styles": ["src/styles.scss", "src/styles/monaco-codicon.scss"],
+            "styles": ["src/styles.scss"],
             "scripts": [],
             "server": "src/main.server.ts",
             "prerender": true,
