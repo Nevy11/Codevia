@@ -80,9 +80,6 @@ export class CodeEditorSectionComponent implements OnInit {
     console.log('data source: ', this.dataSource);
   }
   async runCode() {
-    // this.matsnackbar.open('This button is yet to be implemented', 'Close', {
-    //   duration: 2000,
-    // });
     if (this.isBrowser) {
       const worker = new Worker(
         new URL('./code-editor-section.worker', import.meta.url)
@@ -90,11 +87,7 @@ export class CodeEditorSectionComponent implements OnInit {
       worker.postMessage(this.code);
       worker.onmessage = ({ data }) => {
         if (data.success) {
-          let output = data.logs.join('\n');
           this.logs = data.logs;
-          // this.matsnackbar.open(`${output}`, 'Close', {
-          //   duration: 2000,
-          // });
           console.log('', data.logs);
 
           console.log('Result:', data); // 4
