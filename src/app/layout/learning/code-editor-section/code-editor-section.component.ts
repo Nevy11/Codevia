@@ -136,19 +136,19 @@ export class CodeEditorSectionComponent implements OnInit {
 
   // A function to add custom keybindings to the monaco editor
   async onEditorInit(editor: any) {
-    // if (!this.isBrowser) {
-    //   return; // Prevent Monaco code from running on the server
-    // }
-    // const monaco = await import('monaco-editor');
-    // // Store the editor instance if you need it later
-    // // this.editorInstance = editor;
-    // console.log('Editor instance:', editor);
-    // console.log('Monaco instance:', monaco);
-    // // You can now use the `monaco` object to access Monaco Editor APIs
-    // // Add custom keybinding: Ctrl + Enter to runCode()
-    // editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
-    //   this.runCode();
-    // });
+    if (!this.isBrowser) {
+      return; // Prevent Monaco code from running on the server
+    }
+    const monaco = await import('monaco-editor');
+    // Store the editor instance if you need it later
+    // this.editorInstance = editor;
+    console.log('Editor instance:', editor);
+    console.log('Monaco instance:', monaco);
+    // You can now use the `monaco` object to access Monaco Editor APIs
+    // Add custom keybinding: Ctrl + Enter to runCode()
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
+      this.runCode();
+    });
   }
 
   /// a function to read the name of the folder selected
