@@ -240,9 +240,21 @@ const EXAMPLE_DATA: Folders[] = [
     name: 'CodeVia',
     type: 'folder',
     children: [
-      { name: 'Python.py', type: 'file' },
-      { name: 'javascript.js', type: 'file' },
-      { name: 'typescript.ts', type: 'file' },
+      {
+        name: 'Python.py',
+        type: 'file',
+        content: 'print("Hello from Python!")',
+      },
+      {
+        name: 'javascript.js',
+        type: 'file',
+        content: 'console.log("Hello from JS");',
+      },
+      {
+        name: 'typescript.ts',
+        type: 'file',
+        content: 'console.log("Hello from TS");',
+      },
     ],
   },
   {
@@ -253,16 +265,28 @@ const EXAMPLE_DATA: Folders[] = [
         name: 'week1',
         type: 'folder',
         children: [
-          { name: 'intro.sh', type: 'file' },
-          { name: 'loop.sh', type: 'file' },
+          { name: 'intro.sh', type: 'file', content: 'echo "Week 1: Intro"' },
+          {
+            name: 'loop.sh',
+            type: 'file',
+            content: 'for i in 1 2 3; do echo $i; done',
+          },
         ],
       },
       {
         name: 'week2',
         type: 'folder',
         children: [
-          { name: 'if.sh', type: 'file' },
-          { name: 'switch.sh', type: 'file' },
+          {
+            name: 'if.sh',
+            type: 'file',
+            content: 'if [ $x -eq 1 ]; then echo "One"; fi',
+          },
+          {
+            name: 'switch.sh',
+            type: 'file',
+            content: 'case $x in 1) echo "One";; esac',
+          },
         ],
       },
     ],

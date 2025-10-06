@@ -293,4 +293,13 @@ export class CodeEditorSectionComponent implements OnInit {
       }
     );
   }
+
+  openFile(node: Folders) {
+    if (node.type === 'file') {
+      this.code = node.content || ''; // Load content into Monaco editor
+      this.matsnackbar.open(`Opened file: ${node.name}`, 'Close', {
+        duration: 2000,
+      });
+    }
+  }
 }

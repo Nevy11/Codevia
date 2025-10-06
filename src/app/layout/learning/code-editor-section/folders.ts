@@ -1,6 +1,7 @@
 export interface Folders {
   name: string;
-  type: 'folder' | 'file'; // <-- identify if it's a folder or file
+  type: 'file' | 'folder';
   children?: Folders[];
-  isEditing?: boolean; // <-- used when creating a new file
+  isEditing?: boolean;
+  content?: string;
 }

@@ -54,15 +54,14 @@
         <button matIconButton>
           <mat-icon>insert_drive_file</mat-icon>
         </button>
-        <span class="node">
-          <span class="spacer"></span>
+        <span class="node" (click)="openFile(node)" style="cursor: pointer">
           {{ node.name }}
           <button
             mat-icon-button
             (click)="delete_file(node)"
             matTooltip="delete"
           >
-            <mat-icon> delete </mat-icon>
+            <mat-icon>delete</mat-icon>
           </button>
         </span>
         }
