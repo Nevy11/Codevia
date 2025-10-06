@@ -35,9 +35,7 @@
       <!-- Leaf node template -->
       <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
         @if (node.isEditing) {
-        <button matIconButton>
-          <mat-icon>insert_drive_file</mat-icon>
-        </button>
+        <mat-icon>insert_drive_file</mat-icon>
         <input
           matInput
           [(ngModel)]="node.name"
@@ -51,19 +49,13 @@
 
         <!-- Show file name normally -->
         @if (!node.isEditing) {
-        <button matIconButton>
-          <mat-icon>insert_drive_file</mat-icon>
-        </button>
+        <mat-icon>insert_drive_file</mat-icon>
         <span class="node" (click)="openFile(node)" style="cursor: pointer">
           {{ node.name }}
-          <button
-            mat-icon-button
-            (click)="delete_file(node)"
-            matTooltip="delete"
-          >
-            <mat-icon>delete</mat-icon>
-          </button>
         </span>
+        <button mat-icon-button (click)="delete_file(node)" matTooltip="delete">
+          <mat-icon>delete</mat-icon>
+        </button>
         }
       </mat-tree-node>
 

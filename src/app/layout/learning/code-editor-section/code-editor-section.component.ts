@@ -45,13 +45,7 @@ export class CodeEditorSectionComponent implements OnInit {
 
   isBrowser = false;
   number_of_search_results = this.codeEditorService.getSearchResults();
-  // code: string = `
-  // let x = 5;
-  // let y = 10;
-  // console.log("Sum:", x + y);
-  // z = x * y;
-  // console.log("z: ", z)
-  // `;
+
   code: string = `// Write your code here`;
   result: string = '';
   logs: string[] = [];
