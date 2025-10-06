@@ -306,7 +306,7 @@ export class CodeEditorSectionComponent implements OnInit {
   }
   saveCurrentFile() {
     this.currentFile = this.codeEditorService.getcurrentFile();
-    console.log('Current file to save:', this.currentFile);
+
     if (this.currentFile) {
       this.currentFile.content = this.code;
       this.matsnackbar.open(`Saved: ${this.currentFile.name}`, 'Close', {
