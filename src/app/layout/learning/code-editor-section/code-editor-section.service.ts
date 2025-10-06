@@ -16,7 +16,7 @@ export class CodeEditorSectionService {
   private search_results = 0;
   private folder_name_selected = '';
   private fileDataList: FileData[] = []; // Store metadata for files
-
+  private currentFile: Folders | null = null;
   /** ---------------------------------
    * Find Folder or File Recursively
    * --------------------------------- */
@@ -232,6 +232,12 @@ export class CodeEditorSectionService {
     });
 
     return true;
+  }
+  getcurrentFile() {
+    return this.currentFile;
+  }
+  setcurrentFile(file: Folders | null) {
+    this.currentFile = file;
   }
 }
 

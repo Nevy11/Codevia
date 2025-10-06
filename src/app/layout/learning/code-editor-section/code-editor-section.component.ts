@@ -43,13 +43,14 @@ export class CodeEditorSectionComponent implements OnInit {
   private codeEditorService = inject(CodeEditorSectionService);
   isBrowser = false;
   number_of_search_results = this.codeEditorService.getSearchResults();
-  code: string = `
-  let x = 5;
-  let y = 10;
-  console.log("Sum:", x + y);
-  z = x * y;
-  console.log("z: ", z)
-  `;
+  // code: string = `
+  // let x = 5;
+  // let y = 10;
+  // console.log("Sum:", x + y);
+  // z = x * y;
+  // console.log("z: ", z)
+  // `;
+  code: string = `// Write your code here`;
   result: string = '';
   logs: string[] = [];
 
@@ -141,6 +142,10 @@ export class CodeEditorSectionComponent implements OnInit {
     // Add custom keybinding: Ctrl + Enter to runCode()
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
       this.runCode();
+    });
+
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
+      this.saveCurrentFile();
     });
   }
 
@@ -296,8 +301,24 @@ export class CodeEditorSectionComponent implements OnInit {
 
   openFile(node: Folders) {
     if (node.type === 'file') {
+      this.codeEditorService.setcurrentFile(node);
       this.code = node.content || ''; // Load content into Monaco editor
       this.matsnackbar.open(`Opened file: ${node.name}`, 'Close', {
+        duration: 2000,
+      });
+    }
+  }
+  currentFile: Folders | null = null;
+  saveCurrentFile() {
+    this.currentFile = this.codeEditorService.getcurrentFile();
+    console.log('Current file to save:', this.currentFile);
+    if (this.currentFile) {
+      this.currentFile.content = this.code;
+      this.matsnackbar.open(`Saved: ${this.currentFile.name}`, 'Close', {
+        duration: 1500,
+      });
+    } else {
+      this.matsnackbar.open('No file is open to save.', 'Close', {
         duration: 2000,
       });
     }
