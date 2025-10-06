@@ -41,6 +41,8 @@ export class CodeEditorSectionComponent implements OnInit {
   private themechangeService = inject(ThemeChangeService);
   private matsnackbar = inject(MatSnackBar);
   private codeEditorService = inject(CodeEditorSectionService);
+  private currentFile: Folders | null = null;
+
   isBrowser = false;
   number_of_search_results = this.codeEditorService.getSearchResults();
   // code: string = `
@@ -308,7 +310,6 @@ export class CodeEditorSectionComponent implements OnInit {
       });
     }
   }
-  currentFile: Folders | null = null;
   saveCurrentFile() {
     this.currentFile = this.codeEditorService.getcurrentFile();
     console.log('Current file to save:', this.currentFile);
