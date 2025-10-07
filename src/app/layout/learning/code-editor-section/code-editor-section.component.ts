@@ -104,7 +104,23 @@ export class CodeEditorSectionComponent implements OnInit {
     }
   }
   resetCode() {
-    this.code = `// Write your code here`;
+    this.currentFile = this.codeEditorService.getcurrentFile();
+
+    if (this.currentFile) {
+      this.code = '';
+      this.currentFile.content = '';
+      this.matsnackbar.open(
+        `Code reset in file: ${this.currentFile.name}`,
+        'Close',
+        {
+          duration: 1500,
+        }
+      );
+    } else {
+      this.matsnackbar.open('Error while clearing the file', 'Close', {
+        duration: 2000,
+      });
+    }
   }
   downloadCode() {
     this.matsnackbar.open('This button is yet to be implemented', 'Close', {
