@@ -123,7 +123,21 @@ export class CodeEditorSectionComponent implements OnInit {
     }
   }
   downloadCode() {
-    this.matsnackbar.open('This button is yet to be implemented', 'Close', {
+    this.currentFile = this.codeEditorService.getcurrentFile();
+
+    if (!this.currentFile) {
+      this.matsnackbar.open('No file is open to download.', 'Close', {
+        duration: 2000,
+      });
+      return;
+    }
+
+    const fileName = this.currentFile.name || 'untitled.txt';
+    const fileContent = this.code || '';
+
+    this.codeEditorService.downloadFile(fileName, fileContent);
+
+    this.matsnackbar.open(`Downloaded: ${fileName}`, 'Close', {
       duration: 2000,
     });
   }

@@ -239,6 +239,35 @@ export class CodeEditorSectionService {
   setcurrentFile(file: Folders | null) {
     this.currentFile = file;
   }
+  downloadFile(fileName: string, content: string) {
+    // Pick MIME type based on file extension
+    const extension = fileName.split('.').pop()?.toLowerCase() || 'txt';
+    const mimeTypes: Record<string, string> = {
+      js: 'text/javascript',
+      ts: 'text/typescript',
+      py: 'text/x-python',
+      sh: 'text/x-shellscript',
+      html: 'text/html',
+      css: 'text/css',
+      json: 'application/json',
+      txt: 'text/plain',
+    };
+
+    const mimeType = mimeTypes[extension] || 'text/plain';
+
+    // Create blob for download
+    const blob = new Blob([content], { type: `${mimeType};charset=utf-8` });
+
+    // Create a temporary URL and download link
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    a.click();
+
+    // Cleanup
+    window.URL.revokeObjectURL(url);
+  }
 }
 
 const EXAMPLE_DATA: Folders[] = [
