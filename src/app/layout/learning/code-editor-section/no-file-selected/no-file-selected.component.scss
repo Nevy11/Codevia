@@ -3,19 +3,15 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  //   background: linear-gradient(135deg, #f9fafc, #eef1f7);
   border-radius: 12px;
-  //   color: #333;
   animation: fadeIn 0.6s ease-in-out;
 }
 
 .message-box {
   text-align: center;
   padding: 2rem;
-  //   background: #ffffffcc;
-  //   border: 1px solid #dce1eb;
+
   border-radius: 16px;
-  //   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
   transition: transform 0.3s ease;
 }
 
@@ -25,19 +21,16 @@
 
 .message-box mat-icon {
   font-size: 48px;
-  //   color: #3f51b5;
   margin-bottom: 8px;
 }
 
 .message-box h3 {
   margin: 0;
   font-weight: 600;
-  //   color: #2c3e50;
 }
 
 .message-box p {
   margin-top: 6px;
-  //   color: #6b7280;
   font-size: 0.95rem;
 }
 
