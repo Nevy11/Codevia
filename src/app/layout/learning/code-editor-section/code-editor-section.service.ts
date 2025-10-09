@@ -17,6 +17,7 @@ export class CodeEditorSectionService {
   private folder_name_selected = '';
   private fileDataList: FileData[] = []; // Store metadata for files
   private currentFile: Folders | null = null;
+
   /** ---------------------------------
    * Find Folder or File Recursively
    * --------------------------------- */

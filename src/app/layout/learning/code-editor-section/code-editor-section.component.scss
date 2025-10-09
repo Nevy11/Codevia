@@ -62,3 +62,10 @@ ngx-monaco-editor {
 .spacer {
   flex: 1 1 auto;
 }
+
+.editor_picking {
+  flex: 1;
+  display: block;
+  // border: 1px solid #333;
+  height: auto; /* will stretch because of flex */
+}

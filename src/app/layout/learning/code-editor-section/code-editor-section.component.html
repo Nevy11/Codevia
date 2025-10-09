@@ -110,14 +110,12 @@
       <span class="spacer"></span>
       monaco editor
     </mat-toolbar>
-    @if (isBrowser) {
+    @if (isBrowser) { @if (this.isEditorEnabled) {
     <ngx-monaco-editor
       [(ngModel)]="code"
       [options]="editorOptions"
       (onInit)="onEditorInit($event)"
     ></ngx-monaco-editor>
-    }
-
     <div class="btn">
       <button mat-flat-button color="primary" (click)="downloadCode()">
         Download Code
@@ -132,5 +130,10 @@
     <div>
       <nevy11-terminal [logs]="this.logs"></nevy11-terminal>
     </div>
+    }@else {
+    <div class="editor_picking">
+      <nevy11-no-file-selected></nevy11-no-file-selected>
+    </div>
+    } }
   </mat-sidenav-content>
 </mat-sidenav-container>

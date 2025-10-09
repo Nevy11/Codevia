@@ -15,6 +15,7 @@ import { TerminalComponent } from './terminal/terminal.component';
 import { FileSearchBarComponent } from './file-search-bar/file-search-bar.component';
 import { CodeEditorSectionService } from './code-editor-section.service';
 import { MatInputModule } from '@angular/material/input';
+import { NoFileSelectedComponent } from './no-file-selected/no-file-selected.component';
 
 declare const monaco: any;
 
@@ -33,6 +34,7 @@ declare const monaco: any;
     TerminalComponent,
     FileSearchBarComponent,
     MatInputModule,
+    NoFileSelectedComponent,
   ],
   templateUrl: './code-editor-section.component.html',
   styleUrl: './code-editor-section.component.scss',
@@ -42,6 +44,7 @@ export class CodeEditorSectionComponent implements OnInit {
   private matsnackbar = inject(MatSnackBar);
   private codeEditorService = inject(CodeEditorSectionService);
   private currentFile: Folders | null = null;
+  isEditorEnabled: boolean = false;
 
   isBrowser = false;
   number_of_search_results = this.codeEditorService.getSearchResults();
@@ -49,6 +52,7 @@ export class CodeEditorSectionComponent implements OnInit {
   code: string = `// Write your code here`;
   result: string = '';
   logs: string[] = [];
+  startup: string = `// Write your code here`;
 
   initial_data: Folders[] = this.codeEditorService.get_initial_data();
   editorOptions = {
@@ -103,6 +107,19 @@ export class CodeEditorSectionComponent implements OnInit {
       });
     }
   }
+  openFile(node: Folders) {
+    console.log('is editor enabled: ', this.isEditorEnabled);
+    if (node.type === 'file') {
+      this.codeEditorService.setcurrentFile(node);
+      this.code = node.content || ''; // Load content into Monaco editor
+      this.isEditorEnabled = true; // ✅ enable editor
+      this.matsnackbar.open(`Opened file: ${node.name}`, 'Close', {
+        duration: 2000,
+      });
+    }
+    console.log('is editor enabled: ', this.isEditorEnabled);
+  }
+
   resetCode() {
     this.currentFile = this.codeEditorService.getcurrentFile();
 
@@ -117,11 +134,32 @@ export class CodeEditorSectionComponent implements OnInit {
         }
       );
     } else {
+      this.isEditorEnabled = false; // ✅ disable editor
       this.matsnackbar.open('Error while clearing the file', 'Close', {
         duration: 2000,
       });
     }
   }
+
+  // resetCode() {
+  //   this.currentFile = this.codeEditorService.getcurrentFile();
+
+  //   if (this.currentFile) {
+  //     this.code = '';
+  //     this.currentFile.content = '';
+  //     this.matsnackbar.open(
+  //       `Code reset in file: ${this.currentFile.name}`,
+  //       'Close',
+  //       {
+  //         duration: 1500,
+  //       }
+  //     );
+  //   } else {
+  //     this.matsnackbar.open('Error while clearing the file', 'Close', {
+  //       duration: 2000,
+  //     });
+  //   }
+  // }
   downloadCode() {
     this.currentFile = this.codeEditorService.getcurrentFile();
 
@@ -162,8 +200,8 @@ export class CodeEditorSectionComponent implements OnInit {
       return; // Prevent Monaco code from running on the server
     }
 
-    console.log('Editor instance:', editor);
-    console.log('Monaco instance:', monaco);
+    // console.log('Editor instance:', editor);
+    // console.log('Monaco instance:', monaco);
     // You can now use the `monaco` object to access Monaco Editor APIs
     // Add custom keybinding: Ctrl + Enter to runCode()
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
@@ -325,15 +363,15 @@ export class CodeEditorSectionComponent implements OnInit {
     );
   }
 
-  openFile(node: Folders) {
-    if (node.type === 'file') {
-      this.codeEditorService.setcurrentFile(node);
-      this.code = node.content || ''; // Load content into Monaco editor
-      this.matsnackbar.open(`Opened file: ${node.name}`, 'Close', {
-        duration: 2000,
-      });
-    }
-  }
+  // openFile(node: Folders) {
+  //   if (node.type === 'file') {
+  //     this.codeEditorService.setcurrentFile(node);
+  //     this.code = node.content || ''; // Load content into Monaco editor
+  //     this.matsnackbar.open(`Opened file: ${node.name}`, 'Close', {
+  //       duration: 2000,
+  //     });
+  //   }
+  // }
   saveCurrentFile() {
     this.currentFile = this.codeEditorService.getcurrentFile();
 
@@ -347,5 +385,11 @@ export class CodeEditorSectionComponent implements OnInit {
         duration: 2000,
       });
     }
+  }
+  get mergedEditorOptions() {
+    return {
+      ...this.editorOptions,
+      readOnly: !this.isEditorEnabled,
+    };
   }
 }
