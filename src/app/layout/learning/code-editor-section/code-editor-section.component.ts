@@ -63,8 +63,7 @@ export class CodeEditorSectionComponent implements OnInit {
   themeSub: any;
   dataSource = this.codeEditorService.get_initial_data();
   childrenAccessor = (node: Folders) => node.children ?? [];
-  // hasChild = (_: number, node: Folders) =>
-  //   !!node.children && node.children.length > 0;
+
   hasChild = (_: number, node: Folders) => node.type === 'folder';
   constructor(@Inject(PLATFORM_ID) platformId: Object) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -141,25 +140,6 @@ export class CodeEditorSectionComponent implements OnInit {
     }
   }
 
-  // resetCode() {
-  //   this.currentFile = this.codeEditorService.getcurrentFile();
-
-  //   if (this.currentFile) {
-  //     this.code = '';
-  //     this.currentFile.content = '';
-  //     this.matsnackbar.open(
-  //       `Code reset in file: ${this.currentFile.name}`,
-  //       'Close',
-  //       {
-  //         duration: 1500,
-  //       }
-  //     );
-  //   } else {
-  //     this.matsnackbar.open('Error while clearing the file', 'Close', {
-  //       duration: 2000,
-  //     });
-  //   }
-  // }
   downloadCode() {
     this.currentFile = this.codeEditorService.getcurrentFile();
 
@@ -200,10 +180,7 @@ export class CodeEditorSectionComponent implements OnInit {
       return; // Prevent Monaco code from running on the server
     }
 
-    // console.log('Editor instance:', editor);
-    // console.log('Monaco instance:', monaco);
-    // You can now use the `monaco` object to access Monaco Editor APIs
-    // Add custom keybinding: Ctrl + Enter to runCode()
+    // Add custom keybinding for Ctrl+Enter to run code
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
       this.runCode();
     });
@@ -315,10 +292,6 @@ export class CodeEditorSectionComponent implements OnInit {
     const folderName = this.codeEditorService.getfolder_name_selected();
 
     if (!folderName) {
-      // this.matsnackbar.open('Select a folder first!', 'Close', {
-      //   duration: 2000,
-      // });
-      // return;
       this.codeEditorService.createNewRootFolder(this.dataSource);
       this.dataSource = [...this.dataSource]; // Refresh UI
       this.matsnackbar.open('New root folder created successfully!', 'Close', {
@@ -363,15 +336,6 @@ export class CodeEditorSectionComponent implements OnInit {
     );
   }
 
-  // openFile(node: Folders) {
-  //   if (node.type === 'file') {
-  //     this.codeEditorService.setcurrentFile(node);
-  //     this.code = node.content || ''; // Load content into Monaco editor
-  //     this.matsnackbar.open(`Opened file: ${node.name}`, 'Close', {
-  //       duration: 2000,
-  //     });
-  //   }
-  // }
   saveCurrentFile() {
     this.currentFile = this.codeEditorService.getcurrentFile();
 
