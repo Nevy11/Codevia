@@ -5,9 +5,10 @@
 // // in monaco code editor
 // // Create a method to add new files and folders
 
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Folders } from './folders';
 import { FileData } from './file-data';
+import { SupabaseClientService } from '../../../supabase-client.service';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +18,7 @@ export class CodeEditorSectionService {
   private folder_name_selected = '';
   private fileDataList: FileData[] = []; // Store metadata for files
   private currentFile: Folders | null = null;
+  private supabaseService = inject(SupabaseClientService);
 
   /** ---------------------------------
    * Find Folder or File Recursively
@@ -129,8 +131,19 @@ export class CodeEditorSectionService {
     return this.search_results;
   }
 
+  // async get_initial_data(): Promise<Folders[]> {
+  //   return await this.supabaseService.loadUserData();
+  // }
+
+  private foldersCache: Folders[] = [];
+
+  async loadAndCacheData() {
+    const data = await this.supabaseService.loadUserData();
+    this.foldersCache = data;
+  }
+
   get_initial_data(): Folders[] {
-    return EXAMPLE_DATA;
+    return this.foldersCache;
   }
 
   finalizeNewFile(

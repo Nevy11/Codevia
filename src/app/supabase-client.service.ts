@@ -5,6 +5,7 @@ import { Profile } from './layout/settings/profile-settings/profile';
 import { VideoSaving } from './layout/learning/video-section/video-saving';
 import { GetVideo } from './layout/learning/video-section/get-video';
 import { VideoThumbnails } from './layout/user-stats/video-thumbnails';
+import { Folders } from './layout/learning/code-editor-section/folders';
 
 @Injectable({
   providedIn: 'root',
@@ -449,15 +450,55 @@ export class SupabaseClientService {
     return true;
   }
   /// Create or update a folder
+  // async createOrUpdateFolder(
+  //   folderName: string,
+  //   parentFolder: string | null = null
+  // ) {
+  //   this.user_id = await this.getCurrentUserId();
+  //   if (!this.user_id) {
+  //     console.error('No user logged in');
+  //     return null;
+  //   }
+
+  //   const { data, error } = await this.client
+  //     .from('files')
+  //     .upsert(
+  //       [
+  //         {
+  //           user_id: this.user_id,
+  //           folder_name: folderName,
+  //           file_name: null, // always null for folders
+  //           file_type: 'folder',
+  //           lines: [],
+  //           children: [],
+  //           parent_folder: parentFolder,
+  //         },
+  //       ],
+  //       {
+  //         onConflict: 'user_id,parent_folder,folder_name', // 👈 match rule
+  //       }
+  //     )
+  //     .select(); // return updated row
+
+  //   if (error) {
+  //     console.error('Error creating/updating folder:', error);
+  //     return null;
+  //   }
+
+  //   if (!data || data.length === 0) {
+  //     console.error('No folder data returned after upsert');
+  //     return null;
+  //   }
+
+  //   return data[0];
+  // }
+
   async createOrUpdateFolder(
     folderName: string,
     parentFolder: string | null = null
   ) {
     this.user_id = await this.getCurrentUserId();
-    if (!this.user_id) {
-      console.error('No user logged in');
-      return null;
-    }
+    if (!this.user_id) return null;
 
     const { data, error } = await this.client
       .from('files')
@@ -466,29 +507,77 @@ export class SupabaseClientService {
           {
             user_id: this.user_id,
             folder_name: folderName,
-            file_name: null, // always null for folders
+            file_name: null,
             file_type: 'folder',
             lines: [],
             children: [],
             parent_folder: parentFolder,
           },
         ],
-        {
-          onConflict: 'user_id,parent_folder,folder_name', // 👈 match rule
-        }
+        { onConflict: 'user_id,parent_folder,folder_name' }
       )
-      .select(); // return updated row
+      .select();
 
-    if (error) {
+    if (error || !data?.length) {
       console.error('Error creating/updating folder:', error);
       return null;
     }
 
-    if (!data || data.length === 0) {
-      console.error('No folder data returned after upsert');
-      return null;
+    return data[0];
+  }
+
+  async loadUserData(): Promise<Folders[]> {
+    this.user_id = await this.getCurrentUserId();
+    if (!this.user_id) return [];
+
+    // Fetch all files and folders for the user
+    const { data, error } = await this.client
+      .from('files')
+      .select('*')
+      .eq('user_id', this.user_id)
+      .order('created_at', { ascending: true });
+
+    if (error) {
+      console.error('Error loading user data:', error);
+      return [];
     }
 
-    return data[0];
+    // Build a lookup map for quick access
+    const lookup = new Map<string | null, Folders[]>();
+
+    // Initialize root
+    lookup.set(null, []);
+
+    // Create a Folders object for each record
+    const items = data.map((item) => {
+      const folder: Folders = {
+        name: item.file_type === 'folder' ? item.folder_name : item.file_name,
+        type: item.file_type,
+        isEditing: false,
+        content: item.lines?.join('\n') || '',
+        children: [],
+      };
+      return { ...item, folder };
+    });
+
+    // Group by parent_folder
+    for (const item of items) {
+      const parentKey = item.parent_folder ?? null;
+
+      // Ensure the parent exists in the map
+      if (!lookup.has(parentKey)) {
+        lookup.set(parentKey, []);
+      }
+
+      lookup.get(parentKey)!.push(item.folder);
+
+      // Prepare space for its own children
+      lookup.set(item.folder_name, item.folder.children!);
+    }
+
+    // The root folders are those whose parent_folder is null
+    const result = lookup.get(null) || [];
+
+    return result;
   }
 }
