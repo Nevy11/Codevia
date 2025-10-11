@@ -137,7 +137,12 @@ export class CodeEditorSectionService {
 
   private foldersCache: Folders[] = [];
 
+  get_cached_data() {
+    return this.foldersCache;
+  }
+
   async loadAndCacheData() {
+    console.log('Loading user data from Supabase...');
     const data = await this.supabaseService.loadUserData();
     this.foldersCache = data;
   }

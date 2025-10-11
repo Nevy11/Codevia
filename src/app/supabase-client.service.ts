@@ -484,6 +484,7 @@ export class SupabaseClientService {
   }
 
   async loadUserData(): Promise<Folders[]> {
+    console.log('user loading data starts');
     this.user_id = await this.getCurrentUserId();
     if (!this.user_id) return [];
 
@@ -534,7 +535,8 @@ export class SupabaseClientService {
 
     // The root folders are those whose parent_folder is null
     const result = lookup.get(null) || [];
-
+    console.log('result: ', result);
+    console.log('user loading data ends');
     return result;
   }
 }

@@ -69,6 +69,9 @@ export class CodeEditorSectionComponent implements OnInit {
     this.isBrowser = isPlatformBrowser(platformId);
   }
   ngOnInit() {
+    this.codeEditorService.loadAndCacheData().then(() => {
+      this.dataSource = this.codeEditorService.get_cached_data();
+    });
     this.themechangeService.loadTheme();
     this.themeSub = this.themechangeService.theme$.subscribe((theme) => {
       this.editorOptions = {
