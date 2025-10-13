@@ -324,33 +324,31 @@ export class CodeEditorSectionComponent implements OnInit {
   async new_folder() {
     const folderName = this.codeEditorService.getfolder_name_selected();
 
-    // Replace this with however you get your logged-in user's ID
-    const userId = this.supabaseService.getCurrentUserId();
-
+    // Replace this with however you get your logged-in user's I
     if (!folderName) {
       // 🟢 Case 1: Creating a new root folder
       const newFolderName = 'New Folder'; // or open a dialog for a custom name
-      if (userId != null) {
-        const created = await this.supabaseService.createFolder(
-          newFolderName,
-          null
-        );
-        if (created) {
-          this.codeEditorService.createNewRootFolder(this.dataSource);
-          this.dataSource = [...this.dataSource]; // refresh UI
-          this.matsnackbar.open(
-            'New root folder created successfully!',
-            'Close',
-            {
-              duration: 2000,
-            }
-          );
-        } else {
-          this.matsnackbar.open('Failed to create root folder.', 'Close', {
+      // if (userId != null) {
+      const created = await this.supabaseService.createFolder(
+        newFolderName,
+        null
+      );
+      if (created) {
+        this.codeEditorService.createNewRootFolder(this.dataSource);
+        this.dataSource = [...this.dataSource]; // refresh UI
+        this.matsnackbar.open(
+          'New root folder created successfully!',
+          'Close',
+          {
             duration: 2000,
-          });
-        }
+          }
+        );
+      } else {
+        this.matsnackbar.open('Failed to create root folder.', 'Close', {
+          duration: 2000,
+        });
       }
+      // }
 
       return;
     }
