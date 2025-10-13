@@ -450,38 +450,38 @@ export class SupabaseClientService {
     return true;
   }
 
-  async createOrUpdateFolder(
-    folderName: string,
-    parentFolder: string | null = null
-  ) {
-    this.user_id = await this.getCurrentUserId();
-    if (!this.user_id) return null;
+  // async createOrUpdateFolder(
+  //   folderName: string,
+  //   parentFolder: string | null = null
+  // ) {
+  //   this.user_id = await this.getCurrentUserId();
+  //   if (!this.user_id) return null;
 
-    const { data, error } = await this.client
-      .from('files')
-      .upsert(
-        [
-          {
-            user_id: this.user_id,
-            folder_name: folderName,
-            file_name: null,
-            file_type: 'folder',
-            lines: [],
-            children: [],
-            parent_folder: parentFolder,
-          },
-        ],
-        { onConflict: 'user_id,parent_folder,folder_name' }
-      )
-      .select();
+  //   const { data, error } = await this.client
+  //     .from('files')
+  //     .upsert(
+  //       [
+  //         {
+  //           user_id: this.user_id,
+  //           folder_name: folderName,
+  //           file_name: null,
+  //           file_type: 'folder',
+  //           lines: [],
+  //           children: [],
+  //           parent_folder: parentFolder,
+  //         },
+  //       ],
+  //       { onConflict: 'user_id,parent_folder,folder_name' }
+  //     )
+  //     .select();
 
-    if (error || !data?.length) {
-      console.error('Error creating/updating folder:', error);
-      return null;
-    }
+  //   if (error || !data?.length) {
+  //     console.error('Error creating/updating folder:', error);
+  //     return null;
+  //   }
 
-    return data[0];
-  }
+  //   return data[0];
+  // }
 
   async loadUserData(): Promise<Folders[]> {
     console.log('user loading data starts');
@@ -538,5 +538,30 @@ export class SupabaseClientService {
     console.log('result: ', result);
     console.log('user loading data ends');
     return result;
+  }
+
+  async createFolder(folderName: string, parentFolderId: string | null = null) {
+    const { data, error } = await this.supabase
+      .from('files')
+      .insert([
+        {
+          user_id: this.user_id,
+          folder_name: folderName,
+          file_name: null, // folders don’t have a file_name
+          file_type: 'folder',
+          parent_folder: parentFolderId,
+          lines: [],
+          children: [],
+        },
+      ])
+      .select('*')
+      .single();
+
+    if (error) {
+      console.error('Error creating folder:', error.message);
+      throw error;
+    }
+
+    return data;
   }
 }

@@ -16,6 +16,7 @@ import { FileSearchBarComponent } from './file-search-bar/file-search-bar.compon
 import { CodeEditorSectionService } from './code-editor-section.service';
 import { MatInputModule } from '@angular/material/input';
 import { NoFileSelectedComponent } from './no-file-selected/no-file-selected.component';
+import { SupabaseClientService } from '../../../supabase-client.service';
 
 declare const monaco: any;
 
@@ -43,6 +44,7 @@ export class CodeEditorSectionComponent implements OnInit {
   private themechangeService = inject(ThemeChangeService);
   private matsnackbar = inject(MatSnackBar);
   private codeEditorService = inject(CodeEditorSectionService);
+  private supabaseService = inject(SupabaseClientService);
   private currentFile: Folders | null = null;
   isEditorEnabled: boolean = false;
 
@@ -291,21 +293,74 @@ export class CodeEditorSectionComponent implements OnInit {
     }
   }
 
+  // async new_folder() {
+  //   const folderName = this.codeEditorService.getfolder_name_selected();
+
+  //   if (!folderName) {
+  //     this.codeEditorService.createNewRootFolder(this.dataSource);
+  //     this.dataSource = [...this.dataSource]; // Refresh UI
+  //     this.matsnackbar.open('New root folder created successfully!', 'Close', {
+  //       duration: 2000,
+  //     });
+  //     return;
+  //   }
+
+  //   const success = this.codeEditorService.createNewFolder(
+  //     this.dataSource,
+  //     folderName
+  //   );
+
+  //   if (success) {
+  //     this.dataSource = [...this.dataSource]; // Refresh UI
+  //     this.matsnackbar.open('New folder created successfully!', 'Close', {
+  //       duration: 2000,
+  //     });
+  //   } else {
+  //     this.matsnackbar.open('Failed to create folder.', 'Close', {
+  //       duration: 2000,
+  //     });
+  //   }
+  // }
   async new_folder() {
     const folderName = this.codeEditorService.getfolder_name_selected();
 
+    // Replace this with however you get your logged-in user's ID
+    const userId = this.supabaseService.getCurrentUserId();
+
     if (!folderName) {
-      this.codeEditorService.createNewRootFolder(this.dataSource);
-      this.dataSource = [...this.dataSource]; // Refresh UI
-      this.matsnackbar.open('New root folder created successfully!', 'Close', {
-        duration: 2000,
-      });
+      // 🟢 Case 1: Creating a new root folder
+      const newFolderName = 'New Folder'; // or open a dialog for a custom name
+      if (userId != null) {
+        const created = await this.supabaseService.createFolder(
+          newFolderName,
+          null
+        );
+        if (created) {
+          this.codeEditorService.createNewRootFolder(this.dataSource);
+          this.dataSource = [...this.dataSource]; // refresh UI
+          this.matsnackbar.open(
+            'New root folder created successfully!',
+            'Close',
+            {
+              duration: 2000,
+            }
+          );
+        } else {
+          this.matsnackbar.open('Failed to create root folder.', 'Close', {
+            duration: 2000,
+          });
+        }
+      }
+
       return;
     }
 
-    const success = this.codeEditorService.createNewFolder(
+    // 🟢 Case 2: Creating a subfolder
+    const newFolderName = 'New Folder'; // you can replace with user input
+    const success = await this.codeEditorService.createNewFolder(
       this.dataSource,
-      folderName
+      folderName,
+      newFolderName
     );
 
     if (success) {
@@ -319,6 +374,7 @@ export class CodeEditorSectionComponent implements OnInit {
       });
     }
   }
+
   finishEditingFolder(node: Folders) {
     if (!node.name || !node.name.trim()) {
       this.matsnackbar.open('Folder name cannot be empty.', 'Close', {
