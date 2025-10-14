@@ -540,14 +540,67 @@ export class SupabaseClientService {
     return result;
   }
 
-  async createFolder(folderName: string, parentFolderId: string | null = null) {
+  // async createFolder(folderName: string, parentFolderId: string | null = null) {
+  //   const { data, error } = await this.supabase
+  //     .from('files')
+  //     .insert([
+  //       {
+  //         user_id: this.user_id,
+  //         folder_name: folderName,
+  //         file_name: null, // folders don’t have a file_name
+  //         file_type: 'folder',
+  //         parent_folder: parentFolderId,
+  //         lines: [],
+  //         children: [],
+  //       },
+  //     ])
+  //     .select('*')
+  //     .single();
+
+  //   if (error) {
+  //     console.error('Error creating folder:', error.message);
+  //     throw error;
+  //   }
+
+  //   return data;
+  // }
+
+  async createFolder(
+    folderName: string,
+    parentFolderName: string | null = null
+  ) {
+    let parentFolderId: string | null = null;
+
+    // Step 1: If parent folder name is provided, look it up
+    if (parentFolderName) {
+      const { data: parentFolder, error: parentError } = await this.supabase
+        .from('files')
+        .select('id')
+        .eq('user_id', this.user_id)
+        .eq('folder_name', parentFolderName)
+        .eq('file_type', 'folder')
+        .single();
+
+      if (parentError) {
+        console.error('Error fetching parent folder:', parentError.message);
+        throw parentError;
+      }
+
+      if (!parentFolder) {
+        throw new Error(`Parent folder "${parentFolderName}" not found`);
+      }
+
+      parentFolderId = parentFolder.id;
+    }
+
+    // Step 2: Create the new folder
     const { data, error } = await this.supabase
       .from('files')
       .insert([
         {
           user_id: this.user_id,
           folder_name: folderName,
-          file_name: null, // folders don’t have a file_name
+          file_name: null,
           file_type: 'folder',
           parent_folder: parentFolderId,
           lines: [],
