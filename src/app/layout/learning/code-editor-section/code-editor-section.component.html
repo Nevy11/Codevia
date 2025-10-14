@@ -70,7 +70,6 @@
         <input
           matInput
           [(ngModel)]="node.name"
-          (blur)="finishEditingFolder(node)"
           (keyup.enter)="finishEditingFolder(node)"
           (keyup.escape)="cancelEditing(node)"
           placeholder="Enter folder name"
