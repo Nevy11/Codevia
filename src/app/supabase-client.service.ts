@@ -483,8 +483,8 @@ export class SupabaseClientService {
   //   return data[0];
   // }
 
+  // loading the user's data.. so correct except the part of
   async loadUserData(): Promise<Folders[]> {
-    console.log('user loading data starts');
     this.user_id = await this.getCurrentUserId();
     if (!this.user_id) return [];
 
@@ -536,7 +536,6 @@ export class SupabaseClientService {
     // The root folders are those whose parent_folder is null
     const result = lookup.get(null) || [];
     console.log('result: ', result);
-    console.log('user loading data ends');
     return result;
   }
 
@@ -602,7 +601,7 @@ export class SupabaseClientService {
           folder_name: folderName,
           file_name: null,
           file_type: 'folder',
-          parent_folder: parentFolderId,
+          parent_folder: null,
           lines: [],
           children: [],
         },
