@@ -370,24 +370,72 @@ export class CodeEditorSectionComponent implements OnInit {
   //   }
   // }
 
-  finishEditingFolder(node: Folders) {
-    if (!node.name || !node.name.trim()) {
-      this.matsnackbar.open('Folder name cannot be empty.', 'Close', {
-        duration: 2000,
-      });
-      // this.cancelEditing(node);
+  // finishEditingFolder(node: Folders) {
+  //   if (!node.name || !node.name.trim()) {
+  //     this.matsnackbar.open('Folder name cannot be empty.', 'Close', {
+  //       duration: 2000,
+  //     });
+  //     // this.cancelEditing(node);
+  //     return;
+  //   }
+
+  //   node.isEditing = false;
+  //   this.dataSource = [...this.dataSource]; // Refresh UI
+  //   this.matsnackbar.open(
+  //     `Folder "${node.name}" created successfully.`,
+  //     'Close',
+  //     {
+  //       duration: 2000,
+  //     }
+  //   );
+  // }
+  async finishEditingFolder(node: Folders) {
+    node.isEditing = false;
+    const folderName = this.codeEditorService.getfolder_name_selected();
+    console.log('Selected folder name:', folderName);
+    if (!folderName) {
+      // 🟢 Case 1: Creating a new root folder
+      const newFolderName = node.name; // or open a dialog for a custom name
+      const created = await this.supabaseService.createFolder(
+        newFolderName,
+        null
+      );
+      if (created) {
+        this.codeEditorService.createNewRootFolder(this.dataSource);
+        this.dataSource = [...this.dataSource]; // refresh UI
+        this.matsnackbar.open(
+          'New root folder created successfully!',
+          'Close',
+          {
+            duration: 2000,
+          }
+        );
+      } else {
+        this.matsnackbar.open('Failed to create root folder.', 'Close', {
+          duration: 2000,
+        });
+      }
+
       return;
     }
-
-    node.isEditing = false;
-    this.dataSource = [...this.dataSource]; // Refresh UI
-    this.matsnackbar.open(
-      `Folder "${node.name}" created successfully.`,
-      'Close',
-      {
-        duration: 2000,
-      }
+    console.log('Creating subfolder in:', folderName);
+    // 🟢 Case 2: Creating a subfolder
+    const newFolderName = 'New Folder'; // you can replace with user input
+    const success = await this.codeEditorService.createNewFolder(
+      this.dataSource,
+      folderName
     );
+
+    if (success) {
+      this.dataSource = [...this.dataSource]; // Refresh UI
+      this.matsnackbar.open('New folder created successfully!', 'Close', {
+        duration: 2000,
+      });
+    } else {
+      this.matsnackbar.open('Failed to create folder.', 'Close', {
+        duration: 2000,
+      });
+    }
   }
 
   saveCurrentFile() {

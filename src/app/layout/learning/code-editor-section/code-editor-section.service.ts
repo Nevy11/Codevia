@@ -224,68 +224,63 @@ export class CodeEditorSectionService {
     return parentFolder.children.length !== initialLength; // true if something was deleted
   }
 
-  createNewFolder(dataSource: Folders[], folderName: string): boolean {
-    const parentFolder = this.findFolderOrFile(dataSource, folderName);
+  // createNewFolder(dataSource: Folders[], folderName: string): boolean {
+  //   const parentFolder = this.findFolderOrFile(dataSource, folderName);
 
+  //   if (!parentFolder || parentFolder.type !== 'folder') return false;
+
+  //   if (!parentFolder.children) parentFolder.children = [];
+
+  //   parentFolder.children.push({
+  //     name: '',
+  //     type: 'folder',
+  //     children: [],
+  //     isEditing: true, // 👈 allows UI to render input
+  //   });
+
+  //   return true;
+  // }
+
+  createNewFolder(dataSource: Folders[], parentFolderName: string): boolean {
+    const parentFolder = this.findFolderOrFile(dataSource, parentFolderName);
+    console.log('Parent folder found:', parentFolder);
+    // Step 1: Validate parent
     if (!parentFolder || parentFolder.type !== 'folder') return false;
-
+    // Step 2: Prepare local new folder
     if (!parentFolder.children) parentFolder.children = [];
 
-    parentFolder.children.push({
+    const newFolder: Folders = {
       name: '',
       type: 'folder',
       children: [],
-      isEditing: true, // 👈 allows UI to render input
-    });
+      isEditing: true,
+    };
 
+    // Optimistically add to UI
+    parentFolder.children.push(newFolder);
     return true;
+    // try {
+    //   // Step 3: Persist folder to Supabase
+    //   const createdFolder = await this.supabaseService.createFolder(
+    //     newFolderName,
+    //     parentFolderName // You can update this to a real parent folder id if available
+    //   );
+
+    //   // Step 4: (Optional) attach Supabase id to your folder for tracking
+    //   (newFolder as any).id = createdFolder.id;
+
+    //   console.log('✅ Folder created successfully in Supabase:', createdFolder);
+    //   return true;
+    // } catch (error) {
+    //   console.error('❌ Failed to create folder in Supabase:', error);
+
+    //   // Roll back UI change if Supabase fails
+    //   parentFolder.children = parentFolder.children.filter(
+    //     (child) => child !== newFolder
+    //   );
+    //   return false;
+    // }
   }
-
-  // async createNewFolder(
-  //   dataSource: Folders[],
-  //   parentFolderName: string,
-  //   newFolderName: string
-  // ): Promise<boolean> {
-  //   const parentFolder = this.findFolderOrFile(dataSource, parentFolderName);
-  //   console.log('Parent folder found:', parentFolder);
-  //   // Step 1: Validate parent
-  //   if (!parentFolder || parentFolder.type !== 'folder') return false;
-  //   console.log('Creating new folder:', newFolderName, 'in', parentFolderName);
-  //   // Step 2: Prepare local new folder
-  //   if (!parentFolder.children) parentFolder.children = [];
-
-  //   const newFolder: Folders = {
-  //     name: newFolderName,
-  //     type: 'folder',
-  //     children: [],
-  //     isEditing: false,
-  //   };
-
-  //   // Optimistically add to UI
-  //   parentFolder.children.push(newFolder);
-
-  //   try {
-  //     // Step 3: Persist folder to Supabase
-  //     const createdFolder = await this.supabaseService.createFolder(
-  //       newFolderName,
-  //       parentFolderName // You can update this to a real parent folder id if available
-  //     );
-
-  //     // Step 4: (Optional) attach Supabase id to your folder for tracking
-  //     (newFolder as any).id = createdFolder.id;
-
-  //     console.log('✅ Folder created successfully in Supabase:', createdFolder);
-  //     return true;
-  //   } catch (error) {
-  //     console.error('❌ Failed to create folder in Supabase:', error);
-
-  //     // Roll back UI change if Supabase fails
-  //     parentFolder.children = parentFolder.children.filter(
-  //       (child) => child !== newFolder
-  //     );
-  //     return false;
-  //   }
-  // }
 
   createNewRootFolder(dataSource: Folders[]): boolean {
     if (!dataSource) return false;
