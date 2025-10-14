@@ -420,10 +420,11 @@ export class CodeEditorSectionComponent implements OnInit {
     }
     console.log('Creating subfolder in:', folderName);
     // 🟢 Case 2: Creating a subfolder
-    const newFolderName = 'New Folder'; // you can replace with user input
-    const success = await this.codeEditorService.createNewFolder(
+    const newFolderName = node.name; // you can replace with user input
+    const success = await this.codeEditorService.finalizeNewFolder(
       this.dataSource,
-      folderName
+      folderName,
+      newFolderName
     );
 
     if (success) {
