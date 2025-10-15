@@ -499,7 +499,6 @@ export class SupabaseClientService {
       console.error('Error loading user data:', error);
       return [];
     }
-    console.log('data from supabase: ', data);
     // Build a lookup map for quick access
     const lookup = new Map<string | null, Folders[]>();
 
@@ -517,7 +516,6 @@ export class SupabaseClientService {
       };
       return { ...item, folder };
     });
-    console.log('items: ', items);
 
     for (const item of items) {
       const parentKey = item.parent_folder ?? null;
@@ -536,7 +534,6 @@ export class SupabaseClientService {
 
     // The root folders are those whose parent_folder is null
     const result = lookup.get(null) || [];
-    console.log('result: ', result);
     return result;
   }
 

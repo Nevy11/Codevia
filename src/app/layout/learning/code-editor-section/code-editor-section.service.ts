@@ -331,6 +331,50 @@ export class CodeEditorSectionService {
     window.URL.revokeObjectURL(url);
   }
 
+  // async finalizeNewFolder(
+  //   dataSource: Folders[],
+  //   parentFolderName: string,
+  //   newFolderName: string
+  // ): Promise<boolean> {
+  //   const parentFolder = this.findFolderOrFile(dataSource, parentFolderName);
+  //   console.log('Parent folder found:', parentFolder);
+  //   // Step 1: Validate parent
+  //   if (!parentFolder || parentFolder.type !== 'folder') return false;
+  //   // Step 2: Prepare local new folder
+  //   if (!parentFolder.children) parentFolder.children = [];
+
+  //   const newFolder: Folders = {
+  //     name: '',
+  //     type: 'folder',
+  //     children: [],
+  //     isEditing: false,
+  //   };
+
+  //   // Optimistically add to UI
+  //   parentFolder.children.push(newFolder);
+  //   try {
+  //     // Step 3: Persist folder to Supabase
+  //     const createdFolder = await this.supabaseService.createFolder(
+  //       newFolderName,
+  //       parentFolderName
+  //     );
+
+  //     // Step 4: (Optional) attach Supabase id to your folder for tracking
+  //     (newFolder as any).id = createdFolder.id;
+
+  //     console.log('New folder created:', newFolder);
+
+  //     return true;
+  //   } catch (error) {
+  //     console.error('❌ Failed to create folder in Supabase:', error);
+
+  //     // Roll back UI change if Supabase fails
+  //     parentFolder.children = parentFolder.children.filter(
+  //       (child) => child !== newFolder
+  //     );
+  //     return false;
+  //   }
+  // }
   async finalizeNewFolder(
     dataSource: Folders[],
     parentFolderName: string,
@@ -338,20 +382,21 @@ export class CodeEditorSectionService {
   ): Promise<boolean> {
     const parentFolder = this.findFolderOrFile(dataSource, parentFolderName);
     console.log('Parent folder found:', parentFolder);
-    // Step 1: Validate parent
+
     if (!parentFolder || parentFolder.type !== 'folder') return false;
-    // Step 2: Prepare local new folder
     if (!parentFolder.children) parentFolder.children = [];
 
+    // 🟢 Create new folder as finalized (not in edit mode)
     const newFolder: Folders = {
-      name: '',
+      name: newFolderName, // ✅ set correct name
       type: 'folder',
       children: [],
-      isEditing: true,
+      isEditing: false, // ✅ stop showing the input box
     };
 
     // Optimistically add to UI
     parentFolder.children.push(newFolder);
+
     try {
       // Step 3: Persist folder to Supabase
       const createdFolder = await this.supabaseService.createFolder(
@@ -359,10 +404,10 @@ export class CodeEditorSectionService {
         parentFolderName
       );
 
-      // Step 4: (Optional) attach Supabase id to your folder for tracking
+      // Attach ID for tracking
       (newFolder as any).id = createdFolder.id;
 
-      console.log('✅ Folder created successfully in Supabase:', createdFolder);
+      console.log('New folder created:', newFolder);
       return true;
     } catch (error) {
       console.error('❌ Failed to create folder in Supabase:', error);
