@@ -75,7 +75,9 @@ export class CodeEditorSectionComponent implements OnInit {
   ngOnInit() {
     this.codeEditorService.loadAndCacheData().then(() => {
       this.dataSource = this.codeEditorService.get_cached_data();
+      console.log('cached data: ', this.dataSource);
     });
+
     this.themechangeService.loadTheme();
     this.themeSub = this.themechangeService.theme$.subscribe((theme) => {
       this.editorOptions = {

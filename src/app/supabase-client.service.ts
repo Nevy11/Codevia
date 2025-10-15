@@ -499,7 +499,7 @@ export class SupabaseClientService {
       console.error('Error loading user data:', error);
       return [];
     }
-
+    console.log('data from supabase: ', data);
     // Build a lookup map for quick access
     const lookup = new Map<string | null, Folders[]>();
 
@@ -517,20 +517,21 @@ export class SupabaseClientService {
       };
       return { ...item, folder };
     });
+    console.log('items: ', items);
 
-    // Group by parent_folder
     for (const item of items) {
       const parentKey = item.parent_folder ?? null;
 
-      // Ensure the parent exists in the map
+      // Ensure the parent list exists
       if (!lookup.has(parentKey)) {
         lookup.set(parentKey, []);
       }
 
+      // Add this item to its parent's children
       lookup.get(parentKey)!.push(item.folder);
 
-      // Prepare space for its own children
-      lookup.set(item.folder_name, item.folder.children!);
+      // Prepare space for this item's own children
+      lookup.set(item.id, item.folder.children!);
     }
 
     // The root folders are those whose parent_folder is null
@@ -591,6 +592,7 @@ export class SupabaseClientService {
 
       parentFolderId = parentFolder.id;
     }
+    console.log('Parent Folder ID: ', parentFolderId);
 
     // Step 2: Create the new folder
     const { data, error } = await this.supabase
@@ -601,7 +603,7 @@ export class SupabaseClientService {
           folder_name: folderName,
           file_name: null,
           file_type: 'folder',
-          parent_folder: null,
+          parent_folder: parentFolderId,
           lines: [],
           children: [],
         },

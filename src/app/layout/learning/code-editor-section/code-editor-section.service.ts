@@ -144,6 +144,7 @@ export class CodeEditorSectionService {
   async loadAndCacheData() {
     console.log('Loading user data from Supabase...');
     const data = await this.supabaseService.loadUserData();
+    console.log('Data loaded:', data);
     this.foldersCache = data;
   }
 
@@ -355,7 +356,7 @@ export class CodeEditorSectionService {
       // Step 3: Persist folder to Supabase
       const createdFolder = await this.supabaseService.createFolder(
         newFolderName,
-        parentFolderName // You can update this to a real parent folder id if available
+        parentFolderName
       );
 
       // Step 4: (Optional) attach Supabase id to your folder for tracking
