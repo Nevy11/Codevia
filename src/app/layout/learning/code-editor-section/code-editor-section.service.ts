@@ -152,11 +152,11 @@ export class CodeEditorSectionService {
     return this.foldersCache;
   }
 
-  finalizeNewFile(
+  async finalizeNewFile(
     dataSource: Folders[],
     newFileName: string,
     fileType: string
-  ): boolean {
+  ): Promise<boolean> {
     const folderName = this.folder_name_selected;
 
     console.log('Foldername selected:', folderName);
@@ -179,12 +179,12 @@ export class CodeEditorSectionService {
 
     console.log('Found placeholder:', placeholder);
 
-    // Update the placeholder file
+    // Update the placeholder file in UI
     placeholder.name = `${newFileName}.${fileType}`;
     placeholder.type = 'file';
     placeholder.isEditing = false;
 
-    // Also create metadata entry
+    // Prepare metadata
     const newFileData: FileData = {
       folder_name: folderName,
       file_name: newFileName,
@@ -192,9 +192,23 @@ export class CodeEditorSectionService {
       lines: [],
     };
 
-    this.fileDataList.push(newFileData);
+    try {
+      // ✅ Call the Supabase createFile() function here
+      const createdFile = await this.supabaseService.createFile(
+        newFileName,
+        folderName
+      );
 
-    return true;
+      console.log('File created in Supabase:', createdFile);
+
+      // Add to local list after successful DB creation
+      this.fileDataList.push(newFileData);
+
+      return true;
+    } catch (error) {
+      console.error('Error creating file in Supabase:', error);
+      return false;
+    }
   }
 
   /** ---------------------------------

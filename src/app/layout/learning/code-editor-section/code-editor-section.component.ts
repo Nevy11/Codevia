@@ -237,12 +237,61 @@ export class CodeEditorSectionComponent implements OnInit {
     }
   }
 
-  finishEditing(node: Folders) {
-    // If already processing, do nothing
+  // finishEditing(node: Folders) {
+  //   // If already processing, do nothing
+  //   if (this.editingInProgress) return;
+  //   this.editingInProgress = true;
+
+  //   // Validate the file name
+  //   if (!node.name || !node.name.trim()) {
+  //     this.matsnackbar.open('File name cannot be empty.', 'Close', {
+  //       duration: 2000,
+  //     });
+  //     this.editingInProgress = false;
+  //     return;
+  //   }
+
+  //   // Extract file name and type
+  //   const lastDotIndex = node.name.lastIndexOf('.');
+  //   const fileNameWithoutExt =
+  //     lastDotIndex !== -1 ? node.name.slice(0, lastDotIndex) : node.name;
+  //   const fileType =
+  //     lastDotIndex !== -1 ? node.name.slice(lastDotIndex + 1) : 'txt';
+
+  //   // Call the service
+  //   const success = this.codeEditorService.finalizeNewFile(
+  //     this.dataSource,
+  //     fileNameWithoutExt,
+  //     fileType
+  //   );
+
+  //   if (success) {
+  //     this.matsnackbar.open(
+  //       `File "${node.name}" created successfully.`,
+  //       'Close',
+  //       { duration: 2000 }
+  //     );
+  //     this.dataSource = [...this.dataSource]; // Refresh the tree
+  //   } else {
+  //     this.matsnackbar.open(
+  //       'Failed to create file. Please select a valid folder.',
+  //       'Close',
+  //       {
+  //         duration: 2000,
+  //       }
+  //     );
+  //   }
+
+  //   // Allow editing again after a short delay
+  //   setTimeout(() => (this.editingInProgress = false), 100);
+  // }
+
+  async finishEditing(node: Folders) {
+    // Prevent double-clicks or race conditions
     if (this.editingInProgress) return;
     this.editingInProgress = true;
 
-    // Validate the file name
+    // Validate name
     if (!node.name || !node.name.trim()) {
       this.matsnackbar.open('File name cannot be empty.', 'Close', {
         duration: 2000,
@@ -251,39 +300,48 @@ export class CodeEditorSectionComponent implements OnInit {
       return;
     }
 
-    // Extract file name and type
+    // Extract file name and extension
     const lastDotIndex = node.name.lastIndexOf('.');
     const fileNameWithoutExt =
       lastDotIndex !== -1 ? node.name.slice(0, lastDotIndex) : node.name;
     const fileType =
       lastDotIndex !== -1 ? node.name.slice(lastDotIndex + 1) : 'txt';
 
-    // Call the service
-    const success = this.codeEditorService.finalizeNewFile(
-      this.dataSource,
-      fileNameWithoutExt,
-      fileType
-    );
+    try {
+      // ✅ Await the async Supabase call
+      const success = await this.codeEditorService.finalizeNewFile(
+        this.dataSource,
+        fileNameWithoutExt,
+        fileType
+      );
+      console.log('File creation success status:', success);
+      if (success) {
+        this.matsnackbar.open(
+          `File "${node.name}" created successfully.`,
+          'Close',
+          { duration: 2000 }
+        );
 
-    if (success) {
+        // Refresh the dataSource to update your file tree
+        this.dataSource = [...this.dataSource];
+      } else {
+        this.matsnackbar.open(
+          'Failed to create file. Please select a valid folder.',
+          'Close',
+          { duration: 2000 }
+        );
+      }
+    } catch (error) {
+      console.error('Error during file creation:', error);
       this.matsnackbar.open(
-        `File "${node.name}" created successfully.`,
+        'An unexpected error occurred while creating the file.',
         'Close',
         { duration: 2000 }
       );
-      this.dataSource = [...this.dataSource]; // Refresh the tree
-    } else {
-      this.matsnackbar.open(
-        'Failed to create file. Please select a valid folder.',
-        'Close',
-        {
-          duration: 2000,
-        }
-      );
+    } finally {
+      // Allow editing again after a short delay
+      setTimeout(() => (this.editingInProgress = false), 100);
     }
-
-    // Allow editing again after a short delay
-    setTimeout(() => (this.editingInProgress = false), 100);
   }
 
   delete_file(node: Folders) {

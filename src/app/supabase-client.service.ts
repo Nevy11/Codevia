@@ -450,39 +450,6 @@ export class SupabaseClientService {
     return true;
   }
 
-  // async createOrUpdateFolder(
-  //   folderName: string,
-  //   parentFolder: string | null = null
-  // ) {
-  //   this.user_id = await this.getCurrentUserId();
-  //   if (!this.user_id) return null;
-
-  //   const { data, error } = await this.client
-  //     .from('files')
-  //     .upsert(
-  //       [
-  //         {
-  //           user_id: this.user_id,
-  //           folder_name: folderName,
-  //           file_name: null,
-  //           file_type: 'folder',
-  //           lines: [],
-  //           children: [],
-  //           parent_folder: parentFolder,
-  //         },
-  //       ],
-  //       { onConflict: 'user_id,parent_folder,folder_name' }
-  //     )
-  //     .select();
-
-  //   if (error || !data?.length) {
-  //     console.error('Error creating/updating folder:', error);
-  //     return null;
-  //   }
-
-  //   return data[0];
-  // }
-
   // loading the user's data.. so correct except the part of
   async loadUserData(): Promise<Folders[]> {
     this.user_id = await this.getCurrentUserId();
@@ -537,31 +504,6 @@ export class SupabaseClientService {
     return result;
   }
 
-  // async createFolder(folderName: string, parentFolderId: string | null = null) {
-  //   const { data, error } = await this.supabase
-  //     .from('files')
-  //     .insert([
-  //       {
-  //         user_id: this.user_id,
-  //         folder_name: folderName,
-  //         file_name: null, // folders don’t have a file_name
-  //         file_type: 'folder',
-  //         parent_folder: parentFolderId,
-  //         lines: [],
-  //         children: [],
-  //       },
-  //     ])
-  //     .select('*')
-  //     .single();
-
-  //   if (error) {
-  //     console.error('Error creating folder:', error.message);
-  //     throw error;
-  //   }
-
-  //   return data;
-  // }
-
   async createFolder(
     folderName: string,
     parentFolderName: string | null = null
@@ -610,6 +552,58 @@ export class SupabaseClientService {
 
     if (error) {
       console.error('Error creating folder:', error.message);
+      throw error;
+    }
+
+    return data;
+  }
+
+  async createFile(fileName: string, parentFolderName: string | null = null) {
+    let parentFolderId: string | null = null;
+
+    // Step 1: If parent folder name is provided, look it up
+    if (parentFolderName) {
+      const { data: parentFolder, error: parentError } = await this.supabase
+        .from('files')
+        .select('id')
+        .eq('user_id', this.user_id)
+        .eq('folder_name', parentFolderName)
+        .eq('file_type', 'folder')
+        .single();
+
+      if (parentError) {
+        console.error('Error fetching parent folder:', parentError.message);
+        throw parentError;
+      }
+
+      if (!parentFolder) {
+        throw new Error(`Parent folder "${parentFolderName}" not found`);
+      }
+
+      parentFolderId = parentFolder.id;
+    }
+
+    console.log('Parent Folder ID for file:', parentFolderId);
+
+    // Step 2: Create the new file
+    const { data, error } = await this.supabase
+      .from('files')
+      .insert([
+        {
+          user_id: this.user_id,
+          folder_name: null, // files don’t have folder_name
+          file_name: fileName,
+          file_type: 'file', // 'file' or more specific type if you use one
+          parent_folder: parentFolderId,
+          lines: [], // start with empty content
+          children: [],
+        },
+      ])
+      .select('*')
+      .single();
+
+    if (error) {
+      console.error('Error creating file:', error.message);
       throw error;
     }
 
