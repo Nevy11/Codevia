@@ -142,6 +142,7 @@ export class CodeEditorSectionComponent implements OnInit {
     if (this.currentFile) {
       this.code = '';
       this.currentFile.content = '';
+      this.saveCurrentFile();
       this.matsnackbar.open(
         `Code reset in file: ${this.currentFile.name}`,
         'Close',
