@@ -392,20 +392,53 @@ export class CodeEditorSectionComponent implements OnInit {
     console.log('Node editing state:', node.isEditing);
   }
 
-  saveCurrentFile() {
+  // saveCurrentFile() {
+  //   this.currentFile = this.codeEditorService.getcurrentFile();
+
+  //   if (this.currentFile) {
+  //     this.currentFile.content = this.code;
+  //     this.matsnackbar.open(`Saved: ${this.currentFile.name}`, 'Close', {
+  //       duration: 1500,
+  //     });
+  //   } else {
+  //     this.matsnackbar.open('No file is open to save.', 'Close', {
+  //       duration: 2000,
+  //     });
+  //   }
+  // }
+  async saveCurrentFile() {
     this.currentFile = this.codeEditorService.getcurrentFile();
 
     if (this.currentFile) {
-      this.currentFile.content = this.code;
-      this.matsnackbar.open(`Saved: ${this.currentFile.name}`, 'Close', {
-        duration: 1500,
-      });
+      try {
+        // Update local content
+        this.currentFile.content = this.code;
+
+        // Save to Supabase
+        await this.supabaseService.updateFileContent(
+          this.currentFile.name,
+          this.code
+        );
+
+        // Notify success
+        this.matsnackbar.open(`Saved: ${this.currentFile.name}`, 'Close', {
+          duration: 1500,
+        });
+      } catch (error: any) {
+        console.error('Error saving file:', error.message || error);
+        this.matsnackbar.open(
+          `Failed to save: ${this.currentFile.name}`,
+          'Close',
+          { duration: 2000 }
+        );
+      }
     } else {
       this.matsnackbar.open('No file is open to save.', 'Close', {
         duration: 2000,
       });
     }
   }
+
   get mergedEditorOptions() {
     return {
       ...this.editorOptions,

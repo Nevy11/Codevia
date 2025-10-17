@@ -609,4 +609,49 @@ export class SupabaseClientService {
 
     return data;
   }
+
+  async updateFileContent(fileName: string, newContent: string) {
+    // Ensure user is set
+    if (!this.user_id) {
+      this.user_id = await this.getCurrentUserId();
+      if (!this.user_id) {
+        throw new Error('User not authenticated');
+      }
+    }
+
+    // Step 1: Look up the file by name
+    const { data: fileRecord, error: fetchError } = await this.supabase
+      .from('files')
+      .select('id')
+      .eq('user_id', this.user_id)
+      .eq('file_name', fileName)
+      .eq('file_type', 'file')
+      .single();
+
+    if (fetchError) {
+      console.error('Error fetching file to update:', fetchError.message);
+      throw fetchError;
+    }
+
+    if (!fileRecord) {
+      throw new Error(`File "${fileName}" not found`);
+    }
+
+    // Step 2: Convert content to an array of lines (if your schema expects that)
+    const linesArray = newContent.split('\n');
+
+    // Step 3: Update file content
+    const { error: updateError } = await this.supabase
+      .from('files')
+      .update({ lines: linesArray })
+      .eq('id', fileRecord.id);
+
+    if (updateError) {
+      console.error('Error updating file content:', updateError.message);
+      throw updateError;
+    }
+
+    console.log(`File "${fileName}" updated successfully.`);
+    return true;
+  }
 }
