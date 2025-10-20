@@ -13,7 +13,7 @@ import { isPlatformBrowser } from '@angular/common';
 export class AppComponent {
   title = 'Codevia';
   play = false;
-  loading = true; // <-- Add this
+  loading = true;
 
   private platformId = inject(PLATFORM_ID);
   private supabase = inject(SupabaseClientService);
@@ -49,7 +49,7 @@ export class AppComponent {
               window.history.replaceState({}, document.title, '/layout/home');
               this.router.navigate(['/layout/home']);
             }
-            this.loading = false; // <-- Allow rendering
+            this.loading = false;
           });
         }
       } else {
@@ -58,7 +58,7 @@ export class AppComponent {
           if (data.session) {
             this.router.navigate(['/layout/home']);
           }
-          this.loading = false; // <-- Allow rendering
+          this.loading = false;
         });
       }
     });
