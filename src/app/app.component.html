@@ -1,1 +1,7 @@
-<router-outlet />
+@if (!loading) {
+<router-outlet></router-outlet>
+} @else {
+<div class="loading-screen">
+  <!-- optional: your logo, spinner, or just keep it blank -->
+</div>
+}
