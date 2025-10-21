@@ -3,10 +3,11 @@ import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { SupabaseClientService } from './supabase-client.service';
 import { MatDialog } from '@angular/material/dialog';
 import { isPlatformBrowser } from '@angular/common';
+import { InitScreenComponent } from './init-screen/init-screen.component';
 
 @Component({
   selector: 'nevy11-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, InitScreenComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
