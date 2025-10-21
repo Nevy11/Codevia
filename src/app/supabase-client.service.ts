@@ -654,4 +654,51 @@ export class SupabaseClientService {
     console.log(`File "${fileName}" updated successfully.`);
     return true;
   }
+
+  async deleteFile(
+    fileName: string,
+    parentFolderName: string | null = null
+  ): Promise<boolean> {
+    if (!this.user_id) {
+      this.user_id = await this.getCurrentUserId();
+      if (!this.user_id) return false;
+    }
+
+    let parentFolderId: string | null = null;
+
+    // If a parent folder is specified, look up its ID
+    if (parentFolderName) {
+      const { data: parentFolder, error: parentError } = await this.supabase
+        .from('files')
+        .select('id')
+        .eq('user_id', this.user_id)
+        .eq('folder_name', parentFolderName)
+        .eq('file_type', 'folder')
+        .single();
+
+      if (parentError) {
+        console.error('Error fetching parent folder:', parentError.message);
+        return false;
+      }
+
+      parentFolderId = parentFolder?.id ?? null;
+    }
+
+    // Delete the file that matches both file name and parent folder
+    const { error } = await this.supabase
+      .from('files')
+      .delete()
+      .eq('user_id', this.user_id)
+      .eq('file_name', fileName)
+      .eq('file_type', 'file')
+      .eq('parent_folder', parentFolderId);
+
+    if (error) {
+      console.error('Error deleting file:', error.message);
+      return false;
+    }
+
+    console.log(`File "${fileName}" deleted successfully.`);
+    return true;
+  }
 }

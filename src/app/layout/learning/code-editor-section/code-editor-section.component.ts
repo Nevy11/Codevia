@@ -83,7 +83,6 @@ export class CodeEditorSectionComponent implements OnInit {
   ngOnInit() {
     this.codeEditorService.loadAndCacheData().then(() => {
       this.dataSource = this.codeEditorService.get_cached_data();
-      console.log('cached data: ', this.dataSource);
     });
 
     this.themechangeService.loadTheme();
@@ -93,8 +92,6 @@ export class CodeEditorSectionComponent implements OnInit {
         theme: theme === 'dark' ? 'vs-dark' : 'vs-light',
       };
     });
-
-    console.log('data source: ', this.dataSource);
   }
   async runCode() {
     if (this.isBrowser) {
@@ -105,9 +102,6 @@ export class CodeEditorSectionComponent implements OnInit {
       worker.onmessage = ({ data }) => {
         if (data.success) {
           this.logs = data.logs;
-          console.log('', data.logs);
-
-          console.log('Result:', data); // 4
         } else {
           this.matsnackbar.open(
             `Error while executing code: ${data.error}`,
@@ -124,7 +118,6 @@ export class CodeEditorSectionComponent implements OnInit {
     }
   }
   openFile(node: Folders) {
-    console.log('is editor enabled: ', this.isEditorEnabled);
     if (node.type === 'file') {
       this.codeEditorService.setcurrentFile(node);
       this.code = node.content || ''; // Load content into Monaco editor
@@ -133,7 +126,6 @@ export class CodeEditorSectionComponent implements OnInit {
         duration: 2000,
       });
     }
-    console.log('is editor enabled: ', this.isEditorEnabled);
   }
 
   resetCode() {
@@ -212,13 +204,11 @@ export class CodeEditorSectionComponent implements OnInit {
   onNodeToggle(node: Folders, isExpanded: boolean) {
     if (isExpanded) {
       // This means the node is about to close
-      console.log('Node closed:', node.name);
       this.matsnackbar.open(`Closed folder: ${node.name}`, 'Close', {
         duration: 2000,
       });
     } else {
       // This means the node is about to open
-      console.log('Node opened:', node.name);
       this.codeEditorService.setfolder_name_selected(node.name);
       this.matsnackbar.open(`Opened folder: ${node.name}`, 'Close', {
         duration: 2000,
@@ -266,7 +256,6 @@ export class CodeEditorSectionComponent implements OnInit {
         fileNameWithoutExt,
         fileType
       );
-      console.log('File creation success status:', success);
       if (success) {
         this.matsnackbar.open(
           `File "${node.name}" created successfully.`,
@@ -296,20 +285,40 @@ export class CodeEditorSectionComponent implements OnInit {
     }
   }
 
-  delete_file(node: Folders) {
+  async delete_file(node: Folders) {
     const folderName = this.codeEditorService.getfolder_name_selected();
 
-    const deleted = this.codeEditorService.deleteFile(
-      this.dataSource, // Root folder data
-      folderName, // Parent folder where the file is
-      node.name // File name to delete
-    );
+    try {
+      const deleted = await this.codeEditorService.deleteFile(
+        this.dataSource, // Root folder data
+        folderName, // Parent folder name
+        node.name // File name to delete
+      );
 
-    if (deleted) {
-      console.log(`File '${node.name}' deleted successfully!`);
-      this.dataSource = [...this.dataSource];
-    } else {
-      console.log(`File '${node.name}' could not be deleted.`);
+      if (deleted) {
+        console.log(`✅ File '${node.name}' deleted successfully!`);
+        this.matsnackbar.open(
+          `File '${node.name}' deleted successfully!`,
+          'Close',
+          { duration: 2000 }
+        );
+        // Refresh UI after deletion
+        this.dataSource = [...this.dataSource];
+      } else {
+        console.warn(`⚠️ File '${node.name}' could not be deleted.`);
+        this.matsnackbar.open(
+          `Failed to delete file '${node.name}'.`,
+          'Close',
+          { duration: 2000 }
+        );
+      }
+    } catch (error) {
+      console.error('❌ Error deleting file:', error);
+      this.matsnackbar.open(
+        `An error occurred while deleting file '${node.name}'.`,
+        'Close',
+        { duration: 2000 }
+      );
     }
   }
 
@@ -348,7 +357,6 @@ export class CodeEditorSectionComponent implements OnInit {
     this.cdr.detectChanges(); // 🔹 Forces UI refresh immediately
 
     const folderName = this.codeEditorService.getfolder_name_selected();
-    console.log('Selected folder name:', folderName);
 
     if (!folderName) {
       const newFolderName = node.name;
@@ -390,7 +398,6 @@ export class CodeEditorSectionComponent implements OnInit {
     }
 
     this.cdr.detectChanges(); // 🔹 Ensure view updates after async call too
-    console.log('Node editing state:', node.isEditing);
   }
 
   async saveCurrentFile() {

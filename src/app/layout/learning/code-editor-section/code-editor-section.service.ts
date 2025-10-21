@@ -131,10 +131,6 @@ export class CodeEditorSectionService {
     return this.search_results;
   }
 
-  // async get_initial_data(): Promise<Folders[]> {
-  //   return await this.supabaseService.loadUserData();
-  // }
-
   private foldersCache: Folders[] = [];
 
   get_cached_data() {
@@ -142,9 +138,7 @@ export class CodeEditorSectionService {
   }
 
   async loadAndCacheData() {
-    console.log('Loading user data from Supabase...');
     const data = await this.supabaseService.loadUserData();
-    console.log('Data loaded:', data);
     this.foldersCache = data;
   }
 
@@ -214,11 +208,11 @@ export class CodeEditorSectionService {
   /** ---------------------------------
    * Delete a Specific File by Name
    * --------------------------------- */
-  deleteFile(
+  async deleteFile(
     dataSource: Folders[],
     folderName: string,
     fileName: string
-  ): boolean {
+  ): Promise<boolean> {
     const parentFolder = this.findFolderOrFile(dataSource, folderName);
 
     if (
@@ -226,17 +220,39 @@ export class CodeEditorSectionService {
       parentFolder.type !== 'folder' ||
       !parentFolder.children
     ) {
+      console.warn('Parent folder not found or invalid.');
       return false;
     }
 
     const initialLength = parentFolder.children.length;
 
-    // ✅ Replace with a new array reference
+    // ✅ Locally remove the file from memory
     parentFolder.children = parentFolder.children.filter(
       (child) => !(child.type === 'file' && child.name === fileName)
     );
 
-    return parentFolder.children.length !== initialLength; // true if something was deleted
+    const deletedLocally = parentFolder.children.length !== initialLength;
+
+    if (deletedLocally) {
+      try {
+        // ✅ Call Supabase to delete from database
+        const deletedFromDB = await this.supabaseService.deleteFile(
+          fileName,
+          folderName
+        );
+        if (deletedFromDB) {
+          console.log(`File "${fileName}" deleted from Supabase successfully.`);
+        } else {
+          console.warn(`File "${fileName}" not found in Supabase.`);
+        }
+        return true;
+      } catch (error) {
+        console.error('Error deleting file from Supabase:', error);
+        return false;
+      }
+    }
+
+    return false; // file not found locally
   }
 
   createNewFolder(dataSource: Folders[], parentFolderName: string): boolean {
