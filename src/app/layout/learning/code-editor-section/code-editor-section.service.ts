@@ -87,20 +87,15 @@ export class CodeEditorSectionService {
 
     if (!folder.children) folder.children = [];
 
-    // Add placeholder file for UI editing
     folder.children.push({
       name: '',
       type: 'file',
-      isEditing: true, // <-- UI will display editable input
+      isEditing: true,
     });
 
-    // ❌ Do NOT add metadata here anymore
     return true;
   }
 
-  /** ---------------------------------
-   * File Metadata Helpers
-   * --------------------------------- */
   addFileData(fileData: FileData) {
     this.fileDataList.push(fileData);
   }
@@ -109,9 +104,6 @@ export class CodeEditorSectionService {
     return this.fileDataList;
   }
 
-  /** ---------------------------------
-   * Folder Selection Helpers
-   * --------------------------------- */
   setfolder_name_selected(name: string) {
     this.folder_name_selected = name;
   }
@@ -120,9 +112,6 @@ export class CodeEditorSectionService {
     return this.folder_name_selected;
   }
 
-  /** ---------------------------------
-   * Search Result Helpers
-   * --------------------------------- */
   setSearchResults(results: number) {
     this.search_results = results;
   }
@@ -205,9 +194,6 @@ export class CodeEditorSectionService {
     }
   }
 
-  /** ---------------------------------
-   * Delete a Specific File by Name
-   * --------------------------------- */
   async deleteFile(
     dataSource: Folders[],
     folderName: string,
