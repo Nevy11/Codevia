@@ -4,6 +4,7 @@ import { VideoSectionComponent } from './video-section/video-section.component';
 import { CodeEditorSectionComponent } from './code-editor-section/code-editor-section.component';
 import { ActivatedRoute } from '@angular/router';
 import { VideoFeedComponent } from '../courses/video-feed/video-feed.component';
+import { PythonProcessingComponent } from './code-editor-section/python-processing/python-processing.component';
 
 @Component({
   selector: 'nevy11-learning',
@@ -11,6 +12,7 @@ import { VideoFeedComponent } from '../courses/video-feed/video-feed.component';
     VideoSectionComponent,
     CodeEditorSectionComponent,
     VideoFeedComponent,
+    PythonProcessingComponent,
   ],
   templateUrl: './learning.component.html',
   styleUrl: './learning.component.scss',
