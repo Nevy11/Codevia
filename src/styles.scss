@@ -1,11 +1,69 @@
+// @use "@angular/material" as mat;
+
+// .light-theme {
+//   @include mat.theme(
+//     (
+//       color: (
+//         primary: mat.$blue-palette,
+//         // warn: mat.$red-palette,
+//         theme-type: light,
+//       ),
+//       typography: Roboto,
+//       density: 0,
+//     )
+//   );
+// }
+
+// .dark-theme {
+//   // color-scheme: dark;
+//   @include mat.theme(
+//     (
+//       color: (
+//         primary: mat.$spring-green-palette,
+//         // warn: mat.$red-palette,
+//         theme-type: dark,
+//       ),
+//       typography: Roboto,
+//       density: 0,
+//     )
+//   );
+//   background-color: var(--mat-sys-surface);
+
+//   color: var(--mat-sys-on-surface);
+// }
+
 @use "@angular/material" as mat;
 
+/* -------------------------------
+   Global Font Size Variable
+-------------------------------- */
+:root {
+  --app-font-size: 16px; // Default global font size
+}
+
+/* Make everything inherit this font size */
+html,
+body {
+  font-size: var(--app-font-size);
+}
+
+body,
+button,
+input,
+textarea,
+mat-card,
+mat-label {
+  font-size: inherit;
+}
+
+/* -------------------------------
+   Angular Material Themes
+-------------------------------- */
 .light-theme {
   @include mat.theme(
     (
       color: (
         primary: mat.$blue-palette,
-        // warn: mat.$red-palette,
         theme-type: light,
       ),
       typography: Roboto,
@@ -15,19 +73,17 @@
 }
 
 .dark-theme {
-  // color-scheme: dark;
   @include mat.theme(
     (
       color: (
         primary: mat.$spring-green-palette,
-        // warn: mat.$red-palette,
         theme-type: dark,
       ),
       typography: Roboto,
       density: 0,
     )
   );
-  background-color: var(--mat-sys-surface);
 
+  background-color: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
 }
