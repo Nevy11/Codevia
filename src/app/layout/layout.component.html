@@ -2,7 +2,13 @@
 @for (card of cards | async; track card) { @if (card.mobile_device) {
 <mat-sidenav-container class="sidenav-container">
   <!-- Side Navigation -->
-  <mat-sidenav #drawer class="sidenav" mode="side" closed style="width: 6.7rem">
+  <!-- style="width: 6.7rem" -->
+  <mat-sidenav
+    #drawer
+    class="sidenav"
+    mode="side"
+    [class.opened]="drawer.opened"
+  >
     <mat-toolbar color="primary">
       <!-- <mat-icon style="color: #2196f3">star</mat-icon>
       <mat-icon style="color: #2196f3">star</mat-icon> -->

@@ -1,3 +1,36 @@
+// .sidenav-container {
+//   height: 100vh;
+// }
+
+// .topbar {
+//   position: sticky;
+//   top: 0;
+//   z-index: 1000;
+// }
+
+// .spacer {
+//   flex: 1 1 auto;
+// }
+
+// .content {
+//   padding: 24px;
+// }
+// .mat-icon-align {
+//   margin-right: 16px;
+//   display: flex;
+//   align-items: center;
+// }
+
+// mat-nav-list a.mat-list-item {
+//   padding-top: 12px;
+//   padding-bottom: 12px;
+//   font-size: 14px;
+// }
+
+// .img {
+//   border-radius: 50%;
+// }
+
 .sidenav-container {
   height: 100vh;
 }
@@ -6,27 +39,43 @@
   position: sticky;
   top: 0;
   z-index: 1000;
+  height: var(--toolbar-height);
+  font-size: var(--app-font-size);
 }
 
-.spacer {
-  flex: 1 1 auto;
+.mat-icon {
+  font-size: var(--icon-size);
 }
 
-.content {
-  padding: 24px;
-}
 .mat-icon-align {
-  margin-right: 16px;
+  margin-right: var(--nav-item-padding);
   display: flex;
   align-items: center;
 }
 
 mat-nav-list a.mat-list-item {
-  padding-top: 12px;
-  padding-bottom: 12px;
-  font-size: 14px;
+  padding-top: var(--nav-item-padding);
+  padding-bottom: var(--nav-item-padding);
+  font-size: var(--app-font-size);
+}
+
+.content {
+  padding: calc(var(--app-font-size) * 1.7);
 }
 
 .img {
   border-radius: 50%;
+  width: calc(var(--app-font-size) * 2);
+  height: calc(var(--app-font-size) * 2);
+}
+.spacer {
+  flex: 1 1 auto;
+}
+
+.sidenav {
+  width: calc(var(--app-font-size) * 4.5); // Adjust multiplier as needed
+  transition: width 0.3s ease;
+}
+.sidenav.opened {
+  width: calc(var(--app-font-size) * 12); // Adjust multiplier as needed
 }

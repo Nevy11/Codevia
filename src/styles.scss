@@ -38,7 +38,10 @@
    Global Font Size Variable
 -------------------------------- */
 :root {
-  --app-font-size: 16px; // Default global font size
+  --app-font-size: 14px;
+  --toolbar-height: calc(var(--app-font-size) * 3);
+  --icon-size: calc(var(--app-font-size) * 1.5);
+  --nav-item-padding: calc(var(--app-font-size) * 0.85);
 }
 
 /* Make everything inherit this font size */
