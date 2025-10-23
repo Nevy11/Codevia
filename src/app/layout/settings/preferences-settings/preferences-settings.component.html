@@ -40,13 +40,21 @@
       <!-- <mat-slider>
         <input matSliderThumb [(ngModel)]="fontSize" (input)="saveFontSize()" />
       </mat-slider> -->
-      <mat-slider>
+      <mat-slider min="12" max="35" step="1">
         <input
           matSliderThumb
           [(ngModel)]="fontSize"
           (change)="saveFontSize()"
         />
       </mat-slider>
+      <!-- <mat-slider
+        min="12"
+        max="37"
+        step="1"
+        matSliderThumb
+        [(ngModel)]="fontSize"
+        (change)="saveFontSize()"
+      ></mat-slider> -->
 
       <p [style.fontSize.px]="fontSize">Preview Text</p>
     </mat-card-content>

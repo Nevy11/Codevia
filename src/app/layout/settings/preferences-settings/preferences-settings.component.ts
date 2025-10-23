@@ -88,6 +88,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { ThemeChangeService } from '../../../theme-change.service';
 import { Subscription } from 'rxjs';
 import { PlaybackSettingsService } from './playback-settings.service';
+import { MatDialogClose } from '@angular/material/dialog';
 
 @Component({
   selector: 'nevy11-preferences-settings',
@@ -102,6 +103,7 @@ import { PlaybackSettingsService } from './playback-settings.service';
     MatFormFieldModule,
     MatSelectModule,
     MatOptionModule,
+    MatDialogClose,
   ],
   templateUrl: './preferences-settings.component.html',
   styleUrl: './preferences-settings.component.scss',
@@ -124,6 +126,7 @@ export class PreferencesSettingsComponent implements OnInit, OnDestroy {
   }
 
   saveFontSize() {
+    console.log('Saving font size:', this.fontSize);
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem('fontSize', this.fontSize.toString());
       document.documentElement.style.setProperty(
@@ -132,6 +135,20 @@ export class PreferencesSettingsComponent implements OnInit, OnDestroy {
       );
     }
   }
+  // saveFontSize() {
+  //   if (isPlatformBrowser(this.platformId)) {
+  //     // Cap font size at 37px
+  //     const limitedFontSize = Math.min(this.fontSize, 37);
+
+  //     localStorage.setItem('fontSize', limitedFontSize.toString());
+  //     document.documentElement.style.setProperty(
+  //       '--app-font-size',
+  //       `${limitedFontSize}px`
+  //     );
+
+  //     this.fontSize = limitedFontSize; // Update variable to reflect limit
+  //   }
+  // }
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {

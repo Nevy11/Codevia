@@ -73,7 +73,7 @@ mat-nav-list a.mat-list-item {
 }
 
 .sidenav {
-  width: calc(var(--app-font-size) * 4.5); // Adjust multiplier as needed
+  width: calc(var(--app-font-size) * 6); // Adjust multiplier as needed
   transition: width 0.3s ease;
 }
 .sidenav.opened {
