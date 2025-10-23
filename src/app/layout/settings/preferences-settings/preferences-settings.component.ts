@@ -88,7 +88,6 @@ import { MatOptionModule } from '@angular/material/core';
 import { ThemeChangeService } from '../../../theme-change.service';
 import { Subscription } from 'rxjs';
 import { PlaybackSettingsService } from './playback-settings.service';
-import { MatDialogClose } from '@angular/material/dialog';
 
 @Component({
   selector: 'nevy11-preferences-settings',
@@ -103,7 +102,6 @@ import { MatDialogClose } from '@angular/material/dialog';
     MatFormFieldModule,
     MatSelectModule,
     MatOptionModule,
-    MatDialogClose,
   ],
   templateUrl: './preferences-settings.component.html',
   styleUrl: './preferences-settings.component.scss',
