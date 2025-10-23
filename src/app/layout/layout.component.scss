@@ -79,3 +79,18 @@ mat-nav-list a.mat-list-item {
 .sidenav.opened {
   width: calc(var(--app-font-size) * 12); // Adjust multiplier as needed
 }
+.sidenav-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.sidenav-inner mat-toolbar {
+  flex-shrink: 0;
+}
+
+/* Push nav list down proportionally with font size */
+.sidenav-inner mat-nav-list {
+  margin-top: calc(var(--app-font-size) * 2.5);
+  transition: margin-top 0.3s ease;
+}
