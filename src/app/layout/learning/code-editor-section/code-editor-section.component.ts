@@ -103,22 +103,31 @@ export class CodeEditorSectionComponent implements OnInit {
     console.log('File extension:', extension);
 
     if (this.isBrowser) {
-      const worker = new Worker(
-        new URL('./code-editor-section.worker', import.meta.url)
-      );
-      worker.postMessage(this.code);
-      worker.onmessage = ({ data }) => {
-        if (data.success) {
-          this.logs = data.logs;
-        } else {
-          this.matsnackbar.open(
-            `Error while executing code: ${data.error}`,
-            'Close',
-            { duration: 2000 }
-          );
-          console.error('Error:', data.error);
-        }
-      };
+      if (extension == 'js') {
+        const worker = new Worker(
+          new URL('./code-editor-section.worker', import.meta.url)
+        );
+        worker.postMessage(this.code);
+        worker.onmessage = ({ data }) => {
+          if (data.success) {
+            this.logs = data.logs;
+          } else {
+            this.matsnackbar.open(
+              `Error while executing code: ${data.error}`,
+              'Close',
+              { duration: 2000 }
+            );
+            console.error('Error:', data.error);
+          }
+        };
+      } else {
+        this.matsnackbar.open(
+          `Running code for .${extension} files is not supported yet.`,
+          'Close',
+          { duration: 2000 }
+        );
+        return;
+      }
     } else {
       this.matsnackbar.open('This button is yet to be implemented', 'Close', {
         duration: 2000,
