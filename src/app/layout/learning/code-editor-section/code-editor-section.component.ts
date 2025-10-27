@@ -55,7 +55,8 @@ export class CodeEditorSectionComponent implements OnInit {
   private currentFile: Folders | null = null;
   private editingInProgress = false;
   private cdr = inject(ChangeDetectorRef);
-
+  private foldername!: string;
+  private parts!: string[];
   isEditorEnabled: boolean = false;
 
   isBrowser = false;
@@ -94,6 +95,13 @@ export class CodeEditorSectionComponent implements OnInit {
     });
   }
   async runCode() {
+    this.foldername = this.codeEditorService.getcurrentFile()?.name || '';
+    console.log('Running code in folder:', this.foldername);
+    this.parts = this.foldername.split('.');
+    const extension =
+      this.parts.length > 1 ? this.parts[this.parts.length - 1] : '';
+    console.log('File extension:', extension);
+
     if (this.isBrowser) {
       const worker = new Worker(
         new URL('./code-editor-section.worker', import.meta.url)
