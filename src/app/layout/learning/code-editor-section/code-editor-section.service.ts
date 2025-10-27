@@ -166,15 +166,15 @@ export class CodeEditorSectionService {
     placeholder.name = `${newFileName}.${fileType}`;
     placeholder.type = 'file';
     placeholder.isEditing = false;
-
+    newFileName = placeholder.name; // Ensure newFileName includes extension
     // Prepare metadata
     const newFileData: FileData = {
       folder_name: folderName,
-      file_name: newFileName,
+      file_name: placeholder.name,
       file_type: fileType,
       lines: [],
     };
-
+    console.log('Prepared new file data:', newFileData);
     try {
       // ✅ Call the Supabase createFile() function here
       const createdFile = await this.supabaseService.createFile(

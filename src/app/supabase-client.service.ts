@@ -585,6 +585,7 @@ export class SupabaseClientService {
 
     console.log('Parent Folder ID for file:', parentFolderId);
 
+    console.log('Creating file:', fileName);
     // Step 2: Create the new file
     const { data, error } = await this.supabase
       .from('files')
