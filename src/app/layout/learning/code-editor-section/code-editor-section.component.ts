@@ -125,7 +125,7 @@ export class CodeEditorSectionComponent implements OnInit {
       } else if (extension == 'py') {
         this.githubService.triggerGithub({ code: this.code }).subscribe({
           next: (response: any) => {
-            this.logs = response.result.split('\n');
+            // this.logs = response.result.split('\n');
             console.log('Python code executed successfully:', response);
           },
           error: (error: any) => {
