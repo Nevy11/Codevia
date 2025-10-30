@@ -284,7 +284,7 @@ export class CodeEditorSectionComponent implements OnInit {
       lastDotIndex !== -1 ? node.name.slice(lastDotIndex + 1) : 'txt';
 
     try {
-      // ✅ Await the async Supabase call
+      //  Await the async Supabase call
       const success = await this.codeEditorService.finalizeNewFile(
         this.dataSource,
         fileNameWithoutExt,
