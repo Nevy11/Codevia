@@ -6,10 +6,7 @@ import {
   OnDestroy,
   PLATFORM_ID,
   Inject,
-  HostListener,
 } from '@angular/core';
-import { map } from 'rxjs';
-import { isPlatformBrowser } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
@@ -41,8 +38,6 @@ import { TopLoginSignupComponent } from '../top-login-signup/top-login-signup.co
 export class LandingPageComponent implements OnInit, OnDestroy {
   private router = inject(Router);
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
-
   // rendering different images
   images = [
     '/home_page/image3.jpg',
@@ -54,16 +49,13 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   private intervalId: any;
 
   preloadImages() {
-    // if (isPlatformBrowser(this.platformId)) {
     this.images.forEach((src) => {
       const img = new Image();
       img.src = src;
     });
-    // }
   }
 
   ngOnInit() {
-    // if (isPlatformBrowser(this.platformId)) {
     this.intervalId = setInterval(() => {
       this.currentImageIndex =
         (this.currentImageIndex + 1) % this.images.length;
@@ -71,15 +63,12 @@ export class LandingPageComponent implements OnInit, OnDestroy {
 
     // Manually add scroll listener if in browser
     window.addEventListener('scroll', this.handleScroll);
-    // }
   }
   ngOnDestroy() {
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
-    // if (isPlatformBrowser(this.platformId)) {
     window.removeEventListener('scroll', this.handleScroll);
-    // }
   }
 
   handleScroll = () => {
