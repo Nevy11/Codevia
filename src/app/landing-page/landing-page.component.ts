@@ -56,12 +56,12 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   private intervalId: any;
 
   preloadImages() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.images.forEach((src) => {
-        const img = new Image();
-        img.src = src;
-      });
-    }
+    // if (isPlatformBrowser(this.platformId)) {
+    this.images.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+    // }
   }
 
   ngOnInit() {

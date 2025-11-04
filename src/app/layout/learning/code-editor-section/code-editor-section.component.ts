@@ -130,7 +130,9 @@ export class CodeEditorSectionComponent implements OnInit {
           },
           error: (error: any) => {
             this.matsnackbar.open(
-              `Error while executing code: ${error.message || error}`,
+              `Error while executing code: ${
+                error.error || error.message || error
+              }`,
               'Close',
               { duration: 2000 }
             );
