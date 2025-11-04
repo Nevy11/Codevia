@@ -65,15 +65,15 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.intervalId = setInterval(() => {
-        this.currentImageIndex =
-          (this.currentImageIndex + 1) % this.images.length;
-      }, 5000);
+    // if (isPlatformBrowser(this.platformId)) {
+    this.intervalId = setInterval(() => {
+      this.currentImageIndex =
+        (this.currentImageIndex + 1) % this.images.length;
+    }, 5000);
 
-      // Manually add scroll listener if in browser
-      window.addEventListener('scroll', this.handleScroll);
-    }
+    // Manually add scroll listener if in browser
+    window.addEventListener('scroll', this.handleScroll);
+    // }
   }
   ngOnDestroy() {
     if (this.intervalId) {
