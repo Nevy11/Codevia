@@ -1,4 +1,3 @@
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
 import {
   Component,
@@ -40,7 +39,6 @@ import { TopLoginSignupComponent } from '../top-login-signup/top-login-signup.co
   styleUrl: './landing-page.component.scss',
 })
 export class LandingPageComponent implements OnInit, OnDestroy {
-  private breakpointObserver = inject(BreakpointObserver);
   private router = inject(Router);
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
@@ -79,9 +77,9 @@ export class LandingPageComponent implements OnInit, OnDestroy {
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
-    if (isPlatformBrowser(this.platformId)) {
-      window.removeEventListener('scroll', this.handleScroll);
-    }
+    // if (isPlatformBrowser(this.platformId)) {
+    window.removeEventListener('scroll', this.handleScroll);
+    // }
   }
 
   handleScroll = () => {
@@ -103,17 +101,5 @@ export class LandingPageComponent implements OnInit, OnDestroy {
     this.router.navigate(['']);
   }
 
-  // Scroll indicator functionality
   showScrollIndicator = true;
-  // @HostListener('window:scroll', ['$event'])
-  // onWindowScroll(event: Event) {
-  //   const scrollTop = (event.target as Document).documentElement.scrollTop;
-  //   this.showScrollIndicator = scrollTop < 300; // Show indicator if scrolled less than 100px
-  // }
-
-  // previewVideos = [
-  //   { url: '/home_page/video1.mp4' },
-  //   { url: '/home_page/video2.mp4' },
-  //   { url: '/home_page/video3.mp4' },
-  // ];
 }
