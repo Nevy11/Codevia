@@ -26,6 +26,7 @@ import { NoFileSelectedComponent } from './no-file-selected/no-file-selected.com
 import { SupabaseClientService } from '../../../supabase-client.service';
 import { GithubTriggerService } from '../../../github-trigger.service';
 import { RapidApiService } from '../../../rapid-api.service';
+import { rapidOutput } from './code-editor-section';
 
 declare const monaco: any;
 
@@ -61,6 +62,7 @@ export class CodeEditorSectionComponent implements OnInit {
   private parts!: string[];
   private githubService = inject(GithubTriggerService);
   private rapidService = inject(RapidApiService);
+  private output_code!: string | null;
   isEditorEnabled: boolean = false;
 
   isBrowser = false;
@@ -133,6 +135,16 @@ export class CodeEditorSectionComponent implements OnInit {
           .catch((error) => {
             console.error('Error in Rapid API call:', error);
           });
+        const result = this.rapidService.runPython(this.code);
+        console.log('Output: ', result);
+        console.log('output_code: ', (await result).stdout);
+        this.output_code = (await result).stdout;
+
+        if (this.output_code != null) {
+          this.logs = [this.output_code];
+          console.log('new log pushed: ', this.output_code);
+        }
+
         // this.githubService.triggerGithub({ code: this.code }).subscribe({
         //   next: (response: any) => {
         //     // this.logs = response.result.split('\n');

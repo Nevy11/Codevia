@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { Judge0SubmissionResponse } from './init-screen/judge0-submission-response';
+import { rapidOutput } from './layout/learning/code-editor-section/code-editor-section';
 
 @Injectable({
   providedIn: 'root',
@@ -29,7 +31,7 @@ export class RapidApiService {
   }
 
   // 🧩 Submit Python code for execution
-  async runPython(code: string, input: string = ''): Promise<any> {
+  async runPython(code: string, input: string = ''): Promise<rapidOutput> {
     try {
       // Step 1: Submit code
       const submission = await firstValueFrom(
@@ -51,7 +53,7 @@ export class RapidApiService {
       await new Promise((r) => setTimeout(r, 2000));
 
       const result = await firstValueFrom(
-        this.http.get(`${this.baseUrl}/submissions/${token}`, {
+        this.http.get<rapidOutput>(`${this.baseUrl}/submissions/${token}`, {
           headers: this.headers,
         })
       );
