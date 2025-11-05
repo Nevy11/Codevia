@@ -1,12 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  inject,
-  OnInit,
-  OnDestroy,
-  PLATFORM_ID,
-  Inject,
-} from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
