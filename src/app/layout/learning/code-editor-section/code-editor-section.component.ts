@@ -25,6 +25,7 @@ import { MatInputModule } from '@angular/material/input';
 import { NoFileSelectedComponent } from './no-file-selected/no-file-selected.component';
 import { SupabaseClientService } from '../../../supabase-client.service';
 import { GithubTriggerService } from '../../../github-trigger.service';
+import { RapidApiService } from '../../../rapid-api.service';
 
 declare const monaco: any;
 
@@ -59,6 +60,7 @@ export class CodeEditorSectionComponent implements OnInit {
   private foldername!: string;
   private parts!: string[];
   private githubService = inject(GithubTriggerService);
+  private rapidService = inject(RapidApiService);
   isEditorEnabled: boolean = false;
 
   isBrowser = false;
@@ -123,22 +125,30 @@ export class CodeEditorSectionComponent implements OnInit {
           }
         };
       } else if (extension == 'py') {
-        this.githubService.triggerGithub({ code: this.code }).subscribe({
-          next: (response: any) => {
-            // this.logs = response.result.split('\n');
-            console.log('Python code executed successfully:', response);
-          },
-          error: (error: any) => {
-            this.matsnackbar.open(
-              `Error while executing code: ${
-                error.error || error.message || error
-              }`,
-              'Close',
-              { duration: 2000 }
-            );
-            console.error('Error:', error);
-          },
-        });
+        this.rapidService
+          .getInfo()
+          .then((response) => {
+            console.log('Rapid API response received in component:', response);
+          })
+          .catch((error) => {
+            console.error('Error in Rapid API call:', error);
+          });
+        // this.githubService.triggerGithub({ code: this.code }).subscribe({
+        //   next: (response: any) => {
+        //     // this.logs = response.result.split('\n');
+        //     console.log('Python code executed successfully:', response);
+        //   },
+        //   error: (error: any) => {
+        //     this.matsnackbar.open(
+        //       `Error while executing code: ${
+        //         error.error || error.message || error
+        //       }`,
+        //       'Close',
+        //       { duration: 2000 }
+        //     );
+        //     console.error('Error:', error);
+        //   },
+        // });
       } else {
         this.matsnackbar.open(
           `Running code for .${extension} files is not supported yet.`,
