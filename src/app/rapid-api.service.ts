@@ -65,4 +65,39 @@ export class RapidApiService {
       throw error;
     }
   }
+  // 🦀 Submit Rust code for execution
+  async runRust(code: string, input: string = ''): Promise<rapidOutput> {
+    try {
+      // Step 1: Submit code
+      const submission = await firstValueFrom(
+        this.http.post<Judge0SubmissionResponse>(
+          `${this.baseUrl}/submissions?base64_encoded=false&wait=false`,
+          {
+            source_code: code,
+            language_id: 73, // 🦀 Rust
+            stdin: input,
+          },
+          { headers: this.headers }
+        )
+      );
+
+      const token = submission['token'];
+      console.log('Rust submission token:', token);
+
+      // Step 2: Wait briefly before fetching results
+      await new Promise((r) => setTimeout(r, 2000));
+
+      const result = await firstValueFrom(
+        this.http.get<rapidOutput>(`${this.baseUrl}/submissions/${token}`, {
+          headers: this.headers,
+        })
+      );
+
+      console.log('Rust execution result:', result);
+      return result;
+    } catch (error) {
+      console.error('Error executing Rust code:', error);
+      throw error;
+    }
+  }
 }

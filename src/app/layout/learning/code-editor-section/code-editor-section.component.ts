@@ -141,6 +141,16 @@ export class CodeEditorSectionComponent implements OnInit {
           this.logs = [this.output_code];
           console.log('new log pushed: ', this.output_code);
         }
+      } else if (extension == 'rs') {
+        const result = this.rapidService.runRust(this.code);
+        console.log('Output: ', result);
+        console.log('output_code: ', (await result).stdout);
+        this.output_code = (await result).stdout;
+
+        if (this.output_code != null) {
+          this.logs = [this.output_code];
+          console.log('new log pushed: ', this.output_code);
+        }
       } else {
         this.matsnackbar.open(
           `Running code for .${extension} files is not supported yet.`,
