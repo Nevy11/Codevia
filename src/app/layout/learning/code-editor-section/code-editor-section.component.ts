@@ -97,6 +97,76 @@ export class CodeEditorSectionComponent implements OnInit {
       };
     });
   }
+  // async runCode() {
+  //   this.foldername = this.codeEditorService.getcurrentFile()?.name || '';
+  //   console.log('Running code in folder:', this.foldername);
+  //   this.parts = this.foldername.split('.');
+  //   const extension =
+  //     this.parts.length > 1 ? this.parts[this.parts.length - 1] : '';
+  //   console.log('File extension:', extension);
+
+  //   if (this.isBrowser) {
+  //     if (extension == 'js') {
+  //       const worker = new Worker(
+  //         new URL('./code-editor-section.worker', import.meta.url)
+  //       );
+  //       worker.postMessage(this.code);
+  //       worker.onmessage = ({ data }) => {
+  //         if (data.success) {
+  //           this.logs = data.logs;
+  //         } else {
+  //           this.matsnackbar.open(
+  //             `Error while executing code: ${data.error}`,
+  //             'Close',
+  //             { duration: 2000 }
+  //           );
+  //           console.error('Error:', data.error);
+  //         }
+  //       };
+  //     } else if (extension == 'py') {
+  //       this.rapidService
+  //         .getInfo()
+  //         .then((response) => {
+  //           console.log('Rapid API response received in component:', response);
+  //         })
+  //         .catch((error) => {
+  //           console.error('Error in Rapid API call:', error);
+  //         });
+  //       const result = this.rapidService.runPython(this.code);
+  //       console.log('Output: ', result);
+  //       console.log('output_code: ', (await result).stdout);
+  //       this.output_code = (await result).stdout;
+
+  //       if (this.output_code != null) {
+  //         this.logs = [this.output_code];
+  //         console.log('new log pushed: ', this.output_code);
+  //       }
+  //     } else if (extension == 'rs') {
+  //       const result = this.rapidService.runRust(this.code);
+  //       console.log('Output: ', result);
+  //       console.log('output_code: ', (await result).stdout);
+  //       this.output_code = (await result).stdout;
+
+  //       if (this.output_code != null) {
+  //         this.logs = [this.output_code];
+  //         console.log('new log pushed: ', this.output_code);
+  //       }
+  //     } else if (extension == 'ts') {
+  //     } else {
+  //       this.matsnackbar.open(
+  //         `Running code for .${extension} files is not supported yet.`,
+  //         'Close',
+  //         { duration: 2000 }
+  //       );
+  //       return;
+  //     }
+  //   } else {
+  //     this.matsnackbar.open('This button is yet to be implemented', 'Close', {
+  //       duration: 2000,
+  //     });
+  //   }
+  // }
+
   async runCode() {
     this.foldername = this.codeEditorService.getcurrentFile()?.name || '';
     console.log('Running code in folder:', this.foldername);
@@ -151,6 +221,71 @@ export class CodeEditorSectionComponent implements OnInit {
           this.logs = [this.output_code];
           console.log('new log pushed: ', this.output_code);
         }
+      } else if (extension == 'ts') {
+        try {
+          // dynamically import TypeScript
+          const ts = await import('typescript');
+
+          // ✅ Step 1: Check for syntax/type errors before running
+          const preCheck = ts.transpileModule(this.code, {
+            compilerOptions: {
+              module: ts.ModuleKind.ESNext,
+              target: ts.ScriptTarget.ES2020,
+            },
+            reportDiagnostics: true,
+          });
+
+          if (preCheck.diagnostics && preCheck.diagnostics.length > 0) {
+            const formatted = ts.formatDiagnosticsWithColorAndContext(
+              preCheck.diagnostics,
+              {
+                getCanonicalFileName: (fileName) => fileName,
+                getCurrentDirectory: () => '',
+                getNewLine: () => '\n',
+              }
+            );
+            console.error('TypeScript errors:\n', formatted);
+            this.matsnackbar.open(
+              '⚠️ TypeScript errors detected — check console.',
+              'Close',
+              {
+                duration: 3000,
+              }
+            );
+            return; // stop execution if there are syntax errors
+          }
+
+          // ✅ Step 2: Safe transpile TS → JS
+          const jsCode = preCheck.outputText;
+          console.log('Transpiled TS → JS:\n', jsCode);
+
+          // ✅ Step 3: Send transpiled JS to worker for execution
+          const worker = new Worker(
+            new URL('./code-editor-section.worker', import.meta.url)
+          );
+
+          worker.postMessage(jsCode);
+          worker.onmessage = ({ data }) => {
+            if (data.success) {
+              this.logs = data.logs;
+              console.log('Execution logs:', this.logs);
+            } else {
+              this.matsnackbar.open(
+                `Error while executing code: ${data.error}`,
+                'Close',
+                { duration: 2000 }
+              );
+              console.error('Execution Error:', data.error);
+            }
+          };
+        } catch (err: any) {
+          console.error('TypeScript transpilation or execution failed:', err);
+          this.matsnackbar.open(
+            `TypeScript error: ${err.message || err}`,
+            'Close',
+            { duration: 2000 }
+          );
+        }
       } else {
         this.matsnackbar.open(
           `Running code for .${extension} files is not supported yet.`,
@@ -165,6 +300,7 @@ export class CodeEditorSectionComponent implements OnInit {
       });
     }
   }
+
   openFile(node: Folders) {
     if (node.type === 'file') {
       this.codeEditorService.setcurrentFile(node);
