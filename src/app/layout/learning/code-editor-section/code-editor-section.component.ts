@@ -268,7 +268,6 @@ export class CodeEditorSectionComponent implements OnInit {
             } else {
               this.matsnackbar.open(` ${data.error}`, 'Close', {
                 duration: 2000,
-                panelClass: ['error-snackbar'],
               });
               console.error('Execution Error:', data.error);
             }
