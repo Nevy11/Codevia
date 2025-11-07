@@ -226,11 +226,11 @@ export class CodeEditorSectionComponent implements OnInit {
           // dynamically import TypeScript
           const ts = await import('typescript');
 
-          // ✅ Step 1: Check for syntax/type errors before running
+          // Step 1: Check for syntax/type errors before running
           const preCheck = ts.transpileModule(this.code, {
             compilerOptions: {
-              module: ts.ModuleKind.ESNext,
-              target: ts.ScriptTarget.ES2020,
+              module: ts.ModuleKind.ESNext, // modern module system
+              target: ts.ScriptTarget.ES2020, // es2020 modern js for broader compatibility
             },
             reportDiagnostics: true,
           });
