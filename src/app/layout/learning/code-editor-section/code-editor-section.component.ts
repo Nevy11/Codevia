@@ -185,11 +185,7 @@ export class CodeEditorSectionComponent implements OnInit {
           if (data.success) {
             this.logs = data.logs;
           } else {
-            this.matsnackbar.open(
-              `Error while executing code: ${data.error}`,
-              'Close',
-              { duration: 2000 }
-            );
+            this.matsnackbar.open(`${data.error}`, 'Close', { duration: 2000 });
             console.error('Error:', data.error);
           }
         };
@@ -270,11 +266,10 @@ export class CodeEditorSectionComponent implements OnInit {
               this.logs = data.logs;
               console.log('Execution logs:', this.logs);
             } else {
-              this.matsnackbar.open(
-                `Error while executing code: ${data.error}`,
-                'Close',
-                { duration: 2000 }
-              );
+              this.matsnackbar.open(` ${data.error}`, 'Close', {
+                duration: 2000,
+                panelClass: ['error-snackbar'],
+              });
               console.error('Execution Error:', data.error);
             }
           };
