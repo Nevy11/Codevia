@@ -125,7 +125,7 @@
 } @else {
 <mat-sidenav-container class="sidenav-container">
   <!-- Side Navigation -->
-  <mat-sidenav #drawer class="sidenav" mode="side">
+  <mat-sidenav #drawer class="sidenav" mode="side" opened>
     <div class="sidenav-inner">
       <mat-toolbar color="primary">
         <mat-icon style="color: #2196f3">star</mat-icon>
@@ -140,7 +140,7 @@
           <span style="color: #e91e63">a</span>
         </span>
       </mat-toolbar>
-      <mat-nav-list>
+      <mat-nav-list class="nav-list-non-mobile">
         <a mat-list-item routerLink="/layout/home" routerLinkActive="active">
           <mat-icon class="mat-icon-align">home</mat-icon>
           <span>Home</span>

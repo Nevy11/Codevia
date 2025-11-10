@@ -10,9 +10,9 @@
   font-size: var(--app-font-size);
 }
 
-.mat-icon {
-  font-size: var(--icon-size);
-}
+// .mat-icon {
+//   font-size: var(--icon-size);
+// }
 
 .mat-icon-align {
   margin-right: var(--nav-item-padding);
@@ -20,11 +20,11 @@
   align-items: center;
 }
 
-mat-nav-list a.mat-list-item {
-  padding-top: var(--nav-item-padding);
-  padding-bottom: var(--nav-item-padding);
-  font-size: var(--app-font-size);
-}
+// mat-nav-list a.mat-list-item {
+//   padding-top: var(--nav-item-padding);
+//   padding-bottom: var(--nav-item-padding);
+//   font-size: var(--app-font-size);
+// }
 
 .content {
   padding: calc(var(--app-font-size) * 1.7);
@@ -40,15 +40,16 @@ mat-nav-list a.mat-list-item {
 }
 
 .sidenav {
-  width: calc(var(--app-font-size) * 6); // Adjust multiplier as needed
+  // width: calc(var(--app-font-size) * 6); // Adjust multiplier as needed
+  width: 10rem;
   transition: width 0.3s ease;
 }
-.sidenav.opened {
-  width: calc(var(--app-font-size) * 12); // Adjust multiplier as needed
-}
+// .sidenav.opened {
+//   // width: calc(var(--app-font-size) * 12); // Adjust multiplier as needed
+// }
 .sidenav-inner {
-  display: flex;
-  flex-direction: column;
+  // display: flex;
+  // flex-direction: column;
   height: 100%;
 }
 
@@ -63,8 +64,8 @@ mat-nav-list a.mat-list-item {
 }
 
 button[mat-icon-button] {
-  width: calc(var(--app-font-size) * 2.5);
-  height: calc(var(--app-font-size) * 2.5);
+  // width: calc(var(--app-font-size) * 2.5);
+  // height: calc(var(--app-font-size) * 2.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -72,12 +73,19 @@ button[mat-icon-button] {
 }
 
 button[mat-icon-button] .mat-icon {
-  font-size: calc(var(--app-font-size) * 1);
+  // font-size: calc(var(--app-font-size) * 1);
   transition: font-size 0.3s ease;
 }
 
 button[mat-icon-button] img.img {
-  width: calc(var(--app-font-size) * 2);
-  height: calc(var(--app-font-size) * 2);
+  // width: calc(var(--app-font-size) * 2);
+  // height: calc(var(--app-font-size) * 2);
   transition: all 0.3s ease;
+}
+.nav-list-non-mobile {
+  min-width: 5rem;
+}
+
+mat-list-item {
+  height: 10rem;
 }
