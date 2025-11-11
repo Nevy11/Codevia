@@ -151,8 +151,14 @@ export class LayoutComponent implements OnInit {
   showYoutube() {
     if (this.learningService.get_show_yt() == true) {
       this.learningService.set_show_yt(false);
+      this.snackBar.open(`Youtube hidden`, `Close`, {
+        duration: 3000,
+      });
     } else {
       this.learningService.set_show_yt(true);
+      this.snackBar.open(`Youtube displayed`, `Close`, {
+        duration: 3000,
+      });
     }
   }
 }
