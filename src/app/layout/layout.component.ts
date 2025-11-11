@@ -16,6 +16,7 @@ import { AsyncPipe } from '@angular/common';
 import { SupabaseClientService } from '../supabase-client.service';
 import { ProfileService } from './settings/profile-setup-stepper/profile.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { LearningService } from './learning/learning.service';
 
 @Component({
   selector: 'nevy11-layout',
@@ -39,6 +40,7 @@ export class LayoutComponent implements OnInit {
   themeChangeService = inject(ThemeChangeService);
   avatar_url: string = '';
   islogged_out: boolean = false;
+  isYoutubeShown!: boolean;
 
   private router = inject(Router);
   private dialog = inject(MatDialog);
@@ -46,6 +48,7 @@ export class LayoutComponent implements OnInit {
   private supabaseService = inject(SupabaseClientService);
   private profileService = inject(ProfileService);
   private snackBar = inject(MatSnackBar);
+  private learningService = inject(LearningService);
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {
       if (matches) {
@@ -89,6 +92,7 @@ export class LayoutComponent implements OnInit {
     })
   );
   async ngOnInit() {
+    this.isYoutubeShown = this.learningService.get_show_yt();
     this.themeChangeService.loadTheme();
     this.profile = await this.supabaseService.getProfile();
     if (!this.supabaseService.client) {
@@ -142,6 +146,13 @@ export class LayoutComponent implements OnInit {
       this.snackBar.open(`log out unsuccessfull`, `Close`, {
         duration: 3600,
       });
+    }
+  }
+  showYoutube() {
+    if (this.learningService.get_show_yt() == true) {
+      this.learningService.set_show_yt(false);
+    } else {
+      this.learningService.set_show_yt(true);
     }
   }
 }
