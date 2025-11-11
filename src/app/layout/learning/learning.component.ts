@@ -1,10 +1,11 @@
-import { Component, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, inject, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { VideoSectionComponent } from './video-section/video-section.component';
 import { CodeEditorSectionComponent } from './code-editor-section/code-editor-section.component';
 import { ActivatedRoute } from '@angular/router';
 import { VideoFeedComponent } from '../courses/video-feed/video-feed.component';
 import { PythonProcessingComponent } from './code-editor-section/python-processing/python-processing.component';
+import { LearningService } from './learning.service';
 
 @Component({
   selector: 'nevy11-learning',
@@ -20,6 +21,7 @@ import { PythonProcessingComponent } from './code-editor-section/python-processi
 export class LearningComponent {
   videoId = 'rQ_J9WH6CGk';
   playbackSpeed = 1.0; // default value
+  learningService = inject(LearningService);
 
   constructor(
     private route: ActivatedRoute,
