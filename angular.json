@@ -36,7 +36,8 @@
             "ssr": {
               "entry": "server.ts"
             },
-            "webWorkerTsConfig": "tsconfig.worker.json"
+            "webWorkerTsConfig": "tsconfig.worker.json",
+            "allowedCommonJsDependencies": ["source-map-support"]
           },
           "configurations": {
             "production": {

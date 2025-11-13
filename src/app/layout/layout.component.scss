@@ -41,7 +41,7 @@
 
 .sidenav {
   // width: calc(var(--app-font-size) * 6); // Adjust multiplier as needed
-  width: 10rem;
+  width: 8rem;
   transition: width 0.3s ease;
 }
 // .sidenav.opened {
@@ -61,6 +61,7 @@
 .sidenav-inner mat-nav-list {
   margin-top: calc(var(--app-font-size) * 2.5);
   transition: margin-top 0.3s ease;
+  height: 7rem;
 }
 
 button[mat-icon-button] {
