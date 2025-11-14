@@ -25,6 +25,7 @@ import { MatInputModule } from '@angular/material/input';
 import { NoFileSelectedComponent } from './no-file-selected/no-file-selected.component';
 import { SupabaseClientService } from '../../../supabase-client.service';
 import { RapidApiService } from '../../../rapid-api.service';
+import { CustomSnackBarService } from '../../../custom-snack-bar.service';
 
 declare const monaco: any;
 
@@ -60,6 +61,7 @@ export class CodeEditorSectionComponent implements OnInit {
   private parts!: string[];
   private rapidService = inject(RapidApiService);
   private output_code!: string | null;
+  private customSnackBarService = inject(CustomSnackBarService);
   isEditorEnabled: boolean = false;
 
   isBrowser = false;
