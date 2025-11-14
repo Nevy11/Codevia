@@ -1,11 +1,72 @@
+// // @use "@angular/material" as mat;
+
+// // .light-theme {
+// //   @include mat.theme(
+// //     (
+// //       color: (
+// //         primary: mat.$blue-palette,
+// //         // warn: mat.$red-palette,
+// //         theme-type: light,
+// //       ),
+// //       typography: Roboto,
+// //       density: 0,
+// //     )
+// //   );
+// // }
+
+// // .dark-theme {
+// //   // color-scheme: dark;
+// //   @include mat.theme(
+// //     (
+// //       color: (
+// //         primary: mat.$spring-green-palette,
+// //         // warn: mat.$red-palette,
+// //         theme-type: dark,
+// //       ),
+// //       typography: Roboto,
+// //       density: 0,
+// //     )
+// //   );
+// //   background-color: var(--mat-sys-surface);
+
+// //   color: var(--mat-sys-on-surface);
+// // }
+
 // @use "@angular/material" as mat;
 
+// /* -------------------------------
+//    Global Font Size Variable
+// -------------------------------- */
+// :root {
+//   --app-font-size: 20px;
+//   --toolbar-height: calc(var(--app-font-size) * 3);
+//   --icon-size: calc(var(--app-font-size) * 1.5);
+//   --nav-item-padding: calc(var(--app-font-size) * 0.85);
+// }
+
+// /* Make everything inherit this font size */
+// html,
+// body {
+//   font-size: var(--app-font-size);
+// }
+
+// body,
+// button,
+// input,
+// textarea,
+// mat-card,
+// mat-label {
+//   font-size: inherit;
+// }
+
+// /* -------------------------------
+//    Angular Material Themes
+// -------------------------------- */
 // .light-theme {
 //   @include mat.theme(
 //     (
 //       color: (
 //         primary: mat.$blue-palette,
-//         // warn: mat.$red-palette,
 //         theme-type: light,
 //       ),
 //       typography: Roboto,
@@ -15,33 +76,32 @@
 // }
 
 // .dark-theme {
-//   // color-scheme: dark;
 //   @include mat.theme(
 //     (
 //       color: (
 //         primary: mat.$spring-green-palette,
-//         // warn: mat.$red-palette,
 //         theme-type: dark,
 //       ),
 //       typography: Roboto,
 //       density: 0,
 //     )
 //   );
-//   background-color: var(--mat-sys-surface);
 
+//   background-color: var(--mat-sys-surface);
 //   color: var(--mat-sys-on-surface);
 // }
-
 @use "@angular/material" as mat;
+
+// You might also need to define the palette variables directly
+$app-red-palette: mat.$red-palette;
+$app-green-palette: mat.$green-palette;
 
 /* -------------------------------
    Global Font Size Variable
 -------------------------------- */
 :root {
   --app-font-size: 20px;
-  --toolbar-height: calc(var(--app-font-size) * 3);
-  --icon-size: calc(var(--app-font-size) * 1.5);
-  --nav-item-padding: calc(var(--app-font-size) * 0.85);
+  // ... other variables
 }
 
 /* Make everything inherit this font size */
@@ -49,15 +109,7 @@ html,
 body {
   font-size: var(--app-font-size);
 }
-
-body,
-button,
-input,
-textarea,
-mat-card,
-mat-label {
-  font-size: inherit;
-}
+// ... other font inheritance rules
 
 /* -------------------------------
    Angular Material Themes
@@ -89,4 +141,31 @@ mat-label {
 
   background-color: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
+}
+
+/* --------------------------------------
+   Custom MatSnackBar Styles (Global)
+-------------------------------------- */
+
+.snackbar-error {
+  // Uses the theme's defined error color
+  background-color: var(--mat-sys-color-error) !important;
+  color: var(--mat-sys-on-error) !important;
+}
+
+.snackbar-success {
+  // Uses the theme's primary color as a success indicator (or a hardcoded green)
+  // If you defined a success variable in your theme, use that here.
+  background-color: var(--mat-sys-color-primary) !important;
+  color: var(--mat-sys-on-primary) !important;
+}
+// Optional: Style the action button (e.g., 'Close' or 'Retry') for better contrast
+.mat-mdc-simple-snackbar-action {
+  &.snackbar-error .mat-mdc-button-base {
+    color: #ffccbc !important; /* Lighter color for visibility on red background */
+  }
+
+  &.snackbar-success .mat-mdc-button-base {
+    color: #ccff90 !important; /* Lighter color for visibility on green background */
+  }
 }
