@@ -7,7 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { CodeEditorSectionService } from '../code-editor-section.service';
 import { Folders } from '../folders';
 import { MatListModule } from '@angular/material/list';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'nevy11-file-search-bar',
@@ -17,9 +17,8 @@ import { CommonModule } from '@angular/common';
     MatFormFieldModule,
     MatButtonModule,
     FormsModule,
-    MatListModule,
-    CommonModule,
-  ],
+    MatListModule
+],
   templateUrl: './file-search-bar.component.html',
   styleUrl: './file-search-bar.component.scss',
 })

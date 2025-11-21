@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
+
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -10,7 +10,7 @@ import { SupabaseClientService } from '../../../supabase-client.service';
 @Component({
   selector: 'nevy11-video-feed',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, MatCardModule],
+  imports: [MatIconModule, MatButtonModule, MatCardModule],
   templateUrl: './video-feed.component.html',
   styleUrl: './video-feed.component.scss',
 })

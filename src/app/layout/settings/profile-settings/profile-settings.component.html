@@ -1,98 +1,101 @@
 @if (loading) {
-<div>loading.......</div>
-} @if (!loading && profile) {
-<div class="profile-container">
-  <!-- Avatar Section -->
-  <mat-card class="avatar-card">
-    <mat-card-header>
-      <mat-card-title>Profile Picture</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <img [src]="imageUrl" alt="Profile " class="avatar" />
-      <input type="file" accept="image/*" (change)="onFileSelected($event)" />
-    </mat-card-content>
-  </mat-card>
+  <div>loading.......</div>
+  } @if (!loading && profile) {
+  <div class="profile-container">
+    <!-- Avatar Section -->
+    <mat-card class="avatar-card">
+      <mat-card-header>
+        <mat-card-title>Profile Picture</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <img [src]="imageUrl" alt="Profile " class="avatar" />
+        <input type="file" accept="image/*" (change)="onFileSelected($event)" />
+      </mat-card-content>
+    </mat-card>
 
-  <mat-card>
-    <!-- Header -->
-    <mat-card-header>
-      <mat-card-title>Basic Information</mat-card-title>
-    </mat-card-header>
+    <mat-card>
+      <!-- Header -->
+      <mat-card-header>
+        <mat-card-title>Basic Information</mat-card-title>
+      </mat-card-header>
 
-    <!-- View Mode -->
-    <mat-card-content *ngIf="!isEditing">
-      <p><strong>Full Name:</strong> {{ profile.name }}</p>
-      <p><strong>Email:</strong> {{ profile.email }}</p>
-      <p><strong>Short Bio:</strong> {{ profile.bio }}</p>
-    </mat-card-content>
+      <!-- View Mode -->
+      @if (!isEditing) {
+        <mat-card-content>
+          <p><strong>Full Name:</strong> {{ profile.name }}</p>
+          <p><strong>Email:</strong> {{ profile.email }}</p>
+          <p><strong>Short Bio:</strong> {{ profile.bio }}</p>
+        </mat-card-content>
+      }
 
-    <!-- Edit Mode -->
-    <mat-card-content *ngIf="isEditing">
-      <form>
-        <mat-form-field appearance="outline">
-          <mat-label>Full Name</mat-label>
-          <input matInput [(ngModel)]="profile.name" name="name" />
-        </mat-form-field>
+      <!-- Edit Mode -->
+      @if (isEditing) {
+        <mat-card-content>
+          <form>
+            <mat-form-field appearance="outline">
+              <mat-label>Full Name</mat-label>
+              <input matInput [(ngModel)]="profile.name" name="name" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Email</mat-label>
+              <input matInput [(ngModel)]="profile.email" name="email" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Short Bio</mat-label>
+              <textarea
+                matInput
+                rows="3"
+                [(ngModel)]="profile.bio"
+                name="bio"
+              ></textarea>
+            </mat-form-field>
+          </form>
+        </mat-card-content>
+      }
+      <!--
+      don't foget to udpate this up here:
+      ""
+      -->
 
-        <mat-form-field appearance="outline">
-          <mat-label>Email</mat-label>
-          <input matInput [(ngModel)]="profile.email" name="email" />
-        </mat-form-field>
+      <!-- Bottom Right Actions -->
+      <mat-card-actions class="actions-right">
+        <!-- Show Edit when NOT editing -->
+        @if (!isEditing) {
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="isEditing = true"
+            >
+            Edit
+          </button>
+        }
 
-        <mat-form-field appearance="outline">
-          <mat-label>Short Bio</mat-label>
-          <textarea
-            matInput
-            rows="3"
-            [(ngModel)]="profile.bio"
-            name="bio"
-          ></textarea>
-        </mat-form-field>
-      </form>
-    </mat-card-content>
-    <!--
-     don't foget to udpate this up here: 
-     "" 
-     -->
-
-    <!-- Bottom Right Actions -->
-    <mat-card-actions class="actions-right">
-      <!-- Show Edit when NOT editing -->
-      <button
-        *ngIf="!isEditing"
-        mat-raised-button
-        color="primary"
-        (click)="isEditing = true"
-      >
-        Edit
-      </button>
-
-      <!-- Show Save/Cancel when editing -->
-      <ng-container *ngIf="isEditing">
-        <button mat-button (click)="cancelEdit()">Cancel</button>
-        <span class="spacer"></span>
-        <button mat-raised-button color="primary" (click)="save()">Save</button>
-      </ng-container>
-    </mat-card-actions>
-  </mat-card>
-  <mat-card class="avatar-card">
-    <mat-card-header>
-      <mat-card-title>Delete account</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <div class="accountDeletion">
-        Once you delete your account, there is no going back. Please be certain.
-      </div>
-      <button
-        mat-raised-button
-        color="warn"
-        (click)="deleteAccount()"
-        class="delete_button"
-      >
-        Delete Account
-      </button>
-    </mat-card-content>
-  </mat-card>
-</div>
+        <!-- Show Save/Cancel when editing -->
+        @if (isEditing) {
+          <button mat-button (click)="cancelEdit()">Cancel</button>
+          <span class="spacer"></span>
+          <button mat-raised-button color="primary" (click)="save()">Save</button>
+        }
+      </mat-card-actions>
+    </mat-card>
+    <mat-card class="avatar-card">
+      <mat-card-header>
+        <mat-card-title>Delete account</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="accountDeletion">
+          Once you delete your account, there is no going back. Please be certain.
+        </div>
+        <button
+          mat-raised-button
+          color="warn"
+          (click)="deleteAccount()"
+          class="delete_button"
+          >
+          Delete Account
+        </button>
+      </mat-card-content>
+    </mat-card>
+  </div>
 
 }

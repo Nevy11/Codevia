@@ -5,8 +5,9 @@
     <input matInput [(ngModel)]="query" (keyup.enter)="search()" />
   </mat-form-field>
 
-  <div *ngIf="results.length > 0">
-    <!-- <mat-list>
+  @if (results.length > 0) {
+    <div>
+      <!-- <mat-list>
       <mat-list-item *ngFor="let video of results" (click)="selectVideo(video)">
         <img matListAvatar [src]="video.snippet.thumbnails.default.url" />
         <h4 matLine>{{ video.snippet.title }}</h4>
@@ -14,23 +15,25 @@
       </mat-list-item>
     </mat-list> -->
     <div class="video-grid">
-      <mat-card
-        class="video-card"
-        *ngFor="let video of results"
-        (click)="selectVideo(video)"
-      >
-        <img
-          mat-card-image
-          [src]="video.snippet.thumbnails.medium.url"
-          alt="Thumbnail"
-        />
-        <mat-card-content>
-          <h4 class="video-title">{{ video.snippet.title }}</h4>
-          <p class="video-channel">{{ video.snippet.channelTitle }}</p>
-        </mat-card-content>
-      </mat-card>
+      @for (video of results; track video) {
+        <mat-card
+          class="video-card"
+          (click)="selectVideo(video)"
+          >
+          <img
+            mat-card-image
+            [src]="video.snippet.thumbnails.medium.url"
+            alt="Thumbnail"
+            />
+          <mat-card-content>
+            <h4 class="video-title">{{ video.snippet.title }}</h4>
+            <p class="video-channel">{{ video.snippet.channelTitle }}</p>
+          </mat-card-content>
+        </mat-card>
+      }
     </div>
   </div>
+}
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Close</button>

@@ -5,7 +5,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 
@@ -17,10 +17,9 @@ import { MatCardModule } from '@angular/material/card';
     MatFormFieldModule,
     MatButtonModule,
     FormsModule,
-    CommonModule,
     MatInputModule,
-    MatCardModule,
-  ],
+    MatCardModule
+],
   templateUrl: './search-dialog.component.html',
   styleUrl: './search-dialog.component.scss',
 })

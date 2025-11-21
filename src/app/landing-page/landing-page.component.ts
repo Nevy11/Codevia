@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,7 +14,6 @@ import { TopLoginSignupComponent } from '../top-login-signup/top-login-signup.co
 @Component({
   selector: 'nevy11-landing-page',
   imports: [
-    CommonModule,
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
@@ -23,8 +22,8 @@ import { TopLoginSignupComponent } from '../top-login-signup/top-login-signup.co
     LandingFooterComponent,
     TestimonialsComponent,
     PreFooterComponent,
-    TopLoginSignupComponent,
-  ],
+    TopLoginSignupComponent
+],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss',
 })

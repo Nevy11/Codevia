@@ -1,19 +1,21 @@
 <div class="video-grid">
-  <mat-card *ngFor="let video of videos" class="video-card">
-    <img mat-card-image [src]="video.thumbnailUrl" alt="{{ video.title }}" />
-    <mat-card-content>
-      <h3>{{ video.title }}</h3>
-    </mat-card-content>
-    <mat-card-actions class="card-actions">
-      <button
-        mat-flat-button
-        color="primary"
-        aria-label="Play"
-        (click)="playVideo(video)"
-      >
-        <mat-icon>play_arrow</mat-icon>
-        Play
-      </button>
-    </mat-card-actions>
-  </mat-card>
+  @for (video of videos; track video) {
+    <mat-card class="video-card">
+      <img mat-card-image [src]="video.thumbnailUrl" alt="{{ video.title }}" />
+      <mat-card-content>
+        <h3>{{ video.title }}</h3>
+      </mat-card-content>
+      <mat-card-actions class="card-actions">
+        <button
+          mat-flat-button
+          color="primary"
+          aria-label="Play"
+          (click)="playVideo(video)"
+          >
+          <mat-icon>play_arrow</mat-icon>
+          Play
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  }
 </div>

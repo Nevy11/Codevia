@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,10 +20,9 @@ import { ThemeChangeService } from '../../../theme-change.service';
     MatFormFieldModule,
     FormsModule,
     MatInputModule,
-    CommonModule,
     MatButtonModule,
-    MatSnackBarModule,
-  ],
+    MatSnackBarModule
+],
   templateUrl: './profile-settings.component.html',
   styleUrl: './profile-settings.component.scss',
 })

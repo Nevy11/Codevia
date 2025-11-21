@@ -68,7 +68,7 @@
 //     this.sub.unsubscribe();
 //   }
 // }
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import {
   Component,
   inject,
@@ -95,14 +95,13 @@ import { PlaybackSettingsService } from './playback-settings.service';
   imports: [
     MatCardModule,
     MatButtonModule,
-    CommonModule,
     MatSliderModule,
     MatSlideToggleModule,
     FormsModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatOptionModule,
-  ],
+    MatOptionModule
+],
   templateUrl: './preferences-settings.component.html',
   styleUrl: './preferences-settings.component.scss',
 })

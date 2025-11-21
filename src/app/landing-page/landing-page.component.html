@@ -1,22 +1,23 @@
 <nevy11-top-login-signup></nevy11-top-login-signup>
 <section class="hero-section">
   <div class="image-container">
-    <img
-      *ngFor="let image of images; let i = index"
-      [src]="image"
-      [class.active]="i === currentImageIndex"
-      class="bg-image"
-      loading="eager"
-    />
+    @for (image of images; track image; let i = $index) {
+      <img
+        [src]="image"
+        [class.active]="i === currentImageIndex"
+        class="bg-image"
+        loading="eager"
+        />
+    }
   </div>
   <div class="overlay-content">
     <h1>Empower Your Learning Journey</h1>
   </div>
   @if (showScrollIndicator) {
-  <div class="scroll-indicator">
-    <span class="scroll-text">Scroll</span>
-    <span class="scroll-arrow"> <mat-icon>keyboard_arrow_down</mat-icon> </span>
-  </div>
+    <div class="scroll-indicator">
+      <span class="scroll-text">Scroll</span>
+      <span class="scroll-arrow"> <mat-icon>keyboard_arrow_down</mat-icon> </span>
+    </div>
   }
 </section>
 
@@ -51,7 +52,7 @@
     mat-flat-button
     color="primary"
     (click)="register()"
-  >
+    >
     Sign Up
   </button>
 </section>
