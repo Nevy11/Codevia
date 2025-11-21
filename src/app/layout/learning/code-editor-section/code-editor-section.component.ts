@@ -118,7 +118,8 @@ export class CodeEditorSectionComponent implements OnInit {
           if (data.success) {
             this.logs = data.logs;
           } else {
-            this.matsnackbar.open(`${data.error}`, 'Close', { duration: 2000 });
+            // this.matsnackbar.open(`${data.error}`, 'Close', { duration: 2000 });
+            this.customSnackBarService.open(`${data.error}`, `Close`, `error`);
             console.error('Error:', data.error);
           }
         };
