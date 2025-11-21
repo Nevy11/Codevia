@@ -153,59 +153,56 @@ export class CodeEditorSectionComponent implements OnInit {
         }
       } else if (extension == 'ts') {
         try {
-          // dynamically import TypeScript
-          const ts = await import('typescript');
-
-          // Step 1: Check for syntax/type errors before running
-          const preCheck = ts.transpileModule(this.code, {
-            compilerOptions: {
-              module: ts.ModuleKind.ESNext, // modern module system
-              target: ts.ScriptTarget.ES2020, // es2020 modern js for broader compatibility
-            },
-            reportDiagnostics: true,
-          });
-
-          if (preCheck.diagnostics && preCheck.diagnostics.length > 0) {
-            const formatted = ts.formatDiagnosticsWithColorAndContext(
-              preCheck.diagnostics,
-              {
-                getCanonicalFileName: (fileName) => fileName,
-                getCurrentDirectory: () => '',
-                getNewLine: () => '\n',
-              }
-            );
-            console.error('TypeScript errors:\n', formatted);
-            this.matsnackbar.open(
-              '⚠️ TypeScript errors detected — check console.',
-              'Close',
-              {
-                duration: 3000,
-              }
-            );
-            return; // stop execution if there are syntax errors
-          }
-
-          // ✅ Step 2: Safe transpile TS → JS
-          const jsCode = preCheck.outputText;
-          console.log('Transpiled TS → JS:\n', jsCode);
-
-          // ✅ Step 3: Send transpiled JS to worker for execution
-          const worker = new Worker(
-            new URL('./code-editor-section.worker', import.meta.url)
-          );
-
-          worker.postMessage(jsCode);
-          worker.onmessage = ({ data }) => {
-            if (data.success) {
-              this.logs = data.logs;
-              console.log('Execution logs:', this.logs);
-            } else {
-              this.matsnackbar.open(` ${data.error}`, 'Close', {
-                duration: 2000,
-              });
-              console.error('Execution Error:', data.error);
-            }
-          };
+          // if (!this.isBrowser) {
+          //   // dynamically import TypeScript
+          //   const ts = await import('typescript');
+          //   // Step 1: Check for syntax/type errors before running
+          //   const preCheck = ts.transpileModule(this.code, {
+          //     compilerOptions: {
+          //       module: ts.ModuleKind.ESNext, // modern module system
+          //       target: ts.ScriptTarget.ES2020, // es2020 modern js for broader compatibility
+          //     },
+          //     reportDiagnostics: true,
+          //   });
+          //   if (preCheck.diagnostics && preCheck.diagnostics.length > 0) {
+          //     const formatted = ts.formatDiagnosticsWithColorAndContext(
+          //       preCheck.diagnostics,
+          //       {
+          //         getCanonicalFileName: (fileName) => fileName,
+          //         getCurrentDirectory: () => '',
+          //         getNewLine: () => '\n',
+          //       }
+          //     );
+          //     console.error('TypeScript errors:\n', formatted);
+          //     this.matsnackbar.open(
+          //       '⚠️ TypeScript errors detected — check console.',
+          //       'Close',
+          //       {
+          //         duration: 3000,
+          //       }
+          //     );
+          //     return; // stop execution if there are syntax errors
+          //   }
+          //   // ✅ Step 2: Safe transpile TS → JS
+          //   const jsCode = preCheck.outputText;
+          //   console.log('Transpiled TS → JS:\n', jsCode);
+          //   // ✅ Step 3: Send transpiled JS to worker for execution
+          //   const worker = new Worker(
+          //     new URL('./code-editor-section.worker', import.meta.url)
+          //   );
+          //   worker.postMessage(jsCode);
+          //   worker.onmessage = ({ data }) => {
+          //     if (data.success) {
+          //       this.logs = data.logs;
+          //       console.log('Execution logs:', this.logs);
+          //     } else {
+          //       this.matsnackbar.open(` ${data.error}`, 'Close', {
+          //         duration: 2000,
+          //       });
+          //       console.error('Execution Error:', data.error);
+          //     }
+          //   };
+          // }
         } catch (err: any) {
           console.error('TypeScript transpilation or execution failed:', err);
           this.matsnackbar.open(
