@@ -117,7 +117,7 @@
   },
   "cli": {
     "analytics": false,
-    "packageManager": "npm"
+    "packageManager": "yarn"
   },
   "schematics": {
     "@schematics/angular:component": {
