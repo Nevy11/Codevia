@@ -95,8 +95,8 @@ export class VideoSectionComponent
     });
   }
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['videoId']) {
-      this.setSafeUrl();
+    if (changes['videoId'] && this.videoId) {
+      // this.setSafeUrl();
       if (this.player) {
         this.player.loadVideoById(this.videoId);
       }
