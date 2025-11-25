@@ -47,16 +47,6 @@ export class VideoSectionComponent
   private supabaseService = inject(SupabaseClientService);
   private snackBar = inject(MatSnackBar);
 
-  updateVideoUrl(): void {
-    if (this.videoId) {
-      this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-        `https://www.youtube.com/embed/${this.videoId}?autoplay=1&controls=1&modestbranding=1&rel=0`
-      );
-    } else {
-      this.videoUrl = '';
-    }
-  }
-
   private async setSafeUrl() {
     if (this.videoId) {
       const video_data: GetVideo = {
