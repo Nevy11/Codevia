@@ -4,6 +4,8 @@ import { SupabaseClientService } from './supabase-client.service';
 import { MatDialog } from '@angular/material/dialog';
 import { isPlatformBrowser } from '@angular/common';
 import { InitScreenComponent } from './init-screen/init-screen.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { NetworkService } from './network.service';
 
 @Component({
   selector: 'nevy11-root',
@@ -19,6 +21,8 @@ export class AppComponent {
   private platformId = inject(PLATFORM_ID);
   private supabase = inject(SupabaseClientService);
   private ngZone = inject(NgZone);
+  private snackbar = inject(MatSnackBar);
+  private network = inject(NetworkService);
 
   constructor(private router: Router, private dialog: MatDialog) {
     this.router.events.subscribe((event) => {
@@ -60,6 +64,20 @@ export class AppComponent {
             this.router.navigate(['/layout/home']);
           }
           this.loading = false;
+        });
+      }
+    });
+    this.network.online$.subscribe((isOnline) => {
+      if (!isOnline) {
+        // Don't care
+        this.snackbar.open('No internet connection', 'close', {
+          duration: 5000,
+          panelClass: ['snackbar-error'],
+        });
+      } else {
+        this.snackbar.open('Back online 🚀', '', {
+          duration: 2000,
+          panelClass: ['snackbar-success'],
         });
       }
     });

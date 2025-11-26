@@ -702,4 +702,36 @@ export class SupabaseClientService {
     console.log(`File "${fileName}" deleted successfully.`);
     return true;
   }
+
+  // set the user's preference for showing YouTube videos
+  async setShowYT(value: boolean): Promise<boolean> {
+    const userId = await this.getCurrentUserId();
+    if (!userId) return false;
+
+    const { error } = await this.client.from('user_settings').upsert(
+      {
+        user_id: userId,
+        show_yt: value,
+      },
+      { onConflict: 'user_id' }
+    );
+
+    return !error;
+  }
+
+  // get the user's preference for showing YouTube videos
+  async getShowYT(): Promise<boolean> {
+    const userId = await this.getCurrentUserId();
+    if (!userId) return false;
+
+    const { data, error } = await this.client
+      .from('user_settings')
+      .select('show_yt')
+      .eq('user_id', userId)
+      .maybeSingle();
+
+    if (error || !data) return false;
+
+    return data.show_yt;
+  }
 }
