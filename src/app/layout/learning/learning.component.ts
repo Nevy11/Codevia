@@ -1,5 +1,5 @@
 import { Component, inject, Inject, PLATFORM_ID } from '@angular/core';
-import { AsyncPipe, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { VideoSectionComponent } from './video-section/video-section.component';
 import { CodeEditorSectionComponent } from './code-editor-section/code-editor-section.component';
 import { ActivatedRoute } from '@angular/router';
@@ -15,7 +15,6 @@ import { SupabaseClientService } from '../../supabase-client.service';
     CodeEditorSectionComponent,
     VideoFeedComponent,
     PythonProcessingComponent,
-    AsyncPipe,
   ],
   templateUrl: './learning.component.html',
   styleUrl: './learning.component.scss',

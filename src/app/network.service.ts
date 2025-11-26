@@ -6,16 +6,21 @@ import { mapTo } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class NetworkService {
-  private onlineSubject = new BehaviorSubject<boolean>(navigator.onLine);
+  private onlineSubject = new BehaviorSubject<boolean>(
+    typeof navigator !== 'undefined' ? navigator.onLine : true
+  );
+
   online$ = this.onlineSubject.asObservable();
 
   constructor() {
-    const online$ = fromEvent(window, 'online').pipe(mapTo(true));
-    const offline$ = fromEvent(window, 'offline').pipe(mapTo(false));
+    if (typeof window !== 'undefined') {
+      const online$ = fromEvent(window, 'online').pipe(mapTo(true));
+      const offline$ = fromEvent(window, 'offline').pipe(mapTo(false));
 
-    merge(online$, offline$, of(navigator.onLine)).subscribe((status) => {
-      this.onlineSubject.next(status);
-    });
+      merge(online$, offline$, of(navigator.onLine)).subscribe((status) => {
+        this.onlineSubject.next(status);
+      });
+    }
   }
 
   isOnline(): boolean {

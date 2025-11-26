@@ -92,7 +92,7 @@ export class LayoutComponent implements OnInit {
     })
   );
   async ngOnInit() {
-    this.isYoutubeShown = this.learningService.get_show_yt();
+    // this.isYoutubeShown = this.learningService.get_show_yt();
     this.themeChangeService.loadTheme();
     this.profile = await this.supabaseService.getProfile();
     if (!this.supabaseService.client) {
@@ -149,7 +149,7 @@ export class LayoutComponent implements OnInit {
     }
   }
   showYoutube() {
-    if (this.learningService.get_show_yt() == true) {
+    if (this.learningService.get_show_yt()) {
       this.learningService.set_show_yt(false);
       this.snackBar.open(`Youtube hidden`, `Close`, {
         duration: 3000,
