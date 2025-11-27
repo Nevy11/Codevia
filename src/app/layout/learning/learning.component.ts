@@ -24,7 +24,6 @@ export class LearningComponent {
   playbackSpeed = 1.0;
   learningService = inject(LearningService);
   supabaseService = inject(SupabaseClientService);
-  showYT$ = this.learningService.get_show_yt();
 
   constructor(
     private route: ActivatedRoute,

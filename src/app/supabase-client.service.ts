@@ -715,6 +715,7 @@ export class SupabaseClientService {
       },
       { onConflict: 'user_id' }
     );
+    console.log('updated successfully');
 
     return !error;
   }

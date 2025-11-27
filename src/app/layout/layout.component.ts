@@ -40,7 +40,7 @@ export class LayoutComponent implements OnInit {
   themeChangeService = inject(ThemeChangeService);
   avatar_url: string = '';
   islogged_out: boolean = false;
-  isYoutubeShown!: boolean;
+  // isYoutubeShown!: boolean;
 
   private router = inject(Router);
   private dialog = inject(MatDialog);
