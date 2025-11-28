@@ -1,5 +1,8 @@
+@if (loadingshowYT) {
+<nevy11-loader></nevy11-loader>
+}@else{
 <div class="learning-container">
-  @if (this.learningService.showYt$ ) {
+  @if (this.learningService.getShowYT()) {
   <div class="video-section">
     <nevy11-video-section
       [videoId]="videoId"
@@ -17,3 +20,5 @@
 
 <div><nevy11-video-feed></nevy11-video-feed></div>
 <nevy11-python-processing></nevy11-python-processing>
+
+}

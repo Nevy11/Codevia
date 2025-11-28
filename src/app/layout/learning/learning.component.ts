@@ -7,6 +7,7 @@ import { VideoFeedComponent } from '../courses/video-feed/video-feed.component';
 import { PythonProcessingComponent } from './code-editor-section/python-processing/python-processing.component';
 import { LearningService } from './learning.service';
 import { SupabaseClientService } from '../../supabase-client.service';
+import { LoaderComponent } from './loader/loader.component';
 
 @Component({
   selector: 'nevy11-learning',
@@ -15,6 +16,7 @@ import { SupabaseClientService } from '../../supabase-client.service';
     CodeEditorSectionComponent,
     VideoFeedComponent,
     PythonProcessingComponent,
+    LoaderComponent,
   ],
   templateUrl: './learning.component.html',
   styleUrl: './learning.component.scss',
@@ -24,6 +26,7 @@ export class LearningComponent {
   playbackSpeed = 1.0;
   learningService = inject(LearningService);
   supabaseService = inject(SupabaseClientService);
+  loadingshowYT: boolean = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -32,6 +35,7 @@ export class LearningComponent {
 
   async ngOnInit() {
     await this.learningService.loadShowYT();
+    this.loadingshowYT = false;
 
     if (isPlatformBrowser(this.platformId)) {
       const speed = parseFloat(localStorage.getItem('playbackSpeed') || '1.0');
