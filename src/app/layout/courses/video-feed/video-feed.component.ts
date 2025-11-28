@@ -50,6 +50,13 @@ export class VideoFeedComponent implements OnInit {
       } else {
         console.error('Failed to upload the number of courses enrolled');
       }
+      const saved_video = await this.supabaseService.saveCurrentVideo(video.id);
+
+      if (!saved_video) {
+        console.error('Failed to save the selected video');
+        return;
+      }
+
       this.router.navigate(['/layout/learning'], {
         queryParams: { video: video.id },
       });

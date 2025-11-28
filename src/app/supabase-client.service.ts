@@ -293,6 +293,23 @@ export class SupabaseClientService {
 
     return data || [];
   }
+  async saveCurrentVideo(videoId: string): Promise<boolean> {
+    const userId = await this.getCurrentUserId();
+    if (!userId) return false;
+
+    const { error } = await this.client.from('user_video_progress').upsert({
+      user_id: userId,
+      video_id: videoId,
+      playback_position: 0, // start fresh
+    });
+
+    if (error) {
+      console.error('Error saving current video:', error.message);
+      return false;
+    }
+
+    return true;
+  }
 
   async get_video_thumbnail(video_id: string): Promise<string | null> {
     const { data, error } = await this.client

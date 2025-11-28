@@ -47,6 +47,7 @@ export class VideoSectionComponent
   private playbackService = inject(PlaybackSettingsService);
   private supabaseService = inject(SupabaseClientService);
   private snackBar = inject(MatSnackBar);
+  route = inject(ActivatedRoute);
 
   private async setSafeUrl() {
     if (this.videoId) {
@@ -91,8 +92,7 @@ export class VideoSectionComponent
     this.user_id = (await this.supabaseService.getCurrentUserId()) || '';
 
     // 1️⃣ Get video from query params
-    const route = inject(ActivatedRoute);
-    route.queryParams.subscribe(async (params) => {
+    this.route.queryParams.subscribe(async (params) => {
       const paramVideoId = params['video'] ?? null;
 
       if (paramVideoId) {
