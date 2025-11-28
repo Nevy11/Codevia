@@ -24,7 +24,7 @@ export class LearningService {
   }
 
   get_show_yt() {
-    return this.show_yt;
+    return this.show_yt();
   }
 
   async set_show_yt(x: boolean) {
