@@ -42,7 +42,7 @@ export class LearningComponent implements OnInit {
     }
 
     this.route.queryParams.subscribe((params) => {
-      this.videoId = params['video'] || 'rQ_J9WH6CGk';
+      this.videoId = params['video'] ?? null;
     });
     this.loadingshowYT = false;
   }

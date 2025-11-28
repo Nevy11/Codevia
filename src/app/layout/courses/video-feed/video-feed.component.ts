@@ -53,6 +53,7 @@ export class VideoFeedComponent implements OnInit {
       this.router.navigate(['/layout/learning'], {
         queryParams: { video: video.id },
       });
+      console.log('Navigating to video:', video.id);
     } else {
       console.error('Error while storing the thumbnail');
     }

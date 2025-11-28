@@ -18,6 +18,7 @@ import { SupabaseClientService } from '../../../supabase-client.service';
 import { GetVideo } from './get-video';
 import { VideoSaving } from './video-saving';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { ActivatedRoute } from '@angular/router';
 
 declare var YT: any; // YouTube Player API
 
@@ -61,29 +62,67 @@ export class VideoSectionComponent
     }
   }
 
+  // async ngOnInit(): Promise<void> {
+  //   if (!isPlatformBrowser(this.platformId)) {
+  //     return;
+  //   }
+  //   this.my_videos = await this.supabaseService.getUserVideos();
+  //   this.user_id = (await this.supabaseService.getCurrentUserId()) || '';
+  //   if (this.my_videos.length > 0) {
+  //     this.videoId = this.my_videos[this.my_videos.length - 1].video_id;
+  //   } else {
+  //     this.videoId = 'dQw4w9WgXcQ'; // fallback
+  //   }
+  //   this.setSafeUrl();
+  //   this.playbackService.speed$.subscribe((speed) => {
+  //     this.playbackSpeed = speed;
+  //     if (this.player) {
+  //       this.player.setPlaybackRate(this.playbackSpeed);
+  //     }
+  //   });
+  //   console.log(
+  //     'VideoSectionComponent initialized with videoId:',
+  //     this.videoId
+  //   );
+  // }
   async ngOnInit(): Promise<void> {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-    this.my_videos = await this.supabaseService.getUserVideos();
-    if (!this.videoId && this.my_videos.length > 0) {
-      return;
-    }
-    this.videoId = this.my_videos[this.my_videos.length - 1].video_id;
+    if (!isPlatformBrowser(this.platformId)) return;
+
     this.user_id = (await this.supabaseService.getCurrentUserId()) || '';
-    if (this.my_videos.length > 0) {
-      this.videoId = this.my_videos[this.my_videos.length - 1].video_id;
-    } else {
-      this.videoId = 'dQw4w9WgXcQ'; // fallback
-    }
-    this.setSafeUrl();
+
+    // 1️⃣ Get video from query params
+    const route = inject(ActivatedRoute);
+    route.queryParams.subscribe(async (params) => {
+      const paramVideoId = params['video'] ?? null;
+
+      if (paramVideoId) {
+        // user clicked a new video
+        this.videoId = paramVideoId;
+        console.log('Video ID from router:', this.videoId);
+      } else {
+        // fallback to last watched
+        this.my_videos = await this.supabaseService.getUserVideos();
+        if (this.my_videos.length > 0) {
+          this.videoId = this.my_videos[this.my_videos.length - 1].video_id;
+          console.log('Video ID from Supabase last watched:', this.videoId);
+        } else {
+          this.videoId = 'dQw4w9WgXcQ'; // default
+          console.log('Using fallback video:', this.videoId);
+        }
+      }
+
+      this.setSafeUrl();
+    });
+
+    // playback speed subscription
     this.playbackService.speed$.subscribe((speed) => {
       this.playbackSpeed = speed;
       if (this.player) {
-        this.player.setPlaybackRate(this.playbackSpeed);
+        this.player.setPlaybackRate(speed);
       }
     });
   }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['videoId'] && this.videoId) {
       // this.setSafeUrl();
