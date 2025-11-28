@@ -6,11 +6,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { YoutubeService } from '../../youtube.service';
 import { SupabaseClientService } from '../../../supabase-client.service';
+import { LoaderComponent } from '../../learning/loader/loader.component';
 
 @Component({
   selector: 'nevy11-video-feed',
   standalone: true,
-  imports: [MatIconModule, MatButtonModule, MatCardModule],
+  imports: [MatIconModule, MatButtonModule, MatCardModule, LoaderComponent],
   templateUrl: './video-feed.component.html',
   styleUrl: './video-feed.component.scss',
 })
@@ -21,6 +22,7 @@ export class VideoFeedComponent implements OnInit {
   private is_thumbnail_stored: Boolean = false;
   private userId: string | null = null;
   private is_courses_enrolled: boolean = false;
+  loader: boolean = false;
 
   videos: any[] = [];
 
@@ -28,6 +30,7 @@ export class VideoFeedComponent implements OnInit {
     this.youtube.getVideos('full course').subscribe((data) => {
       this.videos = data;
     });
+    this.loader = true;
   }
 
   async playVideo(video: any) {

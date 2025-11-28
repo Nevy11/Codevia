@@ -1,4 +1,6 @@
-@for (card of cards|async; track card) { @if (card.mobile_device) {
+@if (this.loadingUrls) {
+<nevy11-loader></nevy11-loader>
+}@else { @for (card of cards|async; track card) { @if (card.mobile_device) {
 
 <div class="dashboard-grid">
   <mat-card class="welcome-card mat-elevation-z6">
@@ -188,4 +190,4 @@
     </mat-card-content>
   </mat-card>
 </div>
-} }
+} } }

@@ -1,4 +1,4 @@
-import { Component, inject, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, inject, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { VideoSectionComponent } from './video-section/video-section.component';
 import { CodeEditorSectionComponent } from './code-editor-section/code-editor-section.component';
@@ -21,7 +21,7 @@ import { LoaderComponent } from './loader/loader.component';
   templateUrl: './learning.component.html',
   styleUrl: './learning.component.scss',
 })
-export class LearningComponent {
+export class LearningComponent implements OnInit {
   videoId = 'rQ_J9WH6CGk';
   playbackSpeed = 1.0;
   learningService = inject(LearningService);
@@ -35,7 +35,6 @@ export class LearningComponent {
 
   async ngOnInit() {
     await this.learningService.loadShowYT();
-    this.loadingshowYT = false;
 
     if (isPlatformBrowser(this.platformId)) {
       const speed = parseFloat(localStorage.getItem('playbackSpeed') || '1.0');
@@ -45,5 +44,6 @@ export class LearningComponent {
     this.route.queryParams.subscribe((params) => {
       this.videoId = params['video'] || 'rQ_J9WH6CGk';
     });
+    this.loadingshowYT = false;
   }
 }

@@ -1,5 +1,5 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,15 +10,23 @@ import { AsyncPipe } from '@angular/common';
 import { SupabaseClientService } from '../../supabase-client.service';
 import { Profile } from '../settings/profile-settings/profile';
 import { Stats } from './home';
+import { LoaderComponent } from '../learning/loader/loader.component';
 
 @Component({
   selector: 'nevy11-home',
-  imports: [MatCardModule, MatButtonModule, MatIconModule, AsyncPipe],
+  imports: [
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    AsyncPipe,
+    LoaderComponent,
+  ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
 export class HomeComponent implements OnInit {
-  username = ''; // Placeholder for username
+  username = '';
+  loadingUrls: boolean = true;
   profile: Profile | null = null;
   private router = inject(Router);
   private breakpointObserver = inject(BreakpointObserver);
@@ -95,5 +103,6 @@ export class HomeComponent implements OnInit {
         this.stats = stat;
       });
     }
+    this.loadingUrls = false;
   }
 }
