@@ -297,11 +297,21 @@ export class SupabaseClientService {
     const userId = await this.getCurrentUserId();
     if (!userId) return false;
 
-    const { error } = await this.client.from('user_video_progress').upsert({
-      user_id: userId,
-      video_id: videoId,
-      playback_position: 0, // start fresh
-    });
+    // const { error } = await this.client.from('user_video_progress').upsert({
+    //   user_id: userId,
+    //   video_id: videoId,
+    //   playback_position: 0, // start fresh
+    // });
+    const { error } = await this.client.from('user_video_progress').upsert(
+      {
+        user_id: userId,
+        video_id: videoId,
+        playback_position: 0,
+      },
+      {
+        onConflict: 'user_id,video_id',
+      }
+    );
 
     if (error) {
       console.error('Error saving current video:', error.message);
