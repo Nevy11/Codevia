@@ -6,10 +6,11 @@ import { isPlatformBrowser } from '@angular/common';
 import { InitScreenComponent } from './init-screen/init-screen.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NetworkService } from './network.service';
+import { AskAiComponent } from './ask-ai/ask-ai.component';
 
 @Component({
   selector: 'nevy11-root',
-  imports: [RouterOutlet, InitScreenComponent],
+  imports: [RouterOutlet, InitScreenComponent, AskAiComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })

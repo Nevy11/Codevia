@@ -1,0 +1,28 @@
+.ask-ai-btn {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1000;
+
+  /* For non-Material buttons */
+  /* padding: 15px 18px;
+  border-radius: 50%;
+  background-color: #6200ea;
+  color: white;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3); */
+}
+
+.chat-window {
+  position: fixed;
+  bottom: 90px;
+  right: 24px;
+  width: 320px;
+  height: 380px;
+  //   background: white;
+  border-radius: 12px;
+  padding: 12px;
+  //   box-shadow: 0 4px 25px rgba(0,0,0,0.2);
+  z-index: 1001;
+}
