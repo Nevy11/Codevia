@@ -7,6 +7,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormControl,
+  FormGroup,
   FormsModule,
   ReactiveFormsModule,
   Validators,
@@ -43,7 +44,15 @@ export class SignupComponent {
   supabase = inject(SupabaseClientService);
   snackbar = inject(MatSnackBar);
   // form group for the signup form
-  formSignUp = signal({
+  // formSignUp = signal({
+  //   email: new FormControl('', [Validators.required, Validators.email]),
+  //   password: new FormControl('', [
+  //     Validators.required,
+  //     Validators.minLength(6),
+  //     Validators.maxLength(20),
+  //   ]),
+  // });
+  formSignUp = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [
       Validators.required,
