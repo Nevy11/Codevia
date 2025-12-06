@@ -7,7 +7,6 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormControl,
-  FormGroup,
   FormsModule,
   ReactiveFormsModule,
   Validators,
@@ -22,6 +21,7 @@ import { Router } from '@angular/router';
 import { TopLoginSignupComponent } from '../top-login-signup/top-login-signup.component';
 import { SupabaseClientService } from '../supabase-client.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { environment } from '../../environments/environment';
 @Component({
   selector: 'nevy11-signup',
   imports: [
@@ -40,19 +40,12 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignupComponent {
-  router = inject(Router);
+  private router = inject(Router);
   supabase = inject(SupabaseClientService);
-  snackbar = inject(MatSnackBar);
+  private snackbar = inject(MatSnackBar);
+  isEmailSent = signal(false);
   // form group for the signup form
-  // formSignUp = signal({
-  //   email: new FormControl('', [Validators.required, Validators.email]),
-  //   password: new FormControl('', [
-  //     Validators.required,
-  //     Validators.minLength(6),
-  //     Validators.maxLength(20),
-  //   ]),
-  // });
-  formSignUp = new FormGroup({
+  formSignUp = signal({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [
       Validators.required,
@@ -111,20 +104,21 @@ export class SignupComponent {
     if (this.formSignUp().email.valid && this.formSignUp().password.valid) {
       const email = this.formSignUp().email.value!;
       const password = this.formSignUp().password.value!;
+      const redirect_url = environment.SUPABASE_REDIRECT_URL;
 
       const { data, error } = await this.supabase.client.auth.signUp({
         email,
         password,
-        options: { emailRedirectTo: 'http://localhost:4200/layout/home' },
+        options: { emailRedirectTo: redirect_url },
       });
       if (error) {
         this.snackbar.open('SignUp Error', `Close`, { duration: 3000 });
         console.error('SignUp error: ', error.message);
-        alert(error.message);
       } else {
         this.snackbar.open("Please verify you're email to continue", `Close`, {
           duration: 6000,
         });
+        this.isEmailSent.set(true);
         this.is_course_init = await this.supabase.first_time_enroll_0_course();
         if (this.is_course_init) {
           console.log('SignUp Successful: ', data);
@@ -140,5 +134,36 @@ export class SignupComponent {
   }
   goToLogin() {
     this.router.navigate(['/login']);
+  }
+  // In your SignupComponent
+
+  async resendVerification() {
+    const email = this.formSignUp().email.value;
+    if (!email) {
+      this.snackbar.open('Please enter your email.', 'Close', {
+        duration: 3000,
+      });
+      return;
+    }
+
+    const success = await this.supabase.resendConfirmationEmail(email);
+
+    if (success) {
+      this.snackbar.open(
+        'New verification link sent! Check your inbox (and spam folder).',
+        'Close',
+        {
+          duration: 6000,
+        }
+      );
+    } else {
+      this.snackbar.open(
+        'Failed to send verification link. Please try again.',
+        'Close',
+        {
+          duration: 3000,
+        }
+      );
+    }
   }
 }

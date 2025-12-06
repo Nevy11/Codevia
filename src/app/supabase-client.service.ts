@@ -6,6 +6,7 @@ import { VideoSaving } from './layout/learning/video-section/video-saving';
 import { GetVideo } from './layout/learning/video-section/get-video';
 import { VideoThumbnails } from './layout/user-stats/video-thumbnails';
 import { Folders } from './layout/learning/code-editor-section/folders';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +15,8 @@ export class SupabaseClientService {
   private supabase!: SupabaseClient;
   private user_id: string | null = null;
   private is_course_stat_init: boolean = false;
+  private redirect_url = environment.SUPABASE_REDIRECT_URL;
+
   constructor(@Inject(PLATFORM_ID) private platformId: object) {
     if (isPlatformBrowser(this.platformId)) {
       this.supabase = createClient(
@@ -24,6 +27,22 @@ export class SupabaseClientService {
   }
   get client() {
     return this.supabase;
+  }
+
+  async resendConfirmationEmail(email: string) {
+    const { data, error } = await this.client.auth.resend({
+      type: 'signup',
+      email: email,
+      options: {
+        emailRedirectTo: this.redirect_url,
+      },
+    });
+
+    if (error) {
+      console.error('Error resending confirmation:', error.message);
+      return false;
+    }
+    return true;
   }
 
   // adding a profile
