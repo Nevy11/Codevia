@@ -166,4 +166,5 @@ export class SignupComponent {
       );
     }
   }
+  // there is an error here about signing in a user from supabase
 }
