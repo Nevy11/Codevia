@@ -8,7 +8,14 @@
           <mat-card-title>Profile Picture</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          <img src="/about/laptop.jpg" alt="Profile Picture" class="avatar" />
+          @if (previewUrl) {
+          <img [src]="previewUrl" class="avatar" />
+          } @else {
+          <ng-template #uploadIcon>
+            <mat-icon class="avatar-icon">photo_camera</mat-icon>
+          </ng-template>
+          }
+
           <input
             type="file"
             accept="image/*"
@@ -61,9 +68,10 @@
     <mat-step>
       <ng-template matStepLabel>Done</ng-template>
       <div class="done">You are now done.</div>
+      <div>Click done to complete the registration process</div>
       <div class="back_next">
+        <button matButton (click)="done()">Done</button>
         <button matButton (click)="stepper.reset()">Reset</button>
-        <button matButton (click)="done()">Back</button>
       </div>
     </mat-step>
   </mat-stepper>

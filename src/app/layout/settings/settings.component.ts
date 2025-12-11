@@ -28,7 +28,7 @@ export class SettingsComponent implements OnInit {
     this.route.queryParams.subscribe((params) => {
       this.selectedIndex = params['tab'] ? Number(params['tab']) : 0;
     });
-
+    // Detects whether it's the user's first time setting up their profile
     this.isFirstTime = await this.supabaseService.isFirstTimeProfileUpdate();
   }
 }

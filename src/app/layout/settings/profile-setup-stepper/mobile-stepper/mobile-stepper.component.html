@@ -4,26 +4,20 @@
 <mat-stepper orientation="vertical" [linear]="isLinear" #stepper>
   <mat-step [stepControl]="profile_picture">
     <ng-template matStepLabel>choose a profile picture</ng-template>
-    <!-- <form [formGroup]="firstFormGroup">
-      <ng-template matStepLabel>Fill out your name</ng-template>
-      <mat-form-field>
-        <mat-label>Name</mat-label>
-        <input
-          matInput
-          placeholder="Last name, First name"
-          formControlName="firstCtrl"
-          required
-        />
-      </mat-form-field>
-      
-    </form> -->
 
     <mat-card class="avatar-card">
       <mat-card-header>
         <mat-card-title>Profile Picture</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <img src="/about/laptop.jpg" alt="Profile Picture" class="avatar" />
+        <!-- <img src="/about/laptop.jpg" alt="Profile Picture" class="avatar" /> -->
+        @if (previewUrl) {
+        <img [src]="previewUrl" class="avatar" />
+        } @else {
+        <ng-template #uploadIcon>
+          <mat-icon class="avatar-icon">photo_camera</mat-icon>
+        </ng-template>
+        }
         <input type="file" accept="image/*" (change)="onFileSelected($event)" />
       </mat-card-content>
     </mat-card>
@@ -70,9 +64,10 @@
   <mat-step>
     <ng-template matStepLabel>Done</ng-template>
     <p class="done">You are now done.</p>
+
     <div class="back_next">
-      <button matButton matStepperPrevious>Back</button>
       <button matButton (click)="stepper.reset()">Reset</button>
+      <button matButton (click)="done()">Done</button>
     </div>
   </mat-step>
 </mat-stepper>

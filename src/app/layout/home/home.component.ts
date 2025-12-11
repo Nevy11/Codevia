@@ -11,7 +11,6 @@ import { SupabaseClientService } from '../../supabase-client.service';
 import { Profile } from '../settings/profile-settings/profile';
 import { Stats } from './home';
 import { LoaderComponent } from '../learning/loader/loader.component';
-import { ProfileSettingsComponent } from '../settings/profile-settings/profile-settings.component';
 
 @Component({
   selector: 'nevy11-home',
@@ -21,7 +20,6 @@ import { ProfileSettingsComponent } from '../settings/profile-settings/profile-s
     MatIconModule,
     AsyncPipe,
     LoaderComponent,
-    ProfileSettingsComponent,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',

@@ -12,6 +12,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { SupabaseClientService } from '../../../../supabase-client.service';
 import { ProfileService } from '../profile.service';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'nevy11-mobile-stepper',
@@ -23,6 +25,7 @@ import { ProfileService } from '../profile.service';
     MatFormFieldModule,
     MatInputModule,
     MatCardModule,
+    MatIconModule,
   ],
   templateUrl: './mobile-stepper.component.html',
   styleUrl: './mobile-stepper.component.scss',
@@ -31,6 +34,7 @@ export class MobileStepperComponent {
   private _formBuilder = inject(FormBuilder);
   private profileService = inject(ProfileService);
   private supabaseService = inject(SupabaseClientService);
+  private snackbar = inject(MatSnackBar);
 
   username!: string;
   bio!: string;
@@ -47,21 +51,42 @@ export class MobileStepperComponent {
   });
   isLinear = false;
 
+  previewUrl: string | null = null;
+
   async onFileSelected(event: Event) {
-    const file = (event.target as HTMLInputElement).files?.[0];
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
     if (!file) return;
 
+    // 1. Preview image
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.previewUrl = reader.result as string;
+
+      // As soon as preview appears, mark form as valid
+      this.profile_picture.get('profile_picture')?.setValue('done');
+    };
+    reader.readAsDataURL(file);
+
+    // 2. Upload to Supabase
     const fileName = `${Date.now()}-${file.name}`;
-    this.profileService.updateAvatarUrl(`${fileName}`);
-    const { data, error } = await this.supabaseService.client.storage
+    this.profileService.updateAvatarUrl(fileName);
+
+    const { error } = await this.supabaseService.client.storage
       .from('avatars')
       .upload(fileName, file, {
         cacheControl: '3600',
         upsert: false,
       });
+
     if (error) {
       console.error('Upload error: ', error.message);
+      return;
     }
+
+    // 3. Automatically move to next stepper
+    const nativeMatStepper = document.querySelector('mat-stepper');
+    (nativeMatStepper as any).next();
   }
 
   validate_username() {
@@ -80,6 +105,12 @@ export class MobileStepperComponent {
     } else {
       console.error('bio not updated');
     }
+    this.snackbar.open('Profile setup completed!', 'Close', { duration: 3000 });
+    this.snackbar.open(
+      `Click done to complete the registration process`,
+      'Close',
+      { duration: 3000 }
+    );
   }
   done() {
     const name$ = this.profileService.name$.subscribe((user_name) => {

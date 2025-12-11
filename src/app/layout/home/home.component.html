@@ -1,7 +1,5 @@
 @if (this.loadingUrls) {
 <nevy11-loader></nevy11-loader>
-}@else { @if (this.username == "") {
-<nevy11-profile-settings></nevy11-profile-settings>
 }@else { @for (card of cards|async; track card) { @if (card.mobile_device) {
 
 <div class="dashboard-grid">
@@ -192,4 +190,4 @@
     </mat-card-content>
   </mat-card>
 </div>
-} } } }
+} } }
