@@ -140,7 +140,8 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   async deleteAccount() {
-    this.delete_account = await this.supabaseService.removeProfile();
+    // this.delete_account = await this.supabaseService.removeProfile();
+    this.delete_account = await this.supabaseService.wipeUserData();
     if (this.delete_account) {
       this.themeService.setTheme('light');
       this.router.navigate(['']);
