@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { MobileStepperComponent } from './mobile-stepper/mobile-stepper.component';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { map } from 'rxjs';
+import { map, shareReplay } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { NonMobileStepperComponent } from './non-mobile-stepper/non-mobile-stepper.component';
 
@@ -13,6 +13,10 @@ import { NonMobileStepperComponent } from './non-mobile-stepper/non-mobile-stepp
 })
 export class ProfileSetupStepperComponent {
   private breakpointObserver = inject(BreakpointObserver);
+  Ismobile$ = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
+    map((result) => result.matches),
+    shareReplay(1)
+  );
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {
       if (matches) {
