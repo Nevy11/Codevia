@@ -275,12 +275,51 @@ export class SupabaseClientService {
     }
     return data.user?.id || null;
   }
+  // async wipeUserData(): Promise<boolean> {
+  //   const {
+  //     data: { user },
+  //   } = await this.client.auth.getUser();
+
+  //   if (!user) return false;
+
+  //   const userId = user.id;
+
+  //   const tables = [
+  //     'profiles',
+  //     'user_settings',
+  //     'files',
+  //     'folders_files',
+  //     'user_course_stats',
+  //     'user_video_progress',
+  //     'video_thumbnails',
+  //   ];
+  //   this.deleted_user = this.client.auth.admin.deleteUser(userId);
+  //   console.log('Deleted user: ', this.deleted_user);
+  //   for (const table of tables) {
+  //     const { error } = await this.client
+  //       .from(table)
+  //       .delete()
+  //       .eq('user_id', userId);
+
+  //     if (error) {
+  //       console.error(`Failed to delete from ${table}`, error);
+  //       return false;
+  //     }
+  //   }
+
+  //   return true;
+  // }
+
   async wipeUserData(): Promise<boolean> {
     const {
       data: { user },
+      error: userError,
     } = await this.client.auth.getUser();
 
-    if (!user) return false;
+    if (userError || !user) {
+      console.warn('No authenticated user');
+      return false;
+    }
 
     const userId = user.id;
 
@@ -293,20 +332,27 @@ export class SupabaseClientService {
       'user_video_progress',
       'video_thumbnails',
     ];
-    this.deleted_user = this.client.auth.admin.deleteUser(userId);
-    console.log('Deleted user: ', this.deleted_user);
+
     for (const table of tables) {
-      const { error } = await this.client
+      const { error, count } = await this.client
         .from(table)
-        .delete()
+        .delete({ count: 'exact' })
         .eq('user_id', userId);
 
       if (error) {
-        console.error(`Failed to delete from ${table}`, error);
-        return false;
+        console.error(`Error deleting from ${table}`, error);
+        // continue instead of stopping everything
+        continue;
+      }
+
+      if (!count || count === 0) {
+        console.log(`Skipped ${table} (no data for user)`);
+      } else {
+        console.log(`Deleted ${count} rows from ${table}`);
       }
     }
 
+    // ⚠️ DO NOT delete auth user here (client-side)
     return true;
   }
 
