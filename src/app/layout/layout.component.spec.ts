@@ -1,6 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LayoutComponent } from './layout.component';
+import { Router } from '@angular/router';
+
+const mockRouter = {
+  navigate: jasmine.createSpy('navigate'),
+  navigateByUrl: jasmine.createSpy('navigateByUrl'),
+};
 
 describe('LayoutComponent', () => {
   let component: LayoutComponent;
@@ -8,9 +14,9 @@ describe('LayoutComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LayoutComponent]
-    })
-    .compileComponents();
+      imports: [LayoutComponent],
+      providers: [{ provide: Router, useValue: mockRouter }],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(LayoutComponent);
     component = fixture.componentInstance;
