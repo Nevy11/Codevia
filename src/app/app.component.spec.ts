@@ -56,19 +56,26 @@ describe('AppComponent', () => {
     expect(app.title).toEqual('Codevia');
   });
 
-  it('should render title after loading is complete', () => {
-    const compiled = fixture.nativeElement as HTMLElement;
+  it('should render the router-outlet when loading is false', () => {
+    // Component starts with app.loading = true
 
-    // FIX 2: Manually set the loading flag to false so that your main content is rendered
+    // Set loading to false
     app.loading = false;
-
-    // Trigger change detection to render the content that depends on `loading = false`
     fixture.detectChanges();
 
-    // FIX 3: Update the text to match the component's title ('Codevia')
-    // NOTE: If you don't have an <h1>, update the query selector (e.g., to 'div.title-text')
-    expect(compiled.querySelector('h1')?.textContent).toContain(
-      'Hello, Codevia'
-    );
+    // Check if the <router-outlet> is present and the loading screen is gone
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('router-outlet')).toBeTruthy();
+    expect(compiled.querySelector('.loading-screen')).toBeFalsy();
+  });
+
+  it('should render the loading screen when loading is true', () => {
+    // Component starts with app.loading = true
+    fixture.detectChanges();
+
+    // Check if the loading screen div is present
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.loading-screen')).toBeTruthy();
+    expect(compiled.querySelector('router-outlet')).toBeFalsy();
   });
 });

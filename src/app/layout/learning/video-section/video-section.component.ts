@@ -62,30 +62,6 @@ export class VideoSectionComponent
       this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
     }
   }
-
-  // async ngOnInit(): Promise<void> {
-  //   if (!isPlatformBrowser(this.platformId)) {
-  //     return;
-  //   }
-  //   this.my_videos = await this.supabaseService.getUserVideos();
-  //   this.user_id = (await this.supabaseService.getCurrentUserId()) || '';
-  //   if (this.my_videos.length > 0) {
-  //     this.videoId = this.my_videos[this.my_videos.length - 1].video_id;
-  //   } else {
-  //     this.videoId = 'dQw4w9WgXcQ'; // fallback
-  //   }
-  //   this.setSafeUrl();
-  //   this.playbackService.speed$.subscribe((speed) => {
-  //     this.playbackSpeed = speed;
-  //     if (this.player) {
-  //       this.player.setPlaybackRate(this.playbackSpeed);
-  //     }
-  //   });
-  //   console.log(
-  //     'VideoSectionComponent initialized with videoId:',
-  //     this.videoId
-  //   );
-  // }
   async ngOnInit(): Promise<void> {
     if (!isPlatformBrowser(this.platformId)) return;
 
