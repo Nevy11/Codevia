@@ -122,3 +122,52 @@
     margin-bottom: 8px;
   }
 }
+
+@media (min-width: 900px) {
+  // .dashboard-grid {
+  //   display: grid;
+  //   grid-template-columns: repeat(4, 1fr);
+  //   grid-template-areas:
+  //     "welcome welcome resume  resume" /* Top of the Z */
+  //     "graph   graph   graph   graph" /* Center Focus */
+  //     "stat1   stat1   stat2   stat2"; /* Bottom of the Z */
+  //   grid-gap: 24px;
+  //   padding: 30px;
+  //   max-width: 1200px;
+  //   margin: 0 auto;
+  // }
+
+  // .area-welcome {
+  //   grid-area: welcome;
+  // }
+  // .area-resume {
+  //   grid-area: resume;
+  // }
+  // .area-graph {
+  //   grid-area: graph;
+  //   min-height: 300px;
+  // }
+  // .area-stat-1 {
+  //   grid-area: stat1;
+  // }
+  // .area-stat-2 {
+  //   grid-area: stat2;
+  // }
+
+  // .welcome-card {
+  //   background: linear-gradient(135deg, #2196f3, #00bcd4);
+  //   display: flex;
+  //   align-items: center;
+  // }
+
+  // // .continue-learning {
+  // //   // background: #fff !important;
+  // //   // color: #333 !important;
+  // // }
+
+  // .stats-card p {
+  //   font-size: 2.5rem;
+  //   font-weight: bold;
+  //   margin: 0;
+  // }
+}

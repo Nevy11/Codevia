@@ -275,40 +275,6 @@ export class SupabaseClientService {
     }
     return data.user?.id || null;
   }
-  // async wipeUserData(): Promise<boolean> {
-  //   const {
-  //     data: { user },
-  //   } = await this.client.auth.getUser();
-
-  //   if (!user) return false;
-
-  //   const userId = user.id;
-
-  //   const tables = [
-  //     'profiles',
-  //     'user_settings',
-  //     'files',
-  //     'folders_files',
-  //     'user_course_stats',
-  //     'user_video_progress',
-  //     'video_thumbnails',
-  //   ];
-  //   this.deleted_user = this.client.auth.admin.deleteUser(userId);
-  //   console.log('Deleted user: ', this.deleted_user);
-  //   for (const table of tables) {
-  //     const { error } = await this.client
-  //       .from(table)
-  //       .delete()
-  //       .eq('user_id', userId);
-
-  //     if (error) {
-  //       console.error(`Failed to delete from ${table}`, error);
-  //       return false;
-  //     }
-  //   }
-
-  //   return true;
-  // }
 
   async wipeUserData(): Promise<boolean> {
     const {
