@@ -46,32 +46,86 @@ serve(async (req) => {
     }
 
     const userId = user.id;
-    console.log(`Attempting to delete user with ID: ${userId}`);
+    console.log(`Attempting to delete all data for user with ID: ${userId}`);
 
-    // 3. Delete the user's profile from the 'profiles' table
-    const { error: profileDeleteError } = await supabaseAdmin
-      .from('profiles')
-      .delete()
-      .eq('id', userId);
+    // 3. Define all tables with a direct user_id foreign key
+    const tablesWithUserId = [
+      'user_settings',
+      'files',
+      'folders_files',
+      'user_course_stats',
+      'user_video_progress',
+      'profiles' 
+    ];
 
-    if (profileDeleteError) {
-      console.error(`Error deleting profile for user ID: ${userId}`, profileDeleteError.message);
-      // Even if profile deletion fails, we can proceed to delete the auth user,
-      // but it's important to log this failure.
-    } else {
-      console.log(`Successfully deleted profile for user ID: ${userId}`);
+    // 4. Delete associated data from tables with direct user_id link
+    for (const table of tablesWithUserId) {
+      const { error: tableDeleteError } = await supabaseAdmin
+        .from(table)
+        .delete()
+        .eq('id', userId); 
+
+      if (tableDeleteError) {
+        console.error(`Error deleting from ${table} for user ${userId}:`, tableDeleteError.message);
+        // Decide if you want to stop or continue. For this purpose, we'll log and continue.
+      } else {
+        console.log(`Successfully cleaned ${table} for user ${userId}`);
+      }
     }
 
-    // 4. Use the admin client to delete the auth user
+    // 5. Handle indirect deletion for 'video_thumbnails'
+    // First, get all video_ids associated with the user.
+    const { data: videoProgress, error: videoProgressError } = await supabaseAdmin
+      .from('user_video_progress')
+      .select('video_id')
+      .eq('user_id', userId);
+
+    if (videoProgressError) {
+      console.error('Could not fetch video_ids for user:', videoProgressError.message);
+    } else if (videoProgress && videoProgress.length > 0) {
+      const videoIds = videoProgress.map((v) => v.video_id);
+      
+      // Now, delete from 'video_thumbnails' where video_id is in our list
+      const { error: thumbnailDeleteError } = await supabaseAdmin
+        .from('video_thumbnails')
+        .delete()
+        .in('video_id', videoIds);
+      
+      if (thumbnailDeleteError) {
+        console.error('Error deleting video_thumbnails for user:', thumbnailDeleteError.message);
+      } else {
+        console.log('Successfully cleaned video_thumbnails for user.');
+      }
+    }
+
+    // 6. Clean up user's avatar from Supabase Storage
+    const { data: files, error: listError } = await supabaseAdmin.storage.from('avatars').list();
+
+    if (listError) {
+      console.error('Error listing files in avatars bucket:', listError.message);
+    } else {
+      const userFiles = files.filter((file) => file.name.startsWith(userId));
+      if (userFiles.length > 0) {
+        const fileNames = userFiles.map((file) => file.name);
+        const { error: removeError } = await supabaseAdmin.storage.from('avatars').remove(fileNames);
+        if (removeError) {
+          console.error('Error removing user avatar:', removeError.message);
+        } else {
+          console.log(`Successfully removed user avatar(s): ${fileNames.join(', ')}`);
+        }
+      }
+    }
+
+    // 7. Finally, delete the user from the auth schema
     const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(userId);
 
     if (deleteError) {
-      throw deleteError;
+      throw deleteError; // This is a critical error, so we throw to stop the process
     }
 
     console.log(`Successfully deleted auth user with ID: ${userId}`);
 
-    // 5. Return a success message
+    // 8. Return a success message
     return new Response(JSON.stringify({ message: `User ${userId} deleted successfully.` }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,

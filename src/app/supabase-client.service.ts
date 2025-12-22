@@ -276,54 +276,6 @@ export class SupabaseClientService {
     return data.user?.id || null;
   }
 
-  async wipeUserData(): Promise<boolean> {
-    const {
-      data: { user },
-      error: userError,
-    } = await this.client.auth.getUser();
-
-    if (userError || !user) {
-      console.warn('No authenticated user');
-      return false;
-    }
-
-    const userId = user.id;
-
-    const tables = [
-      'profiles',
-      'user_settings',
-      'files',
-      'folders_files',
-      'user_course_stats',
-      'user_video_progress',
-      'video_thumbnails',
-    ];
-
-    for (const table of tables) {
-      const { error, count } = await this.client
-        .from(table)
-        .delete({ count: 'exact' })
-        .eq('user_id', userId);
-
-      if (error) {
-        console.error(`Error deleting from ${table}`, error);
-        // continue instead of stopping everything
-        continue;
-      }
-
-      if (!count || count === 0) {
-        console.log(`Skipped ${table} (no data for user)`);
-      } else {
-        console.log(`Deleted ${count} rows from ${table}`);
-      }
-    }
-
-    await this.deleteUserAccount();
-
-    // ⚠️ DO NOT delete auth user here (client-side)
-    return true;
-  }
-
   async store_video_thumbnail(
     video_id: string,
     thumbnail_url: string
