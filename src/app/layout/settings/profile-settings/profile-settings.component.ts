@@ -143,8 +143,18 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   async deleteAccount() {
+    // The actual deletion and cleanup is now handled by the backend delete-user Supabase Edge Function.
+    // The deleteUserAccount method triggers this backend function.
     // this.delete_account = await this.supabaseService.removeProfile();
-    this.delete_account = await this.supabaseService.wipeUserData();
+    try {
+      await this.supabaseService.deleteUserAccount();
+      this.delete_account = true; // Assuming success if no error is thrown
+    } catch (error) {
+      console.error('Error during account deletion:', error);
+      this.delete_account = false;
+      this.deleteError = 'Failed to delete account. Please try again later.';
+    }
+
     if (this.delete_account) {
       this.themeService.setTheme('light');
       this.router.navigate(['']);
