@@ -318,6 +318,8 @@ export class SupabaseClientService {
       }
     }
 
+    await this.deleteUserAccount();
+
     // ⚠️ DO NOT delete auth user here (client-side)
     return true;
   }
@@ -823,5 +825,21 @@ export class SupabaseClientService {
     if (error || !data) return false;
 
     return data.show_yt;
+  }
+
+  /**
+   * Invokes the 'delete-user' Edge Function to securely delete the user's account.
+   * On success, it signs the user out of the application.
+   */
+  public async deleteUserAccount(): Promise<void> {
+    const { error } = await this.client.functions.invoke('delete-user', {});
+
+    if (error) {
+      console.error('Error deleting user account:', error);
+      throw error; // Re-throw the error to be handled by the component
+    }
+
+    // On successful deletion from the backend, sign the user out on the client
+    await this.client.auth.signOut();
   }
 }

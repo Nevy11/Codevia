@@ -32,6 +32,9 @@ export class ProfileSettingsComponent implements OnInit {
   profile: Profile | null = null;
   imageUrl: string = '';
   delete_account: boolean = false;
+  isDeleting = false;
+  deleteError: string | null = null;
+
 
   private profileService = inject(ProfileService);
   private router = inject(Router);
@@ -145,6 +148,10 @@ export class ProfileSettingsComponent implements OnInit {
     if (this.delete_account) {
       this.themeService.setTheme('light');
       this.router.navigate(['']);
+      this.isDeleting = true;
+
+26  
+
       this.snackBar.open('Account deleted successfully', `Close`, {
         duration: 3000,
       });
