@@ -791,7 +791,13 @@ export class SupabaseClientService {
       throw error; // Re-throw the error to be handled by the component
     }
 
-    // On successful deletion from the backend, sign the user out on the client
-    await this.client.auth.signOut();
+    // On successful deletion from the backend, sign the user out on the client.
+    // We wrap this in a try-catch because the session might already be invalidated
+    // by the backend function, which can cause a harmless 403 error.
+    try {
+      await this.client.auth.signOut();
+    } catch (signOutError) {
+      console.log('Client-side signOut failed, which is expected after a full account deletion.', signOutError);
+    }
   }
 }

@@ -48,32 +48,37 @@ serve(async (req) => {
     const userId = user.id;
     console.log(`Attempting to delete all data for user with ID: ${userId}`);
 
-    // 3. Define all tables with a direct user_id foreign key
+    // 3. Define tables with 'user_id' and 'id' foreign keys
     const tablesWithUserId = [
       'user_settings',
       'files',
       'folders_files',
       'user_course_stats',
       'user_video_progress',
-      'profiles' 
     ];
+    const tablesWithId = ['profiles']; // Based on the provided schema
 
-    // 4. Delete associated data from tables with direct user_id link
+    // 4. Delete from tables with 'user_id'
     for (const table of tablesWithUserId) {
-      const { error: tableDeleteError } = await supabaseAdmin
-        .from(table)
-        .delete()
-        .eq('id', userId); 
-
-      if (tableDeleteError) {
-        console.error(`Error deleting from ${table} for user ${userId}:`, tableDeleteError.message);
-        // Decide if you want to stop or continue. For this purpose, we'll log and continue.
+      const { error } = await supabaseAdmin.from(table).delete().eq('user_id', userId);
+      if (error) {
+        console.error(`Error deleting from ${table} for user ${userId}:`, error.message);
       } else {
         console.log(`Successfully cleaned ${table} for user ${userId}`);
       }
     }
 
-    // 5. Handle indirect deletion for 'video_thumbnails'
+    // 5. Delete from tables with 'id'
+    for (const table of tablesWithId) {
+      const { error } = await supabaseAdmin.from(table).delete().eq('id', userId);
+      if (error) {
+        console.error(`Error deleting from ${table} for user ${userId}:`, error.message);
+      } else {
+        console.log(`Successfully cleaned ${table} for user ${userId}`);
+      }
+    }
+
+    // 6. Handle indirect deletion for 'video_thumbnails'
     // First, get all video_ids associated with the user.
     const { data: videoProgress, error: videoProgressError } = await supabaseAdmin
       .from('user_video_progress')
