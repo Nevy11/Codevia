@@ -17,6 +17,7 @@ import { SupabaseClientService } from '../supabase-client.service';
 import { ProfileService } from './settings/profile-setup-stepper/profile.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { LearningService } from './learning/learning.service';
+import { ConfirmationDialogComponent } from '../shared/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'nevy11-layout',
@@ -135,18 +136,27 @@ export class LayoutComponent implements OnInit {
   }
 
   async logout() {
-    this.islogged_out = await this.supabaseService.logout();
-    if (this.islogged_out) {
-      this.snackBar.open('Logged out successfully', `Close`, {
-        duration: 3600,
-      });
-      this.themeChangeService.setTheme('light');
-      this.router.navigate(['']);
-    } else {
-      this.snackBar.open(`log out unsuccessfull`, `Close`, {
-        duration: 3600,
-      });
-    }
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '350px',
+      data: { title: 'Confirm Logout', message: 'Are you sure you want to log out?' }
+    });
+
+    dialogRef.afterClosed().subscribe(async result => {
+      if (result) {
+        this.islogged_out = await this.supabaseService.logout();
+        if (this.islogged_out) {
+          this.snackBar.open('Logged out successfully', `Close`, {
+            duration: 3600,
+          });
+          this.themeChangeService.setTheme('light');
+          this.router.navigate(['']);
+        } else {
+          this.snackBar.open(`log out unsuccessfull`, `Close`, {
+            duration: 3600,
+          });
+        }
+      }
+    });
   }
   showYoutube() {
     console.log(`${this.learningService.getShowYT()}`);

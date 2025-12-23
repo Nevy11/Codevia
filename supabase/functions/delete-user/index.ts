@@ -48,38 +48,18 @@ serve(async (req) => {
     const userId = user.id;
     console.log(`Attempting to delete all data for user with ID: ${userId}`);
 
-    // 3. Define tables with 'user_id' and 'id' foreign keys
-    const tablesWithUserId = [
-      'user_settings',
-      'files',
-      'folders_files',
-      'user_course_stats',
-      'user_video_progress',
-    ];
-    const tablesWithId = ['profiles']; // Based on the provided schema
+    // Fetch the user's profile to get the avatar_url before deleting the profile.
+    const { data: profile, error: profileError } = await supabaseAdmin
+      .from('profiles')
+      .select('avatar_url')
+      .eq('id', userId)
+      .single();
 
-    // 4. Delete from tables with 'user_id'
-    for (const table of tablesWithUserId) {
-      const { error } = await supabaseAdmin.from(table).delete().eq('user_id', userId);
-      if (error) {
-        console.error(`Error deleting from ${table} for user ${userId}:`, error.message);
-      } else {
-        console.log(`Successfully cleaned ${table} for user ${userId}`);
-      }
+    if (profileError) {
+        console.error(`Could not fetch profile for user ${userId}: ${profileError.message}`);
     }
 
-    // 5. Delete from tables with 'id'
-    for (const table of tablesWithId) {
-      const { error } = await supabaseAdmin.from(table).delete().eq('id', userId);
-      if (error) {
-        console.error(`Error deleting from ${table} for user ${userId}:`, error.message);
-      } else {
-        console.log(`Successfully cleaned ${table} for user ${userId}`);
-      }
-    }
-
-    // 6. Handle indirect deletion for 'video_thumbnails'
-    // First, get all video_ids associated with the user.
+    // Handle indirect deletion for 'video_thumbnails' before deleting the user's video progress
     const { data: videoProgress, error: videoProgressError } = await supabaseAdmin
       .from('user_video_progress')
       .select('video_id')
@@ -90,7 +70,6 @@ serve(async (req) => {
     } else if (videoProgress && videoProgress.length > 0) {
       const videoIds = videoProgress.map((v) => v.video_id);
       
-      // Now, delete from 'video_thumbnails' where video_id is in our list
       const { error: thumbnailDeleteError } = await supabaseAdmin
         .from('video_thumbnails')
         .delete()
@@ -103,25 +82,58 @@ serve(async (req) => {
       }
     }
 
-    // 6. Clean up user's avatar from Supabase Storage
-    const { data: files, error: listError } = await supabaseAdmin.storage.from('avatars').list();
+    // Define tables with 'user_id' and 'id' foreign keys
+    const tablesWithUserId = [
+      'user_settings',
+      'files',
+      'folders_files',
+      'user_course_stats',
+      'user_video_progress',
+    ];
+    const tablesWithId = ['profiles']; // Based on the provided schema
 
-    if (listError) {
-      console.error('Error listing files in avatars bucket:', listError.message);
-    } else {
-      const userFiles = files.filter((file) => file.name.startsWith(userId));
-      if (userFiles.length > 0) {
-        const fileNames = userFiles.map((file) => file.name);
-        const { error: removeError } = await supabaseAdmin.storage.from('avatars').remove(fileNames);
-        if (removeError) {
-          console.error('Error removing user avatar:', removeError.message);
-        } else {
-          console.log(`Successfully removed user avatar(s): ${fileNames.join(', ')}`);
-        }
+    // Delete from tables with 'user_id'
+    for (const table of tablesWithUserId) {
+      const { error } = await supabaseAdmin.from(table).delete().eq('user_id', userId);
+      if (error) {
+        console.error(`Error deleting from ${table} for user ${userId}:`, error.message);
+      } else {
+        console.log(`Successfully cleaned ${table} for user ${userId}`);
       }
     }
 
-    // 7. Finally, delete the user from the auth schema
+    // Delete from tables with 'id'
+    for (const table of tablesWithId) {
+      const { error } = await supabaseAdmin.from(table).delete().eq('id', userId);
+      if (error) {
+        console.error(`Error deleting from ${table} for user ${userId}:`, error.message);
+      } else {
+        console.log(`Successfully cleaned ${table} for user ${userId}`);
+      }
+    }
+
+    // Clean up user's avatar from Supabase Storage
+    if (profile && profile.avatar_url) {
+      try {
+        // Extract the file path from the URL.
+        const avatarUrl = new URL(profile.avatar_url);
+        const avatarPath = avatarUrl.pathname.split('/avatars/')[1];
+
+        if (avatarPath) {
+          const { error: removeError } = await supabaseAdmin.storage.from('avatars').remove([avatarPath]);
+
+          if (removeError) {
+            console.error(`Error removing avatar for user ${userId}: ${removeError.message}`);
+          } else {
+            console.log(`Successfully removed avatar for user ${userId}`);
+          }
+        }
+      } catch (e) {
+        console.error(`Failed to parse avatar URL or remove avatar for user ${userId}:`, e.message);
+      }
+    }
+
+    // Finally, delete the user from the auth schema
     const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(userId);
 
     if (deleteError) {
@@ -130,7 +142,7 @@ serve(async (req) => {
 
     console.log(`Successfully deleted auth user with ID: ${userId}`);
 
-    // 8. Return a success message
+    // Return a success message
     return new Response(JSON.stringify({ message: `User ${userId} deleted successfully.` }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
