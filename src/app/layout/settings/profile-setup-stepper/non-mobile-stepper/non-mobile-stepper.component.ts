@@ -113,7 +113,7 @@ export class NonMobileStepperComponent {
     );
     console.log('bio updated');
   }
-  done() {
+  async done() {
     const name$ = this.profileService.name$.subscribe((user_name) => {
       this.username = user_name;
     });
@@ -126,6 +126,19 @@ export class NonMobileStepperComponent {
       }
     );
     console.log('done clicked with ', this.username, this.bio, this.avatar_url);
-    this.supabaseService.addProfile(this.username, this.bio, this.avatar_url);
+    const result = await this.supabaseService.addProfile(
+      this.username,
+      this.bio,
+      this.avatar_url
+    );
+    if (result) {
+      this.snackbar.open('Registration process completed!', 'Close', {
+        duration: 3000,
+      });
+    } else {
+      this.snackbar.open('Error completing registration.', 'Close', {
+        duration: 3000,
+      });
+    }
   }
 }

@@ -47,7 +47,11 @@ export class SupabaseClientService {
   }
 
   // adding a profile
-  async addProfile(name: string, bio: string, avatar_url: string) {
+  async addProfile(
+    name: string,
+    bio: string,
+    avatar_url: string
+  ): Promise<boolean> {
     const {
       data: { user },
     } = await this.client.auth.getUser();
@@ -56,6 +60,7 @@ export class SupabaseClientService {
         .from('profiles')
         .insert([
           {
+            id: user.id,
             name: name,
             email: user.email,
             bio: bio,
@@ -66,10 +71,13 @@ export class SupabaseClientService {
 
       if (error) {
         console.error(error);
+        return false;
       } else {
         console.log('Inserted profile: ', data);
+        return true;
       }
     }
+    return false;
   }
 
   // Removing a profile
@@ -160,12 +168,13 @@ export class SupabaseClientService {
       .from('profiles')
       .upsert(
         {
+          id: user.id,
           email: user.email,
           name,
           bio,
           avatar_url,
         },
-        { onConflict: 'email' }
+        { onConflict: 'id' }
       )
       .select();
 
@@ -175,7 +184,7 @@ export class SupabaseClientService {
     }
 
     if (data.length === 0) {
-      console.warn('No profile found for this email:', user.email);
+      console.warn('No profile found for this user id:', user.id);
       return null;
     }
 
@@ -797,7 +806,10 @@ export class SupabaseClientService {
     try {
       await this.client.auth.signOut();
     } catch (signOutError) {
-      console.log('Client-side signOut failed, which is expected after a full account deletion.', signOutError);
+      console.log(
+        'Client-side signOut failed, which is expected after a full account deletion.',
+        signOutError
+      );
     }
   }
 }
