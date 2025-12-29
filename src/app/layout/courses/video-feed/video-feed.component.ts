@@ -1,5 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,9 +11,9 @@ import { SupabaseClientService } from '../../../supabase-client.service';
 @Component({
   selector: 'nevy11-video-feed',
   standalone: true,
-  imports: [MatIconModule, MatButtonModule, MatCardModule],
+  imports: [CommonModule, MatIconModule, MatButtonModule, MatCardModule],
   templateUrl: './video-feed.component.html',
-  styleUrl: './video-feed.component.scss',
+  styleUrls: ['./video-feed.component.scss'],
 })
 export class VideoFeedComponent implements OnInit {
   private router = inject(Router);
@@ -23,24 +24,64 @@ export class VideoFeedComponent implements OnInit {
   private is_courses_enrolled: boolean = false;
 
   videos: any[] = [];
+  limit = 10;
+  offset = 0;
+  loading = false;
 
   ngOnInit() {
-    this.youtube.getVideos('full course').subscribe((data) => {
-      this.videos = data;
-    });
+    this.loadCourses();
+  }
+
+  async loadCourses() {
+    if (this.loading) return;
+    this.loading = true;
+
+    const courses = await this.supabaseService.getAllCourses(
+      this.limit,
+      this.offset
+    );
+
+    if (courses) {
+      this.videos.push(
+        ...courses.map((course) => ({
+          id: course.video_id,
+          title: course.title,
+          thumbnailUrl: course.thumbnail_url,
+        }))
+      );
+      this.offset += this.limit;
+    } else {
+      console.error('VideoFeed: failed to load videos');
+    }
+
+    this.loading = false;
+  }
+
+  @HostListener('window:scroll')
+  onScroll() {
+    if (
+      window.innerHeight + window.scrollY >= document.body.offsetHeight &&
+      !this.loading
+    ) {
+      this.loadCourses();
+    }
   }
 
   async playVideo(video: any) {
-    this.is_thumbnail_stored = await this.supabaseService.store_video_thumbnail(
-      `${video.title}`,
-      `${video.thumbnailUrl}`
+    const isCourseCreated = await this.supabaseService.createCourse(
+      video.id,
+      video.thumbnailUrl,
+      video.title,
+      ''
     );
-    if (this.is_thumbnail_stored) {
-      console.log('Thumbnail stored');
+
+    if (isCourseCreated) {
+      console.log('Course created');
       this.userId = await this.supabaseService.getCurrentUserId();
       if (this.userId) {
         this.is_courses_enrolled = await this.supabaseService.enrollCourse(
-          this.userId
+          this.userId,
+          video.id
         );
         if (this.is_courses_enrolled) {
           console.log('The course was updated successfully');
@@ -62,7 +103,7 @@ export class VideoFeedComponent implements OnInit {
       });
       console.log('Navigating to video:', video.id);
     } else {
-      console.error('Error while storing the thumbnail');
+      console.error('Error while creating the course');
     }
   }
 }

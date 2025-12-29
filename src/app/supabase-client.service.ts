@@ -4,7 +4,7 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Profile } from './layout/settings/profile-settings/profile';
 import { VideoSaving } from './layout/learning/video-section/video-saving';
 import { GetVideo } from './layout/learning/video-section/get-video';
-import { VideoThumbnails } from './layout/user-stats/video-thumbnails';
+import { Courses } from './layout/user-stats/courses';
 import { Folders } from './layout/learning/code-editor-section/folders';
 import { environment } from '../environments/environment';
 
@@ -285,20 +285,24 @@ export class SupabaseClientService {
     return data.user?.id || null;
   }
 
-  async store_video_thumbnail(
+  async createCourse(
     video_id: string,
-    thumbnail_url: string
+    thumbnail_url: string,
+    title: string,
+    description: string
   ): Promise<boolean> {
-    const { error } = await this.client.from('video_thumbnails').upsert(
+    const { error } = await this.client.from('courses').upsert(
       {
         video_id: video_id,
         thumbnail_url: thumbnail_url,
+        title: title,
+        description: description,
       },
       { onConflict: 'video_id' }
     );
 
     if (error) {
-      console.error('Error storing video thumbnail:', error.message);
+      console.error('Error creating course:', error.message);
       return false;
     }
 
@@ -346,32 +350,33 @@ export class SupabaseClientService {
     return true;
   }
 
-  async get_video_thumbnail(video_id: string): Promise<string | null> {
+
+
+  async getCourseByVideoId(video_id: string): Promise<Courses | null> {
     const { data, error } = await this.client
-      .from('video_thumbnails')
-      .select('thumbnail_url')
+      .from('courses')
+      .select('*')
       .eq('video_id', video_id)
-      .order('created_at', { ascending: false }) // in case multiple thumbnails exist
-      .limit(1)
       .single();
 
     if (error) {
-      console.error('Error fetching video thumbnail:', error.message);
+      console.error('Error fetching course by video ID:', error.message);
       return null;
     }
 
-    return data?.thumbnail_url || null;
+    return data;
   }
 
   // Getting all video thumbnails stored
-  async getAllVideoThumbnails(): Promise<VideoThumbnails[] | null> {
+  async getAllCourses(limit: number = 10, offset: number = 0): Promise<Courses[] | null> {
     const { data, error } = await this.client
-      .from('video_thumbnails')
-      .select('video_id, thumbnail_url, created_at')
-      .order('created_at', { ascending: false });
+      .from('courses')
+      .select('video_id, thumbnail_url, title, description, created_at')
+      .order('created_at', { ascending: false })
+      .range(offset, offset + limit - 1);
 
     if (error) {
-      console.error('Error fetching video thumbnails:', error.message);
+      console.error('Error fetching courses:', error.message);
       return null;
     }
 
@@ -379,13 +384,14 @@ export class SupabaseClientService {
   }
 
   // Enroll in a course (increment courses_enrolled by 1)
-  async enrollCourse(user_id: string): Promise<boolean> {
-    const { error } = await this.client.rpc('increment_enrolled', {
-      uid: user_id,
+  async enrollCourse(user_id: string, course_id: string): Promise<boolean> {
+    const { error } = await this.client.rpc('enroll_in_course', {
+      p_user_id: user_id,
+      p_course_id: course_id,
     });
 
     if (error) {
-      console.error('Error updating enrolled courses:', error);
+      console.error('Error enrolling in course:', error);
       return false;
     }
     return true;

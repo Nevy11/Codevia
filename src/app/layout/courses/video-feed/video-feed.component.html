@@ -1,6 +1,5 @@
-<div class="video-grid">
-  @for (video of videos; track video) {
-  <mat-card class="video-card">
+<div class="video-grid" *ngIf="videos.length; else noVideos">
+  <mat-card class="video-card" *ngFor="let video of videos">
     <img mat-card-image [src]="video.thumbnailUrl" alt="{{ video.title }}" />
     <mat-card-content>
       <h3>{{ video.title }}</h3>
@@ -17,5 +16,8 @@
       </button>
     </mat-card-actions>
   </mat-card>
-  }
 </div>
+
+<ng-template #noVideos>
+  <p class="no-videos">No videos available</p>
+</ng-template>

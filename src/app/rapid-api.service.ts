@@ -100,4 +100,71 @@ export class RapidApiService {
       throw error;
     }
   }
+
+  // 🇨 Submit C code for execution
+  async runC(code: string, input: string = ''): Promise<rapidOutput> {
+    try {
+      const submission = await firstValueFrom(
+        this.http.post<Judge0SubmissionResponse>(
+          `${this.baseUrl}/submissions?base64_encoded=false&wait=false`,
+          {
+            source_code: code,
+            language_id: 50, // 🇨 C (GCC)
+            stdin: input,
+          },
+          { headers: this.headers }
+        )
+      );
+
+      const token = submission.token;
+      console.log('C submission token:', token);
+
+      await new Promise((r) => setTimeout(r, 2000));
+
+      const result = await firstValueFrom(
+        this.http.get<rapidOutput>(`${this.baseUrl}/submissions/${token}`, {
+          headers: this.headers,
+        })
+      );
+
+      console.log('C execution result:', result);
+      return result;
+    } catch (error) {
+      console.error('Error executing C code:', error);
+      throw error;
+    }
+  }
+  // 🇨➕➕ Submit C++ code for execution
+  async runCpp(code: string, input: string = ''): Promise<rapidOutput> {
+    try {
+      const submission = await firstValueFrom(
+        this.http.post<Judge0SubmissionResponse>(
+          `${this.baseUrl}/submissions?base64_encoded=false&wait=false`,
+          {
+            source_code: code,
+            language_id: 54, // 🇨➕➕ C++ (G++ 17)
+            stdin: input,
+          },
+          { headers: this.headers }
+        )
+      );
+
+      const token = submission.token;
+      console.log('C++ submission token:', token);
+
+      await new Promise((r) => setTimeout(r, 2000));
+
+      const result = await firstValueFrom(
+        this.http.get<rapidOutput>(`${this.baseUrl}/submissions/${token}`, {
+          headers: this.headers,
+        })
+      );
+
+      console.log('C++ execution result:', result);
+      return result;
+    } catch (error) {
+      console.error('Error executing C++ code:', error);
+      throw error;
+    }
+  }
 }

@@ -153,56 +153,49 @@ export class CodeEditorSectionComponent implements OnInit {
         }
       } else if (extension == 'ts') {
         try {
-          // if (!this.isBrowser) {
-          //   // dynamically import TypeScript
-          //   const ts = await import('typescript');
-          //   // Step 1: Check for syntax/type errors before running
-          //   const preCheck = ts.transpileModule(this.code, {
-          //     compilerOptions: {
-          //       module: ts.ModuleKind.ESNext, // modern module system
-          //       target: ts.ScriptTarget.ES2020, // es2020 modern js for broader compatibility
-          //     },
-          //     reportDiagnostics: true,
-          //   });
-          //   if (preCheck.diagnostics && preCheck.diagnostics.length > 0) {
-          //     const formatted = ts.formatDiagnosticsWithColorAndContext(
-          //       preCheck.diagnostics,
-          //       {
-          //         getCanonicalFileName: (fileName) => fileName,
-          //         getCurrentDirectory: () => '',
-          //         getNewLine: () => '\n',
-          //       }
-          //     );
-          //     console.error('TypeScript errors:\n', formatted);
-          //     this.matsnackbar.open(
-          //       '⚠️ TypeScript errors detected — check console.',
-          //       'Close',
-          //       {
-          //         duration: 3000,
-          //       }
-          //     );
-          //     return; // stop execution if there are syntax errors
-          //   }
-          //   // ✅ Step 2: Safe transpile TS → JS
-          //   const jsCode = preCheck.outputText;
-          //   console.log('Transpiled TS → JS:\n', jsCode);
-          //   // ✅ Step 3: Send transpiled JS to worker for execution
-          //   const worker = new Worker(
-          //     new URL('./code-editor-section.worker', import.meta.url)
-          //   );
-          //   worker.postMessage(jsCode);
-          //   worker.onmessage = ({ data }) => {
-          //     if (data.success) {
-          //       this.logs = data.logs;
-          //       console.log('Execution logs:', this.logs);
-          //     } else {
-          //       this.matsnackbar.open(` ${data.error}`, 'Close', {
-          //         duration: 2000,
-          //       });
-          //       console.error('Execution Error:', data.error);
-          //     }
-          //   };
-          // }
+          const ts = await import('typescript');
+
+          const transpiled = ts.transpileModule(this.code, {
+            compilerOptions: {
+              module: ts.ModuleKind.ESNext,
+              target: ts.ScriptTarget.ES2020,
+            },
+            reportDiagnostics: true,
+          });
+
+          if (transpiled.diagnostics?.length) {
+            const formatted = ts.formatDiagnosticsWithColorAndContext(
+              transpiled.diagnostics,
+              {
+                getCanonicalFileName: (f) => f,
+                getCurrentDirectory: () => '',
+                getNewLine: () => '\n',
+              }
+            );
+
+            this.customSnackBarService.open(
+              'TypeScript errors detected',
+              'Close',
+              'error'
+            );
+            console.error(formatted);
+            return;
+          }
+
+          // Run generated JS in worker
+          const worker = new Worker(
+            new URL('./code-editor-section.worker', import.meta.url)
+          );
+
+          worker.postMessage(transpiled.outputText);
+
+          worker.onmessage = ({ data }) => {
+            if (data.success) {
+              this.logs = data.logs;
+            } else {
+              this.customSnackBarService.open(data.error, 'Close', 'error');
+            }
+          };
         } catch (err: any) {
           console.error('TypeScript transpilation or execution failed:', err);
           this.matsnackbar.open(
@@ -211,6 +204,14 @@ export class CodeEditorSectionComponent implements OnInit {
             { duration: 2000 }
           );
         }
+      } else if (extension === 'c') {
+        const result = this.rapidService.runC(this.code);
+        this.output_code = (await result).stdout;
+        this.logs = this.output_code ? [this.output_code] : [];
+      } else if (['cpp', 'cc', 'cxx'].includes(extension)) {
+        const result = this.rapidService.runCpp(this.code);
+        this.output_code = (await result).stdout;
+        this.logs = this.output_code ? [this.output_code] : [];
       } else {
         this.matsnackbar.open(
           `Running code for .${extension} files is not supported yet.`,

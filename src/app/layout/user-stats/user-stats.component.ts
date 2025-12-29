@@ -4,7 +4,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { AsyncPipe, DatePipe } from '@angular/common';
-import { VideoThumbnails } from './video-thumbnails';
+import { Courses } from './courses';
 import { SupabaseClientService } from '../../supabase-client.service';
 import { YoutubeService } from '../youtube.service';
 import { Router } from '@angular/router';
@@ -33,7 +33,7 @@ export class UserStatsComponent implements OnInit {
   lastActiveDate = new Date('2025-08-20');
   mostWatchedCourse = 'Angular Basics';
   averageWatchDuration = 12; // minutes per video
-  videoThumbnails: VideoThumbnails[] | null = null;
+  videoThumbnails: Courses[] | null = null;
 
   private supabaseService = inject(SupabaseClientService);
   userId$ = from(this.supabaseService.getCurrentUserId());
@@ -74,6 +74,6 @@ export class UserStatsComponent implements OnInit {
     this.completionRate = Math.round(
       (this.coursesCompleted / this.totalCoursesEnrolled) * 100
     );
-    this.videoThumbnails = await this.supabaseService.getAllVideoThumbnails();
+    this.videoThumbnails = await this.supabaseService.getAllCourses();
   }
 }
