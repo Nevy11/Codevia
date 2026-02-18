@@ -1,28 +1,43 @@
-.ask-ai-btn {
+// The dark overlay behind the search bar
+.backdrop {
   position: fixed;
-  right: 24px;
-  bottom: 24px;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7); // Darkens the background
+  backdrop-filter: blur(4px);           // Adds that modern blur effect
   z-index: 1000;
-
-  /* For non-Material buttons */
-  /* padding: 15px 18px;
-  border-radius: 50%;
-  background-color: #6200ea;
-  color: white;
-  border: none;
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3); */
 }
 
 .chat-window {
   position: fixed;
-  bottom: 90px;
-  right: 24px;
-  width: 320px;
-  height: 380px;
-  //   background: white;
-  border-radius: 12px;
-  padding: 12px;
-  //   box-shadow: 0 4px 25px rgba(0,0,0,0.2);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); 
+  width: 90%;
+  max-width: 600px;                
   z-index: 1001;
+  
+  // Customizing the Material Form Field look
+  mat-form-field {
+    width: 100%;
+    
+    // Making it look like a floating bar
+    ::ng-deep .mat-mdc-text-field-wrapper {
+      background-color: #1e1e1e !important; // Dark theme like the image
+      border-radius: 8px !important;
+    }
+    
+    ::ng-deep .mat-mdc-form-field-flex {
+      padding: 12px 20px !important;
+    }
+  }
+}
+
+.ask-ai-btn {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 999;
 }

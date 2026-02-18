@@ -1,11 +1,23 @@
 <button class="ask-ai-btn" mat-fab color="primary" (click)="toggleChat()">
-  <mat-icon>smart_toy</mat-icon>
+  <mat-icon>{{ open ? 'close' : 'smart_toy' }}</mat-icon>
 </button>
 
-@if (open) {
-<div class="chat-window">
-  <h3>Ask AI</h3>
-  <textarea placeholder="Type your question..."></textarea>
-  <button mat-raised-button color="primary">Send</button>
-</div>
+@if(open) {
+  <div class="backdrop" (click)="toggleChat()"></div>
+
+  <div class="chat-window">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-icon matPrefix style="margin-right: 8px; color: #888;">search</mat-icon>
+      <input
+      style="color: white"
+        type="text"
+        matInput
+        [formControl]="ai_data().query"
+        placeholder="Ask PyTorch a question..."
+      />
+      <button mat-icon-button matSuffix (click)="$event.stopPropagation()">
+        <mat-icon color="primary">play_arrow</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
 }
