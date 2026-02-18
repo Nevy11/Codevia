@@ -1,6 +1,6 @@
 <mat-sidenav-container class="editor-container">
   <!-- Collapsible side navigation -->
-  <mat-sidenav #sidenav mode="side" opened class="sidenav">
+  <mat-sidenav #sidenav [mode]="isMobile ? 'over' : 'side'" [opened]="!isMobile" class="sidenav">
     <mat-toolbar color="primary" class="sidenav-header">
       Explorers
       <span class="spacer"></span>

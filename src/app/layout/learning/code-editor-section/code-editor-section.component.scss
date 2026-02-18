@@ -16,6 +16,11 @@
   width: 250px;
   display: flex;
   flex-direction: column;
+  // border-right: 1px solid rgba(0,0,0,0.12);
+
+  @media (max-width: 600px) {
+    // width: 80vw; 
+  }
 }
 
 .sidenav-header {
@@ -36,12 +41,17 @@ mat-icon {
   margin-right: 5px;
   vertical-align: middle;
 }
+.menu-button {
+  margin-right: 8px;
+}
 
 /* Editor content area */
 .editor-content {
   flex: 1;
   display: flex;
   flex-direction: column;
+  // height: 100vh;
+  // width: 100vw;
 }
 
 /* Monaco editor */

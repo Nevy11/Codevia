@@ -5,6 +5,8 @@ import {
   inject,
   OnInit,
   PLATFORM_ID,
+  ViewChild,
+  viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
@@ -14,7 +16,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { isPlatformBrowser } from '@angular/common';
 import { Folders } from './folders';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -26,6 +28,7 @@ import { NoFileSelectedComponent } from './no-file-selected/no-file-selected.com
 import { SupabaseClientService } from '../../../supabase-client.service';
 import { RapidApiService } from '../../../rapid-api.service';
 import { CustomSnackBarService } from '../../../custom-snack-bar.service';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 declare const monaco: any;
 
@@ -62,7 +65,9 @@ export class CodeEditorSectionComponent implements OnInit {
   private rapidService = inject(RapidApiService);
   private output_code!: string | null;
   private customSnackBarService = inject(CustomSnackBarService);
+  private breakpointObserver = inject(BreakpointObserver)
   isEditorEnabled: boolean = false;
+  isMobile = false
 
   isBrowser = false;
   number_of_search_results = this.codeEditorService.getSearchResults();
@@ -86,6 +91,7 @@ export class CodeEditorSectionComponent implements OnInit {
   constructor(@Inject(PLATFORM_ID) platformId: Object) {
     this.isBrowser = isPlatformBrowser(platformId);
   }
+  @ViewChild('sidenav') sidenav!: MatSidenav;
   ngOnInit() {
     this.codeEditorService.loadAndCacheData().then(() => {
       this.dataSource = this.codeEditorService.get_cached_data();
@@ -97,6 +103,16 @@ export class CodeEditorSectionComponent implements OnInit {
         ...this.editorOptions,
         theme: theme === 'dark' ? 'vs-dark' : 'vs-light',
       };
+    });
+    this.breakpointObserver.observe([Breakpoints.Handset]).subscribe(result => {
+      this.isMobile = result.matches;
+      
+      // Auto-close sidenav when switching to mobile view
+      if (this.isMobile && this.sidenav) {
+        this.sidenav.close();
+      } else if (!this.isMobile && this.sidenav) {
+        this.sidenav.open();
+      }
     });
   }
 
@@ -235,6 +251,9 @@ export class CodeEditorSectionComponent implements OnInit {
       this.matsnackbar.open(`Opened file: ${node.name}`, 'Close', {
         duration: 2000,
       });
+      if (this.isMobile) {
+        this.sidenav.close();
+      }
     }
   }
 
@@ -337,6 +356,7 @@ export class CodeEditorSectionComponent implements OnInit {
       this.dataSource = [...this.dataSource];
     }
   }
+  
 
   async finishEditing(node: Folders) {
     // Prevent double-clicks or race conditions
@@ -549,4 +569,5 @@ export class CodeEditorSectionComponent implements OnInit {
       readOnly: !this.isEditorEnabled,
     };
   }
+  
 }
