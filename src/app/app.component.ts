@@ -7,7 +7,7 @@ import { InitScreenComponent } from './init-screen/init-screen.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NetworkService } from './network.service';
 import { AskAiComponent } from './ask-ai/ask-ai.component';
-
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'nevy11-root',
   imports: [RouterOutlet, InitScreenComponent, AskAiComponent],
@@ -36,37 +36,65 @@ export class AppComponent {
   async ngOnInit() {
     if (!isPlatformBrowser(this.platformId)) return;
 
+    // this.ngZone.runOutsideAngular(async () => {
+    //   const hash = window.location.hash;
+
+    //   if (hash.includes('access_token')) {
+    //     const params = new URLSearchParams(hash.replace('#', ''));
+    //     const access_token = params.get('access_token');
+    //     const refresh_token = params.get('refresh_token');
+
+    //     if (access_token && refresh_token) {
+    //       const { data, error } = await this.supabase.client.auth.setSession({
+    //         access_token,
+    //         refresh_token,
+    //       });
+
+    //       this.ngZone.run(() => {
+    //         if (!error) {
+    //           window.history.replaceState({}, document.title, '/layout/home');
+    //           this.router.navigate(['/layout/home']);
+    //         }
+    //         this.loading = false;
+    //       });
+    //     }
+    //   } else {
+    //     const { data } = await this.supabase.client.auth.getSession();
+    //     this.ngZone.run(() => {
+    //       if (data.session) {
+    //         this.router.navigate(['/layout/home']);
+    //       }
+    //       this.loading = false;
+    //     });
+    //   }
+    // });
     this.ngZone.runOutsideAngular(async () => {
-      const hash = window.location.hash;
+  // Supabase's getSession() or onAuthStateChange usually picks up the hash 
+  // automatically. If you must do it manually:
+  const hash = window.location.hash;
+  if (hash.includes('access_token')) {
+    const { error } = await this.supabase.client.auth.setSession({
+      access_token: new URLSearchParams(hash.substring(1)).get('access_token') || '',
+      refresh_token: new URLSearchParams(hash.substring(1)).get('refresh_token') || '',
+    });
 
-      if (hash.includes('access_token')) {
-        const params = new URLSearchParams(hash.replace('#', ''));
-        const access_token = params.get('access_token');
-        const refresh_token = params.get('refresh_token');
-
-        if (access_token && refresh_token) {
-          const { data, error } = await this.supabase.client.auth.setSession({
-            access_token,
-            refresh_token,
-          });
-
-          this.ngZone.run(() => {
-            if (!error) {
-              window.history.replaceState({}, document.title, '/layout/home');
-              this.router.navigate(['/layout/home']);
-            }
-            this.loading = false;
-          });
-        }
-      } else {
-        const { data } = await this.supabase.client.auth.getSession();
-        this.ngZone.run(() => {
-          if (data.session) {
-            this.router.navigate(['/layout/home']);
-          }
-          this.loading = false;
-        });
+    this.ngZone.run(() => {
+      if (!error) {
+        // Navigate and clear the hash from the URL bar cleanly
+        this.router.navigate(['/layout/home'], { replaceUrl: true });
       }
+      this.loading = false;
+    });
+  } else {
+    // Standard session check
+    const { data } = await this.supabase.client.auth.getSession();
+    this.ngZone.run(() => {
+      if (data.session) {
+        this.router.navigate(['/layout/home'], { replaceUrl: true });
+      }
+      this.loading = false;
+    });
+    }
     });
     this.network.online$.subscribe((isOnline) => {
       if (!isOnline) {
