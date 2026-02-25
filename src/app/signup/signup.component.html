@@ -20,7 +20,7 @@
       <mat-error>{{ errorMessage() }}</mat-error>
       }
     </mat-form-field>
-    <br />
+    <br>
     <mat-form-field>
       <mat-label>Enter your password</mat-label>
       <input
@@ -35,6 +35,32 @@
       </mat-error>
       }
       <button
+        type="button"
+        matIconButton
+        matSuffix
+        (click)="clickEvent($event)"
+        [attr.aria-label]="'Hide password'"
+        [attr.aria-pressed]="hide()"
+      >
+        <mat-icon>{{ hide() ? "visibility_off" : "visibility" }}</mat-icon>
+      </button>
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <mat-label>Re-enter your password</mat-label>
+      <input
+        [formControl]="this.formSignUp().confirmPassword"
+        matInput
+        (blur)="updateConfirmPasswordErrorMessage()"
+        [type]="hide() ? 'password' : 'text'"
+      />
+      @if (confirmPasswordErrorMessage()) {
+      <mat-error>
+        {{ confirmPasswordErrorMessage() }}
+      </mat-error>
+      }
+      <button
+        type="button"
         matIconButton
         matSuffix
         (click)="clickEvent($event)"

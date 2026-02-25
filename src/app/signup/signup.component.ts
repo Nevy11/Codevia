@@ -52,10 +52,12 @@ export class SignupComponent {
       Validators.minLength(6),
       Validators.maxLength(20),
     ]),
+    confirmPassword: new FormControl('', [Validators.required]),
   });
   // Email form control with validation
   // readonly email = new FormControl('', [Validators.required, Validators.email]);
   errorMessage = signal('');
+  confirmPasswordErrorMessage = signal('');
   is_course_init: boolean = false;
   constructor() {
     merge(
@@ -93,6 +95,18 @@ export class SignupComponent {
       this.passwordErrorMessage.set('');
     }
   }
+  updateConfirmPasswordErrorMessage() {
+    const password = this.formSignUp().password.value;
+    const confirmPassword = this.formSignUp().confirmPassword.value;  
+    if (this.formSignUp().confirmPassword.hasError('required')) {
+      this.passwordErrorMessage.set('Confirm Password is required');
+    } else if (password !== confirmPassword) {
+      this.passwordErrorMessage.set('Passwords do not match');
+    } else {
+      this.passwordErrorMessage.set('');
+    }
+  }
+  
 
   // method to handle hide and show password
   hide = signal(true);
