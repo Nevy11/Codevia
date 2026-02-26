@@ -215,12 +215,26 @@ export class CodeEditorSectionComponent implements OnInit {
           
           this.output_code = result.stdout;
 
-          if (this.output_code && this.output_code.trim() !== '') {
-            this.logs = this.output_code.trim().split('\n');
-          } else {
-            this.logs = ['Execution finished with no output.'];
+          // if (this.output_code && this.output_code.trim() !== '') {
+          //   this.logs = this.output_code.trim().split('\n');
+          // } else {
+          //   this.logs = ['Execution finished with no output.'];
+          // }
+          if (result.compile_output) {
+            this.logs = result.compile_output.trim().split('\n');
+          } 
+          // 2. Check for Runtime Errors (common in Python)
+          else if (result.stderr) {
+            this.logs = result.stderr.trim().split('\n');
+          } 
+          // 3. Check for Standard Output
+          else if (result.stdout) {
+            this.logs = result.stdout.trim().split('\n');
+          } 
+          // 4. Fallback if code ran but produced nothing
+          else {
+            this.logs = [`Status: ${result.status?.description || 'Execution finished with no output.'}`];
           }
-          
         } catch (error) {
           console.error('API Error:', error);
           this.customSnackBarService.open('Failed to run code via API', 'Close', 'error');
