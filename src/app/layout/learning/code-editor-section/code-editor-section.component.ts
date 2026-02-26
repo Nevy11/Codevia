@@ -196,7 +196,7 @@ export class CodeEditorSectionComponent implements OnInit {
         }
       } 
       
-      else if (['py', 'rs', 'c', 'cpp', 'cc', 'cxx'].includes(extension)) {
+      else if (['py', 'rs', 'c', 'java', 'cs', 'cpp', 'cc', 'cxx'].includes(extension)) {
         try {
           console.log('Attempting API call for:', extension)
           let result;
@@ -207,7 +207,12 @@ export class CodeEditorSectionComponent implements OnInit {
             result = await this.rapidService.runRust(this.code);
           } else if (extension === 'c') {
             result = await this.rapidService.runC(this.code);
-          } else {
+          }else if (extension === 'java') {
+            result = await this.rapidService.runJava(this.code);
+          } else if (extension === 'cs') {
+            result = await this.rapidService.runCSharp(this.code);
+          }
+           else {
             result = await this.rapidService.runCpp(this.code);
           }
 

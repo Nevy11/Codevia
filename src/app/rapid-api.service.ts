@@ -168,4 +168,73 @@ export class RapidApiService {
       throw error;
     }
   }
+  async runJava(code: string, input: string = ''): Promise<rapidOutput> {
+  try {
+    // 1. Encode source code and stdin to Base64
+    const encodedCode = btoa(code);
+    const encodedInput = btoa(input);
+
+    // 2. Set base64_encoded=true in the URL
+    const submission = await firstValueFrom(
+      this.http.post<Judge0SubmissionResponse>(
+        `${this.baseUrl}/submissions?base64_encoded=true&wait=false`,
+        {
+          source_code: encodedCode,
+          language_id: 62, 
+          stdin: encodedInput,
+        },
+        { headers: this.headers }
+      )
+    );
+
+    const token = submission.token;
+    await new Promise((r) => setTimeout(r, 2000));
+
+    // 3. Fetch the result (still using base64_encoded=true)
+    const result = await firstValueFrom(
+      this.http.get<rapidOutput>(`${this.baseUrl}/submissions/${token}?base64_encoded=true`, {
+        headers: this.headers,
+      })
+    );
+
+    // 4. Decode the results before returning
+    return {
+      ...result,
+      stdout: result.stdout ? atob(result.stdout) : null,
+      stderr: result.stderr ? atob(result.stderr) : null,
+      compile_output: result.compile_output ? atob(result.compile_output) : null,
+    };
+  } catch (error) {
+    console.error('Error executing Java code:', error);
+    throw error;
+  }
+}
+
+  async runCSharp(code: string, input: string = ''): Promise<rapidOutput> {
+    try {
+      const submission = await firstValueFrom(
+        this.http.post<Judge0SubmissionResponse>(
+          `${this.baseUrl}/submissions?base64_encoded=false&wait=false`,
+          {
+            source_code: code,
+            language_id: 51, // 🎯 C# (Mono 6.6.0.161)
+            stdin: input,
+          },
+          { headers: this.headers }
+        )
+      );
+
+      const token = submission.token;
+      await new Promise((r) => setTimeout(r, 2000));
+
+      return await firstValueFrom(
+        this.http.get<rapidOutput>(`${this.baseUrl}/submissions/${token}`, {
+          headers: this.headers,
+        })
+      );
+    } catch (error) {
+      console.error('Error executing C# code:', error);
+      throw error;
+    }
+  }
 }
