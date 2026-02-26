@@ -54,6 +54,10 @@ export class SignupComponent {
     ]),
     confirmPassword: new FormControl('', [Validators.required]),
   });
+  // Add a control for the 6-digit token
+tokenControl = new FormControl('', [Validators.required, Validators.minLength(6),
+  Validators.maxLength(6)
+]);
   // Email form control with validation
   // readonly email = new FormControl('', [Validators.required, Validators.email]);
   errorMessage = signal('');
@@ -114,38 +118,65 @@ export class SignupComponent {
     this.hide.set(!this.hide());
     event.stopPropagation();
   }
+  // async signUp() {
+  //   if (this.formSignUp().email.valid && this.formSignUp().password.valid) {
+  //     const email = this.formSignUp().email.value!;
+  //     const password = this.formSignUp().password.value!;
+  //     const redirect_url = environment.SUPABASE_REDIRECT_URL;
+      
+  //     const { data, error } = await this.supabase.client.auth.signUp({
+  //       email,
+  //       password,
+  //       options: { emailRedirectTo: redirect_url },
+  //     });
+  //     if (error) {
+  //       this.snackbar.open('SignUp Error', `Close`, { duration: 3000 });
+  //       console.error('SignUp error: ', error.message);
+  //     } else {
+  //       this.snackbar.open("Please verify you're email to continue", `Close`, {
+  //         duration: 6000,
+  //       });
+  //       this.isEmailSent.set(true);
+  //       this.is_course_init = await this.supabase.first_time_enroll_0_course();
+  //       if (this.is_course_init) {
+  //         console.log('SignUp Successful: ', data);
+  //         this.router.navigate(['/login']);
+  //       } else {
+  //         console.error('course init failed');
+  //       }
+  //     }
+  //   } else {
+  //     this.updateErrorMessage();
+  //     this.updatePasswordErrorMessage();
+  //   }
+  // }
+
   async signUp() {
     if (this.formSignUp().email.valid && this.formSignUp().password.valid) {
       const email = this.formSignUp().email.value!;
       const password = this.formSignUp().password.value!;
-      const redirect_url = environment.SUPABASE_REDIRECT_URL;
 
+      // We remove emailRedirectTo because we are using OTP tokens now
       const { data, error } = await this.supabase.client.auth.signUp({
         email,
         password,
-        options: { emailRedirectTo: redirect_url },
       });
+
       if (error) {
-        this.snackbar.open('SignUp Error', `Close`, { duration: 3000 });
-        console.error('SignUp error: ', error.message);
+        this.snackbar.open(error.message, 'Close', { duration: 3000 });
       } else {
-        this.snackbar.open("Please verify you're email to continue", `Close`, {
+        this.snackbar.open("Verification code sent to your email!", "Close", {
           duration: 6000,
         });
+        
+        // This switches the UI to show the Token Input field
         this.isEmailSent.set(true);
-        this.is_course_init = await this.supabase.first_time_enroll_0_course();
-        if (this.is_course_init) {
-          console.log('SignUp Successful: ', data);
-          this.router.navigate(['/login']);
-        } else {
-          console.error('course init failed');
-        }
       }
     } else {
       this.updateErrorMessage();
       this.updatePasswordErrorMessage();
     }
-  }
+}
   goToLogin() {
     this.router.navigate(['/login']);
   }
@@ -180,4 +211,27 @@ export class SignupComponent {
       );
     }
   }
+  async verifyOTP() {
+  if (this.tokenControl.valid) {
+    const email = this.formSignUp().email.value!;
+    const token = this.tokenControl.value!;
+
+    const { data, error } = await this.supabase.client.auth.verifyOtp({
+      email,
+      token,
+      type: 'signup' // This is the key for email verification
+    });
+
+    if (error) {
+      this.snackbar.open('Invalid or expired code', 'Close', { duration: 3000 });
+      console.error('OTP Error:', error.message);
+    } else {
+      this.snackbar.open('Email verified successfully!', 'Close', { duration: 3000 });
+      
+      // Perform your course initialization now that they are verified
+      this.is_course_init = await this.supabase.first_time_enroll_0_course();
+      this.router.navigate(['/layout/home']); // Or wherever you want them to go
+    }
+  }
+}
 }

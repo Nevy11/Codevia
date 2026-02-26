@@ -98,3 +98,36 @@
   text-align: center;
   font-size: 1.1rem;
 }
+
+/* This should be the class of the very first div in your template */
+.signup-page-wrapper {
+  display: flex;
+  justify-content: center; /* Horizontal center */
+  align-items: center;     /* Vertical center */
+  min-height: 100vh;       /* Use 100% of the viewport height */
+  width: 100%;
+  padding: 20px;           /* Prevents touching edges on mobile */
+  box-sizing: border-box;
+}
+
+.verify-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  /* Removed 'margin: 0 auto' because the wrapper handles centering now */
+  text-align: center;
+
+  .mat-form-field {
+    width: 100%;
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 50px;
+  }
+}

@@ -1,4 +1,5 @@
 <nevy11-top-login-signup></nevy11-top-login-signup>
+@if (!isEmailSent()) {
 <div class="signUp">
   <h1>Signup</h1>
   <p class="description">Enter your email and password to sign up.</p>
@@ -79,18 +80,33 @@
   </div>
 </form>
 
+}
+
+
 <div class="button-container">
+  <!-- <div class="signup-page-wrapper"> -->
   @if (isEmailSent()) {
-  <span class="resend-message">Didn't receive the email?</span>
-  <button
-    type="button"
-    class="resend-btn"
-    mat-button
-    color="accent"
-    (click)="resendVerification()"
-  >
-    Resend Link
-  </button>
+  <div class="verify-container">
+    <h2>Verify your account</h2>
+    <p>Please enter the 6-digit code sent to {{ formSignUp().email.value }}</p>
+
+    <mat-form-field appearance="outline">
+      <mat-label>6-Digit Code</mat-label>
+      <input matInput [formControl]="tokenControl" placeholder="123456" maxlength="6">
+    </mat-form-field>
+
+    <div class="otp-actions">
+      <button mat-raised-button color="primary" (click)="verifyOTP()">
+        Verify Code
+      </button>
+      <span class="sep"></span>
+      <button mat-button (click)="resendVerification()">
+        Resend Code
+      </button>
+    </div>
+  </div>
+
+  
   } @else {
   <span class="already-have-account">Already have an account?</span>
   <button
@@ -103,4 +119,5 @@
     Login
   </button>
   }
+  <!-- </div> -->
 </div>
