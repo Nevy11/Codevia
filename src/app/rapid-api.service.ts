@@ -30,8 +30,9 @@ export class RapidApiService {
     }
   }
 
-  // 🧩 Submit Python code for execution
+  //  Submit Python code for execution
   async runPython(code: string, input: string = ''): Promise<rapidOutput> {
+    console.log('SERVICE: runPython started');
     try {
       // Step 1: Submit code
       const submission = await firstValueFrom(
@@ -65,7 +66,7 @@ export class RapidApiService {
       throw error;
     }
   }
-  // 🦀 Submit Rust code for execution
+  // Submit Rust code for execution
   async runRust(code: string, input: string = ''): Promise<rapidOutput> {
     try {
       // Step 1: Submit code

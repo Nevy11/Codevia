@@ -117,11 +117,12 @@ export class CodeEditorSectionComponent implements OnInit {
   }
 
   async runCode() {
+    console.log('Running code...');
     this.foldername = this.codeEditorService.getcurrentFile()?.name || '';
-    console.log('Running code in folder:', this.foldername);
     this.parts = this.foldername.split('.');
     const extension =
       this.parts.length > 1 ? this.parts[this.parts.length - 1] : '';
+    
     console.log('File extension:', extension);
 
     if (this.isBrowser) {
@@ -139,35 +140,8 @@ export class CodeEditorSectionComponent implements OnInit {
             console.error('Error:', data.error);
           }
         };
-      } else if (extension == 'py') {
-        this.rapidService
-          .getInfo()
-          .then((response) => {
-            console.log('Rapid API response received in component:', response);
-          })
-          .catch((error) => {
-            console.error('Error in Rapid API call:', error);
-          });
-        const result = this.rapidService.runPython(this.code);
-        console.log('Output: ', result);
-        console.log('output_code: ', (await result).stdout);
-        this.output_code = (await result).stdout;
-
-        if (this.output_code != null) {
-          this.logs = [this.output_code];
-          console.log('new log pushed: ', this.output_code);
-        }
-      } else if (extension == 'rs') {
-        const result = this.rapidService.runRust(this.code);
-        console.log('Output: ', result);
-        console.log('output_code: ', (await result).stdout);
-        this.output_code = (await result).stdout;
-
-        if (this.output_code != null) {
-          this.logs = [this.output_code];
-          console.log('new log pushed: ', this.output_code);
-        }
-      } else if (extension == 'ts') {
+      }
+       else if (extension == 'ts') {
         try {
           const ts = await import('typescript');
 
@@ -220,27 +194,45 @@ export class CodeEditorSectionComponent implements OnInit {
             { duration: 2000 }
           );
         }
-      } else if (extension === 'c') {
-        const result = this.rapidService.runC(this.code);
-        this.output_code = (await result).stdout;
-        this.logs = this.output_code ? [this.output_code] : [];
-      } else if (['cpp', 'cc', 'cxx'].includes(extension)) {
-        const result = this.rapidService.runCpp(this.code);
-        this.output_code = (await result).stdout;
-        this.logs = this.output_code ? [this.output_code] : [];
-      } else {
-        this.matsnackbar.open(
-          `Running code for .${extension} files is not supported yet.`,
-          'Close',
-          { duration: 2000 }
-        );
-        return;
+      } 
+      
+      else if (['py', 'rs', 'c', 'cpp', 'cc', 'cxx'].includes(extension)) {
+        try {
+          console.log('Attempting API call for:', extension)
+          let result;
+          
+          if (extension === 'py') {
+            result = await this.rapidService.runPython(this.code);
+          } else if (extension === 'rs') {
+            result = await this.rapidService.runRust(this.code);
+          } else if (extension === 'c') {
+            result = await this.rapidService.runC(this.code);
+          } else {
+            result = await this.rapidService.runCpp(this.code);
+          }
+
+          console.log('Execution Result:', result);
+          
+          this.output_code = result.stdout;
+
+          if (this.output_code && this.output_code.trim() !== '') {
+            this.logs = this.output_code.trim().split('\n');
+          } else {
+            this.logs = ['Execution finished with no output.'];
+          }
+          
+        } catch (error) {
+          console.error('API Error:', error);
+          this.customSnackBarService.open('Failed to run code via API', 'Close', 'error');
+        }
       }
     } else {
-      this.matsnackbar.open('This button is yet to be implemented', 'Close', {
-        duration: 2000,
-      });
+      this.matsnackbar.open(
+        `Extension .${extension} not supported`, 
+        'Close',
+         { duration: 2000 });
     }
+    console.log('Run code function completed.');
   }
 
   openFile(node: Folders) {
@@ -571,3 +563,51 @@ export class CodeEditorSectionComponent implements OnInit {
   }
   
 }
+
+//  else if (extension == 'py') {
+      //   this.rapidService
+      //     .getInfo()
+      //     .then((response) => {
+      //       console.log('Rapid API response received in component:', response);
+      //     })
+      //     .catch((error) => {
+      //       console.error('Error in Rapid API call:', error);
+      //     });
+      //   const result = this.rapidService.runPython(this.code);
+      //   console.log('Output: ', result);
+      //   console.log('output_code: ', (await result).stdout);
+      //   this.output_code = (await result).stdout;
+
+      //   if (this.output_code != null) {
+      //     this.logs = [this.output_code];
+      //     console.log('new log pushed: ', this.output_code);
+      //   }
+      // } else if (extension == 'rs') {
+      //   const result = this.rapidService.runRust(this.code);
+      //   console.log('Output: ', result);
+      //   console.log('output_code: ', (await result).stdout);
+      //   this.output_code = (await result).stdout;
+
+      //   if (this.output_code != null) {
+      //     this.logs = [this.output_code];
+      //     console.log('new log pushed: ', this.output_code);
+      //   }
+      // }
+
+      
+      // else if (extension === 'c') {
+      //   const result = this.rapidService.runC(this.code);
+      //   this.output_code = (await result).stdout;
+      //   this.logs = this.output_code ? [this.output_code] : [];
+      // } else if (['cpp', 'cc', 'cxx'].includes(extension)) {
+      //   const result = this.rapidService.runCpp(this.code);
+      //   this.output_code = (await result).stdout;
+      //   this.logs = this.output_code ? [this.output_code] : [];
+      // } else {
+      //   this.matsnackbar.open(
+      //     `Running code for .${extension} files is not supported yet.`,
+      //     'Close',
+      //     { duration: 2000 }
+      //   );
+      //   return;
+      // }

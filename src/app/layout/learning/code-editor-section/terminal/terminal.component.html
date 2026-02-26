@@ -3,7 +3,7 @@
   <span class="terminal-title">Terminal</span>
 </div>
 <div class="terminal-content">
-  @for (item of logs; track item) {
-  <div>{{ item }}</div>
+  @for (item of logs; track $index) {
+    <div>{{ item }}</div>
   }
 </div>
