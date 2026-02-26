@@ -115,6 +115,7 @@
       [options]="editorOptions"
       (onInit)="onEditorInit($event)"
     ></ngx-monaco-editor>
+    <div class="terminal-resizer" (mousedown)="startResizing($event)"></div>
     <div class="btn">
       <button mat-flat-button color="primary" (click)="downloadCode()">
         Download Code
@@ -126,7 +127,8 @@
       <span class="spacer"></span>
       <button mat-flat-button color="warn" (click)="runCode()">Run Code</button>
     </div>
-    <div>
+    
+    <div class="terminal-wrapper" [style.height.px]="terminalHeight">
       <nevy11-terminal [logs]="this.logs"></nevy11-terminal>
     </div>
     }@else {

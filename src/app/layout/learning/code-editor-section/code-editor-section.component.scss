@@ -79,3 +79,24 @@ ngx-monaco-editor {
   // border: 1px solid #333;
   height: auto; /* will stretch because of flex */
 }
+
+/* Add these to your scss file */
+
+.terminal-resizer {
+  height: 6px;
+  // background-color: rgba(0, 0, 0, 0.1);
+  cursor: ns-resize; /* North-South resize cursor */
+  transition: background-color 0.2s;
+  width: 100%;
+
+  &:hover {
+    background-color: #3f51b5; /* Primary color on hover */
+  }
+}
+
+.terminal-wrapper {
+  overflow: hidden; /* Prevent terminal from overflowing its container */
+  display: flex;
+  flex-direction: column;
+}
+

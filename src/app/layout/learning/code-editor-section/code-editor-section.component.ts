@@ -76,7 +76,8 @@ export class CodeEditorSectionComponent implements OnInit {
   result: string = '';
   logs: string[] = [];
   startup: string = `// Write your code here`;
-
+  terminalHeight: number = 200; 
+  private isResizing = false;
   initial_data: Folders[] = this.codeEditorService.get_initial_data();
   editorOptions = {
     theme: 'vs-dark',
@@ -580,7 +581,34 @@ export class CodeEditorSectionComponent implements OnInit {
       readOnly: !this.isEditorEnabled,
     };
   }
-  
+  startResizing(event: MouseEvent) {
+    this.isResizing = true;
+    event.preventDefault();
+
+    // We add listeners to the window so the drag continues even if mouse leaves the bar
+    window.addEventListener('mousemove', this.resize);
+    window.addEventListener('mouseup', this.stopResizing);
+  }
+
+  // Use arrow function to preserve 'this' context
+  private resize = (event: MouseEvent) => {
+    if (!this.isResizing) return;
+    
+    // Calculate new height: 
+    // The distance from the bottom of the screen to the mouse position
+    const newHeight = window.innerHeight - event.clientY;
+    
+    // Set constraints (min 50px, max 80% of screen)
+    if (newHeight > 50 && newHeight < window.innerHeight * 0.8) {
+      this.terminalHeight = newHeight;
+    }
+  };
+
+  private stopResizing = () => {
+    this.isResizing = false;
+    window.removeEventListener('mousemove', this.resize);
+    window.removeEventListener('mouseup', this.stopResizing);
+  };
 }
 
 //  else if (extension == 'py') {
