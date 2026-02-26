@@ -104,10 +104,11 @@
   display: flex;
   justify-content: center; /* Horizontal center */
   align-items: center;     /* Vertical center */
-  min-height: 100vh;       /* Use 100% of the viewport height */
+  // min-height: 80vh;       /* Use 100% of the viewport height */
   width: 100%;
   padding: 20px;           /* Prevents touching edges on mobile */
   box-sizing: border-box;
+  margin-top: 5rem;
 }
 
 .verify-container {
