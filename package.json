@@ -28,6 +28,7 @@
     "@angular/service-worker": "^21.0.5",
     "@angular/ssr": "^21.0.3",
     "@fortawesome/fontawesome-free": "^7.0.0",
+    "@google/generative-ai": "^0.24.1",
     "@materia-ui/ngx-monaco-editor": "^6.0.0",
     "@supabase/supabase-js": "^2.53.0",
     "acorn": "^8.15.0",

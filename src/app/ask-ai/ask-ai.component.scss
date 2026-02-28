@@ -1,12 +1,54 @@
-// The dark overlay behind the search bar
+// // The dark overlay behind the search bar
+// .backdrop {
+//   position: fixed;
+//   top: 0;
+//   left: 0;
+//   width: 100vw;
+//   height: 100vh;
+//   background-color: rgba(0, 0, 0, 0.7); // Darkens the background
+//   backdrop-filter: blur(4px);           // Adds that modern blur effect
+//   z-index: 1000;
+// }
+
+// .chat-window {
+//   position: fixed;
+//   top: 50%;
+//   left: 50%;
+//   transform: translate(-50%, -50%); 
+//   width: 90%;
+//   max-width: 600px;                
+//   z-index: 1001;
+  
+//   // Customizing the Material Form Field look
+//   mat-form-field {
+//     width: 100%;
+    
+//     // Making it look like a floating bar
+//     ::ng-deep .mat-mdc-text-field-wrapper {
+//       background-color: #1e1e1e !important; // Dark theme like the image
+//       border-radius: 8px !important;
+//     }
+    
+//     ::ng-deep .mat-mdc-form-field-flex {
+//       padding: 12px 20px !important;
+//     }
+//   }
+// }
+
+// .ask-ai-btn {
+//   position: fixed;
+//   right: 24px;
+//   bottom: 24px;
+//   z-index: 999;
+// }
 .backdrop {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.7); // Darkens the background
-  backdrop-filter: blur(4px);           // Adds that modern blur effect
+  background-color: rgba(0, 0, 0, 0.8); // Slightly darker for focus
+  backdrop-filter: blur(8px);           // Increased blur for that premium look
   z-index: 1000;
 }
 
@@ -16,21 +58,43 @@
   left: 50%;
   transform: translate(-50%, -50%); 
   width: 90%;
-  max-width: 600px;                
+  max-width: 700px; // Slightly wider for better code readability
+  max-height: 85vh; // Prevents the window from going off-screen
   z-index: 1001;
   
-  // Customizing the Material Form Field look
-  mat-form-field {
+  display: flex;
+  flex-direction: column; // Stacks response view on top of form
+  gap: 16px;
+
+  // This target the child component you are about to add
+  nevy11-ai-response-view {
+    flex: 1; 
+    overflow-y: auto; // Allows scrolling through long chats
+    background: #121212; // Darker background for the message area
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #333;
+  }
+
+  form {
     width: 100%;
     
-    // Making it look like a floating bar
-    ::ng-deep .mat-mdc-text-field-wrapper {
-      background-color: #1e1e1e !important; // Dark theme like the image
-      border-radius: 8px !important;
-    }
-    
-    ::ng-deep .mat-mdc-form-field-flex {
-      padding: 12px 20px !important;
+    mat-form-field {
+      width: 100%;
+      
+      ::ng-deep .mat-mdc-text-field-wrapper {
+        background-color: #1e1e1e !important;
+        border-radius: 12px !important; // Match the modern look
+        border: 1px solid #444 !important;
+      }
+      
+      ::ng-deep .mat-mdc-form-field-flex {
+        padding: 8px 16px !important;
+      }
+
+      input {
+        font-size: 1.1rem;
+      }
     }
   }
 }

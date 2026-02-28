@@ -1,0 +1,13 @@
+<div class="response-container">
+      @for (msg of messages(); track $index) {
+        <div class="message-row" [class.user-row]="msg.role === 'user'">
+          <div class="avatar">
+            <span class="material-icons">{{ msg.role === 'user' ? 'person' : 'smart_toy' }}</span>
+          </div>
+          <div class="content">
+            <span class="role-label">{{ msg.role === 'user' ? 'You' : 'AI' }}</span>
+            <p class="text-content">{{ msg.content }}</p>
+          </div>
+        </div>
+      }
+    </div>

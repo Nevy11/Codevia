@@ -883,4 +883,30 @@ export class SupabaseClientService {
       count: statsMap[name],
     }));
   }
+
+  // Gemini AI response generation using Supabase Edge Function
+  async generateAiResponse(prompt: string): Promise<string> {
+    if (!this.client) {
+      console.error('Supabase client not initialized');
+      return 'AI Service unavailable.';
+    }
+
+    try {
+      // We call the function by the name you gave it in the CLI
+      const { data, error } = await this.client.functions.invoke('gemini-chat', {
+        body: { prompt: prompt },
+      });
+
+      if (error) {
+        console.error('Edge Function Error:', error);
+        return 'Sorry, I had trouble thinking. Please try again.';
+      }
+
+      // 'data.text' comes from the JSON response in your index.ts
+      return data.text || 'The AI returned an empty response.';
+    } catch (err) {
+      console.error('Unexpected AI error:', err);
+      return 'An unexpected error occurred while contacting the AI.';
+    }
+  }
 }

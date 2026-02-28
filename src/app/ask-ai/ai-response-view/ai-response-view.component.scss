@@ -1,0 +1,6 @@
+.response-container { display: flex; flex-direction: column; gap: 20px; padding: 10px; max-height: 400px; overflow-y: auto; color: white; }
+.message-row { display: flex; gap: 12px; }
+.avatar { color: #888; }
+.role-label { font-weight: bold; font-size: 0.8rem; display: block; margin-bottom: 4px; }
+.text-content { margin: 0; line-height: 1.5; font-size: 0.95rem; opacity: 0.9; }
+.user-row { opacity: 0.8; }

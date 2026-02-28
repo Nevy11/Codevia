@@ -1,11 +1,12 @@
-<button class="ask-ai-btn" mat-fab color="primary" (click)="toggleChat()">
+<!-- <button class="ask-ai-btn" mat-fab color="primary" (click)="toggleChat()">
   <mat-icon>{{ open ? "close" : "smart_toy" }}</mat-icon>
 </button>
 
 @if(open) {
 <div class="backdrop" (click)="toggleChat()"></div>
 
-<div class="chat-window">
+<form (submit)="submitQuestion($event)">
+  <div class="chat-window">
   <mat-form-field appearance="outline" subscriptSizing="dynamic">
     <mat-icon matPrefix style="margin-right: 8px; color: #888">search</mat-icon>
     <input
@@ -15,9 +16,43 @@
       [formControl]="ai_data().query"
       placeholder="Ask CodeVia a question..."
     />
-    <button mat-icon-button matSuffix (click)="$event.stopPropagation()">
+    <button type="submit" mat-icon-button matSuffix (click)="$event.stopPropagation()">
       <mat-icon color="primary">play_arrow</mat-icon>
     </button>
   </mat-form-field>
 </div>
+</form>
+} -->
+<button class="ask-ai-btn" mat-fab color="primary" (click)="toggleChat()">
+  <mat-icon>{{ open ? "close" : "smart_toy" }}</mat-icon>
+</button>
+
+@if(open) {
+  <div class="backdrop" (click)="toggleChat()"></div>
+
+  <div class="chat-window">
+    @if (messages().length > 0) {
+      <nevy11-ai-response-view [messages]="messages()"></nevy11-ai-response-view>
+    }
+
+    @if (isLoading()) {
+      <div class="loading-indicator">AI is thinking...</div>
+    }
+
+    <form (submit)="submitQuestion($event)">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-icon matPrefix style="margin-right: 8px; color: #888">search</mat-icon>
+        <input
+          style="color: white"
+          type="text"
+          matInput
+          [formControl]="ai_data().query"
+          placeholder="Ask a follow-up question..."
+        />
+        <button type="submit" mat-icon-button matSuffix>
+          <mat-icon color="primary">play_arrow</mat-icon>
+        </button>
+      </mat-form-field>
+    </form>
+  </div>
 }
