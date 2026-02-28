@@ -32,7 +32,7 @@
 
   <div class="chat-window">
     @if (messages().length > 0) {
-      <nevy11-ai-response-view [messages]="messages()"></nevy11-ai-response-view>
+      <nevy11-ai-response-view markdown [messages]="messages()"></nevy11-ai-response-view>
     }
 
     @if (isLoading()) {

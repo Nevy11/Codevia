@@ -6,7 +6,7 @@
           </div>
           <div class="content">
             <span class="role-label">{{ msg.role === 'user' ? 'You' : 'AI' }}</span>
-            <p class="text-content">{{ msg.content }}</p>
+            <p class="text-content" [innerHTML]="msg.content | formatMessage"></p>
           </div>
         </div>
       }
