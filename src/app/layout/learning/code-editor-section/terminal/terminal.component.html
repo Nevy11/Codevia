@@ -1,9 +1,19 @@
 <div class="terminal-header">
   <mat-icon>terminal</mat-icon>
   <span class="terminal-title">Terminal</span>
+
+  @if (isLoading) {
+    <span class="loading-text">Running code...</span>
+  }
 </div>
 <div class="terminal-content">
-  @for (item of logs; track $index) {
-    <div>{{ item }}</div>
+  @if (isLoading) {
+    <div class="terminal-loader">
+      <mat-spinner diameter="30"></mat-spinner>
+    </div>
+  } @else {
+    @for (item of logs; track $index) {
+      <div class="log-line">{{ item }}</div>
+    }
   }
 </div>

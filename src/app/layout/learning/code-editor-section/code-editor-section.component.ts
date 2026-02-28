@@ -65,10 +65,10 @@ export class CodeEditorSectionComponent implements OnInit {
   private rapidService = inject(RapidApiService);
   private output_code!: string | null;
   private customSnackBarService = inject(CustomSnackBarService);
-  private breakpointObserver = inject(BreakpointObserver)
+  private breakpointObserver = inject(BreakpointObserver);
   isEditorEnabled: boolean = false;
-  isMobile = false
-
+  isMobile = false;
+  isTerminalLoading = false;
   isBrowser = false;
   number_of_search_results = this.codeEditorService.getSearchResults();
 
@@ -76,7 +76,7 @@ export class CodeEditorSectionComponent implements OnInit {
   result: string = '';
   logs: string[] = [];
   startup: string = `// Write your code here`;
-  terminalHeight: number = 200; 
+  terminalHeight: number = 200;
   private isResizing = false;
   initial_data: Folders[] = this.codeEditorService.get_initial_data();
   editorOptions = {
@@ -105,47 +105,53 @@ export class CodeEditorSectionComponent implements OnInit {
         theme: theme === 'dark' ? 'vs-dark' : 'vs-light',
       };
     });
-    this.breakpointObserver.observe([Breakpoints.Handset]).subscribe(result => {
-      this.isMobile = result.matches;
-      
-      // Auto-close sidenav when switching to mobile view
-      if (this.isMobile && this.sidenav) {
-        this.sidenav.close();
-      } else if (!this.isMobile && this.sidenav) {
-        this.sidenav.open();
-      }
-    });
+    this.breakpointObserver
+      .observe([Breakpoints.Handset])
+      .subscribe((result) => {
+        this.isMobile = result.matches;
+
+        // Auto-close sidenav when switching to mobile view
+        if (this.isMobile && this.sidenav) {
+          this.sidenav.close();
+        } else if (!this.isMobile && this.sidenav) {
+          this.sidenav.open();
+        }
+      });
   }
 
   async runCode() {
-    console.log('Running code...');
+    this.isTerminalLoading = true; // Start loading immediately
+    this.logs = []; // Optional: clear terminal for new run
+
     this.foldername = this.codeEditorService.getcurrentFile()?.name || '';
     this.parts = this.foldername.split('.');
     const extension =
       this.parts.length > 1 ? this.parts[this.parts.length - 1] : '';
-    
-    console.log('File extension:', extension);
 
     if (this.isBrowser) {
+      // --- JAVASCRIPT PATH ---
       if (extension == 'js') {
         const worker = new Worker(
-          new URL('./code-editor-section.worker', import.meta.url)
+          new URL('./code-editor-section.worker', import.meta.url),
         );
         worker.postMessage(this.code);
         worker.onmessage = ({ data }) => {
+          this.isTerminalLoading = false; // Stop loading on result
           if (data.success) {
             this.logs = data.logs;
           } else {
-            // this.matsnackbar.open(`${data.error}`, 'Close', { duration: 2000 });
             this.customSnackBarService.open(`${data.error}`, `Close`, `error`);
-            console.error('Error:', data.error);
           }
         };
+        worker.onerror = () => {
+          this.isTerminalLoading = false;
+        };
       }
-       else if (extension == 'ts') {
+
+      // --- TYPESCRIPT PATH ---
+      else if (extension == 'ts') {
         try {
           const ts = await import('typescript');
-
           const transpiled = ts.transpileModule(this.code, {
             compilerOptions: {
               module: ts.ModuleKind.ESNext,
@@ -155,32 +161,21 @@ export class CodeEditorSectionComponent implements OnInit {
           });
 
           if (transpiled.diagnostics?.length) {
-            const formatted = ts.formatDiagnosticsWithColorAndContext(
-              transpiled.diagnostics,
-              {
-                getCanonicalFileName: (f) => f,
-                getCurrentDirectory: () => '',
-                getNewLine: () => '\n',
-              }
-            );
-
+            this.isTerminalLoading = false; // Stop loading on compile error
             this.customSnackBarService.open(
               'TypeScript errors detected',
               'Close',
-              'error'
+              'error',
             );
-            console.error(formatted);
             return;
           }
 
-          // Run generated JS in worker
           const worker = new Worker(
-            new URL('./code-editor-section.worker', import.meta.url)
+            new URL('./code-editor-section.worker', import.meta.url),
           );
-
           worker.postMessage(transpiled.outputText);
-
           worker.onmessage = ({ data }) => {
+            this.isTerminalLoading = false; // Stop loading on worker result
             if (data.success) {
               this.logs = data.logs;
             } else {
@@ -188,72 +183,199 @@ export class CodeEditorSectionComponent implements OnInit {
             }
           };
         } catch (err: any) {
-          console.error('TypeScript transpilation or execution failed:', err);
+          this.isTerminalLoading = false; // Stop loading on crash
           this.matsnackbar.open(
             `TypeScript error: ${err.message || err}`,
             'Close',
-            { duration: 2000 }
+            { duration: 2000 },
           );
         }
-      } 
-      
-      else if (['py', 'rs', 'c', 'java', 'cs', 'cpp', 'cc', 'cxx'].includes(extension)) {
+      }
+
+      // --- API PATH (Python, Rust, C, Java, etc.) ---
+      else if (
+        ['py', 'rs', 'c', 'java', 'cs', 'cpp', 'cc', 'cxx'].includes(extension)
+      ) {
         try {
-          console.log('Attempting API call for:', extension)
           let result;
-          
-          if (extension === 'py') {
+          if (extension === 'py')
             result = await this.rapidService.runPython(this.code);
-          } else if (extension === 'rs') {
+          else if (extension === 'rs')
             result = await this.rapidService.runRust(this.code);
-          } else if (extension === 'c') {
+          else if (extension === 'c')
             result = await this.rapidService.runC(this.code);
-          }else if (extension === 'java') {
+          else if (extension === 'java')
             result = await this.rapidService.runJava(this.code);
-          } else if (extension === 'cs') {
+          else if (extension === 'cs')
             result = await this.rapidService.runCSharp(this.code);
-          }
-           else {
-            result = await this.rapidService.runCpp(this.code);
-          }
+          else result = await this.rapidService.runCpp(this.code);
 
-          console.log('Execution Result:', result);
-          
-          this.output_code = result.stdout;
-
-          // if (this.output_code && this.output_code.trim() !== '') {
-          //   this.logs = this.output_code.trim().split('\n');
-          // } else {
-          //   this.logs = ['Execution finished with no output.'];
-          // }
-          if (result.compile_output) {
+          if (result.compile_output)
             this.logs = result.compile_output.trim().split('\n');
-          } 
-          // 2. Check for Runtime Errors (common in Python)
-          else if (result.stderr) {
-            this.logs = result.stderr.trim().split('\n');
-          } 
-          // 3. Check for Standard Output
-          else if (result.stdout) {
-            this.logs = result.stdout.trim().split('\n');
-          } 
-          // 4. Fallback if code ran but produced nothing
-          else {
-            this.logs = [`Status: ${result.status?.description || 'Execution finished with no output.'}`];
-          }
+          else if (result.stderr) this.logs = result.stderr.trim().split('\n');
+          else if (result.stdout) this.logs = result.stdout.trim().split('\n');
+          else
+            this.logs = [
+              `Status: ${result.status?.description || 'No output.'}`,
+            ];
         } catch (error) {
-          console.error('API Error:', error);
-          this.customSnackBarService.open('Failed to run code via API', 'Close', 'error');
+          this.customSnackBarService.open(
+            'Failed to run code via API',
+            'Close',
+            'error',
+          );
+        } finally {
+          this.isTerminalLoading = false; // Stop loading after API call finishes
         }
+      } else {
+        this.isTerminalLoading = false; // Stop loading if unsupported extension
+        this.matsnackbar.open(
+          `Extension .${extension} not supported`,
+          'Close',
+          { duration: 2000 },
+        );
       }
     } else {
-      this.matsnackbar.open(
-        `Extension .${extension} not supported`, 
-        'Close',
-         { duration: 2000 });
+      this.isTerminalLoading = false; // Not in browser
     }
-    console.log('Run code function completed.');
   }
+  // async runCode() {
+  //   console.log('Running code...');
+  //   this.foldername = this.codeEditorService.getcurrentFile()?.name || '';
+  //   this.parts = this.foldername.split('.');
+  //   const extension =
+  //     this.parts.length > 1 ? this.parts[this.parts.length - 1] : '';
+
+  //   console.log('File extension:', extension);
+
+  //   if (this.isBrowser) {
+  //     if (extension == 'js') {
+  //       const worker = new Worker(
+  //         new URL('./code-editor-section.worker', import.meta.url)
+  //       );
+  //       worker.postMessage(this.code);
+  //       worker.onmessage = ({ data }) => {
+  //         if (data.success) {
+  //           this.logs = data.logs;
+  //         } else {
+  //           // this.matsnackbar.open(`${data.error}`, 'Close', { duration: 2000 });
+  //           this.customSnackBarService.open(`${data.error}`, `Close`, `error`);
+  //           console.error('Error:', data.error);
+  //         }
+  //       };
+  //     }
+  //      else if (extension == 'ts') {
+  //       try {
+  //         const ts = await import('typescript');
+
+  //         const transpiled = ts.transpileModule(this.code, {
+  //           compilerOptions: {
+  //             module: ts.ModuleKind.ESNext,
+  //             target: ts.ScriptTarget.ES2020,
+  //           },
+  //           reportDiagnostics: true,
+  //         });
+
+  //         if (transpiled.diagnostics?.length) {
+  //           const formatted = ts.formatDiagnosticsWithColorAndContext(
+  //             transpiled.diagnostics,
+  //             {
+  //               getCanonicalFileName: (f) => f,
+  //               getCurrentDirectory: () => '',
+  //               getNewLine: () => '\n',
+  //             }
+  //           );
+
+  //           this.customSnackBarService.open(
+  //             'TypeScript errors detected',
+  //             'Close',
+  //             'error'
+  //           );
+  //           console.error(formatted);
+  //           return;
+  //         }
+
+  //         // Run generated JS in worker
+  //         const worker = new Worker(
+  //           new URL('./code-editor-section.worker', import.meta.url)
+  //         );
+
+  //         worker.postMessage(transpiled.outputText);
+
+  //         worker.onmessage = ({ data }) => {
+  //           if (data.success) {
+  //             this.logs = data.logs;
+  //           } else {
+  //             this.customSnackBarService.open(data.error, 'Close', 'error');
+  //           }
+  //         };
+  //       } catch (err: any) {
+  //         console.error('TypeScript transpilation or execution failed:', err);
+  //         this.matsnackbar.open(
+  //           `TypeScript error: ${err.message || err}`,
+  //           'Close',
+  //           { duration: 2000 }
+  //         );
+  //       }
+  //     }
+
+  //     else if (['py', 'rs', 'c', 'java', 'cs', 'cpp', 'cc', 'cxx'].includes(extension)) {
+  //       try {
+  //         console.log('Attempting API call for:', extension)
+  //         let result;
+
+  //         if (extension === 'py') {
+  //           result = await this.rapidService.runPython(this.code);
+  //         } else if (extension === 'rs') {
+  //           result = await this.rapidService.runRust(this.code);
+  //         } else if (extension === 'c') {
+  //           result = await this.rapidService.runC(this.code);
+  //         }else if (extension === 'java') {
+  //           result = await this.rapidService.runJava(this.code);
+  //         } else if (extension === 'cs') {
+  //           result = await this.rapidService.runCSharp(this.code);
+  //         }
+  //          else {
+  //           result = await this.rapidService.runCpp(this.code);
+  //         }
+
+  //         console.log('Execution Result:', result);
+
+  //         this.output_code = result.stdout;
+
+  //         // if (this.output_code && this.output_code.trim() !== '') {
+  //         //   this.logs = this.output_code.trim().split('\n');
+  //         // } else {
+  //         //   this.logs = ['Execution finished with no output.'];
+  //         // }
+  //         if (result.compile_output) {
+  //           this.logs = result.compile_output.trim().split('\n');
+  //         }
+  //         // 2. Check for Runtime Errors (common in Python)
+  //         else if (result.stderr) {
+  //           this.logs = result.stderr.trim().split('\n');
+  //         }
+  //         // 3. Check for Standard Output
+  //         else if (result.stdout) {
+  //           this.logs = result.stdout.trim().split('\n');
+  //         }
+  //         // 4. Fallback if code ran but produced nothing
+  //         else {
+  //           this.logs = [`Status: ${result.status?.description || 'Execution finished with no output.'}`];
+  //         }
+  //       } catch (error) {
+  //         console.error('API Error:', error);
+  //         this.customSnackBarService.open('Failed to run code via API', 'Close', 'error');
+  //       }
+  //     }
+  //   } else {
+  //     this.matsnackbar.open(
+  //       `Extension .${extension} not supported`,
+  //       'Close',
+  //        { duration: 2000 });
+  //   }
+  //   console.log('Run code function completed.');
+  // }
 
   openFile(node: Folders) {
     if (node.type === 'file') {
@@ -281,7 +403,7 @@ export class CodeEditorSectionComponent implements OnInit {
         'Close',
         {
           duration: 1500,
-        }
+        },
       );
     } else {
       this.isEditorEnabled = false; // ✅ disable editor
@@ -361,14 +483,13 @@ export class CodeEditorSectionComponent implements OnInit {
     // Remove placeholder if user cancels
     const folder = this.codeEditorService.findFolderOrFile(
       this.dataSource,
-      this.codeEditorService.getfolder_name_selected()
+      this.codeEditorService.getfolder_name_selected(),
     );
     if (folder?.children) {
       folder.children = folder.children.filter((child) => child !== node);
       this.dataSource = [...this.dataSource];
     }
   }
-  
 
   async finishEditing(node: Folders) {
     // Prevent double-clicks or race conditions
@@ -396,13 +517,13 @@ export class CodeEditorSectionComponent implements OnInit {
       const success = await this.codeEditorService.finalizeNewFile(
         this.dataSource,
         fileNameWithoutExt,
-        fileType
+        fileType,
       );
       if (success) {
         this.matsnackbar.open(
           `File "${node.name}" created successfully.`,
           'Close',
-          { duration: 2000 }
+          { duration: 2000 },
         );
 
         // Refresh the dataSource to update your file tree
@@ -411,7 +532,7 @@ export class CodeEditorSectionComponent implements OnInit {
         this.matsnackbar.open(
           'Failed to create file. Please select a valid folder.',
           'Close',
-          { duration: 2000 }
+          { duration: 2000 },
         );
       }
     } catch (error) {
@@ -419,7 +540,7 @@ export class CodeEditorSectionComponent implements OnInit {
       this.matsnackbar.open(
         'An unexpected error occurred while creating the file.',
         'Close',
-        { duration: 2000 }
+        { duration: 2000 },
       );
     } finally {
       // Allow editing again after a short delay
@@ -434,7 +555,7 @@ export class CodeEditorSectionComponent implements OnInit {
       const deleted = await this.codeEditorService.deleteFile(
         this.dataSource, // Root folder data
         folderName, // Parent folder name
-        node.name // File name to delete
+        node.name, // File name to delete
       );
 
       if (deleted) {
@@ -442,7 +563,7 @@ export class CodeEditorSectionComponent implements OnInit {
         this.matsnackbar.open(
           `File '${node.name}' deleted successfully!`,
           'Close',
-          { duration: 2000 }
+          { duration: 2000 },
         );
         // Refresh UI after deletion
         this.dataSource = [...this.dataSource];
@@ -451,7 +572,7 @@ export class CodeEditorSectionComponent implements OnInit {
         this.matsnackbar.open(
           `Failed to delete file '${node.name}'.`,
           'Close',
-          { duration: 2000 }
+          { duration: 2000 },
         );
       }
     } catch (error) {
@@ -459,7 +580,7 @@ export class CodeEditorSectionComponent implements OnInit {
       this.matsnackbar.open(
         `An error occurred while deleting file '${node.name}'.`,
         'Close',
-        { duration: 2000 }
+        { duration: 2000 },
       );
     }
   }
@@ -478,7 +599,7 @@ export class CodeEditorSectionComponent implements OnInit {
 
     const success = this.codeEditorService.createNewFolder(
       this.dataSource,
-      folderName
+      folderName,
     );
 
     if (success) {
@@ -504,14 +625,14 @@ export class CodeEditorSectionComponent implements OnInit {
       const newFolderName = node.name;
       const created = await this.supabaseService.createFolder(
         newFolderName,
-        null
+        null,
       );
       if (created) {
         this.dataSource = [...this.dataSource];
         this.matsnackbar.open(
           'New root folder created successfully!',
           'Close',
-          { duration: 2000 }
+          { duration: 2000 },
         );
       } else {
         this.matsnackbar.open('Failed to create root folder.', 'Close', {
@@ -525,7 +646,7 @@ export class CodeEditorSectionComponent implements OnInit {
     const success = await this.codeEditorService.finalizeNewFolder(
       this.dataSource,
       folderName,
-      newFolderName
+      newFolderName,
     );
 
     if (success) {
@@ -553,7 +674,7 @@ export class CodeEditorSectionComponent implements OnInit {
         // Save to Supabase
         await this.supabaseService.updateFileContent(
           this.currentFile.name,
-          this.code
+          this.code,
         );
 
         // Notify success
@@ -565,7 +686,7 @@ export class CodeEditorSectionComponent implements OnInit {
         this.matsnackbar.open(
           `Failed to save: ${this.currentFile.name}`,
           'Close',
-          { duration: 2000 }
+          { duration: 2000 },
         );
       }
     } else {
@@ -593,11 +714,11 @@ export class CodeEditorSectionComponent implements OnInit {
   // Use arrow function to preserve 'this' context
   private resize = (event: MouseEvent) => {
     if (!this.isResizing) return;
-    
-    // Calculate new height: 
+
+    // Calculate new height:
     // The distance from the bottom of the screen to the mouse position
     const newHeight = window.innerHeight - event.clientY;
-    
+
     // Set constraints (min 50px, max 80% of screen)
     if (newHeight > 50 && newHeight < window.innerHeight * 0.8) {
       this.terminalHeight = newHeight;
@@ -612,49 +733,48 @@ export class CodeEditorSectionComponent implements OnInit {
 }
 
 //  else if (extension == 'py') {
-      //   this.rapidService
-      //     .getInfo()
-      //     .then((response) => {
-      //       console.log('Rapid API response received in component:', response);
-      //     })
-      //     .catch((error) => {
-      //       console.error('Error in Rapid API call:', error);
-      //     });
-      //   const result = this.rapidService.runPython(this.code);
-      //   console.log('Output: ', result);
-      //   console.log('output_code: ', (await result).stdout);
-      //   this.output_code = (await result).stdout;
+//   this.rapidService
+//     .getInfo()
+//     .then((response) => {
+//       console.log('Rapid API response received in component:', response);
+//     })
+//     .catch((error) => {
+//       console.error('Error in Rapid API call:', error);
+//     });
+//   const result = this.rapidService.runPython(this.code);
+//   console.log('Output: ', result);
+//   console.log('output_code: ', (await result).stdout);
+//   this.output_code = (await result).stdout;
 
-      //   if (this.output_code != null) {
-      //     this.logs = [this.output_code];
-      //     console.log('new log pushed: ', this.output_code);
-      //   }
-      // } else if (extension == 'rs') {
-      //   const result = this.rapidService.runRust(this.code);
-      //   console.log('Output: ', result);
-      //   console.log('output_code: ', (await result).stdout);
-      //   this.output_code = (await result).stdout;
+//   if (this.output_code != null) {
+//     this.logs = [this.output_code];
+//     console.log('new log pushed: ', this.output_code);
+//   }
+// } else if (extension == 'rs') {
+//   const result = this.rapidService.runRust(this.code);
+//   console.log('Output: ', result);
+//   console.log('output_code: ', (await result).stdout);
+//   this.output_code = (await result).stdout;
 
-      //   if (this.output_code != null) {
-      //     this.logs = [this.output_code];
-      //     console.log('new log pushed: ', this.output_code);
-      //   }
-      // }
+//   if (this.output_code != null) {
+//     this.logs = [this.output_code];
+//     console.log('new log pushed: ', this.output_code);
+//   }
+// }
 
-      
-      // else if (extension === 'c') {
-      //   const result = this.rapidService.runC(this.code);
-      //   this.output_code = (await result).stdout;
-      //   this.logs = this.output_code ? [this.output_code] : [];
-      // } else if (['cpp', 'cc', 'cxx'].includes(extension)) {
-      //   const result = this.rapidService.runCpp(this.code);
-      //   this.output_code = (await result).stdout;
-      //   this.logs = this.output_code ? [this.output_code] : [];
-      // } else {
-      //   this.matsnackbar.open(
-      //     `Running code for .${extension} files is not supported yet.`,
-      //     'Close',
-      //     { duration: 2000 }
-      //   );
-      //   return;
-      // }
+// else if (extension === 'c') {
+//   const result = this.rapidService.runC(this.code);
+//   this.output_code = (await result).stdout;
+//   this.logs = this.output_code ? [this.output_code] : [];
+// } else if (['cpp', 'cc', 'cxx'].includes(extension)) {
+//   const result = this.rapidService.runCpp(this.code);
+//   this.output_code = (await result).stdout;
+//   this.logs = this.output_code ? [this.output_code] : [];
+// } else {
+//   this.matsnackbar.open(
+//     `Running code for .${extension} files is not supported yet.`,
+//     'Close',
+//     { duration: 2000 }
+//   );
+//   return;
+// }

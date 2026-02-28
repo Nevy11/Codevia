@@ -1,6 +1,11 @@
 <mat-sidenav-container class="editor-container">
   <!-- Collapsible side navigation -->
-  <mat-sidenav #sidenav [mode]="isMobile ? 'over' : 'side'" [opened]="!isMobile" class="sidenav">
+  <mat-sidenav
+    #sidenav
+    [mode]="isMobile ? 'over' : 'side'"
+    [opened]="!isMobile"
+    class="sidenav"
+  >
     <mat-toolbar color="primary" class="sidenav-header">
       Explorers
       <span class="spacer"></span>
@@ -35,27 +40,31 @@
       <!-- Leaf node template -->
       <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
         @if (node.isEditing) {
-        <mat-icon>insert_drive_file</mat-icon>
-        <input
-          matInput
-          [(ngModel)]="node.name"
-          (blur)="finishEditing(node)"
-          (keyup.enter)="finishEditing(node)"
-          (keyup.escape)="cancelEditing(node)"
-          placeholder="Enter file name"
-          autofocus
-        />
+          <mat-icon>insert_drive_file</mat-icon>
+          <input
+            matInput
+            [(ngModel)]="node.name"
+            (blur)="finishEditing(node)"
+            (keyup.enter)="finishEditing(node)"
+            (keyup.escape)="cancelEditing(node)"
+            placeholder="Enter file name"
+            autofocus
+          />
         }
 
         <!-- Show file name normally -->
         @if (!node.isEditing) {
-        <mat-icon>insert_drive_file</mat-icon>
-        <span class="node" (click)="openFile(node)" style="cursor: pointer">
-          {{ node.name }}
-        </span>
-        <button mat-icon-button (click)="delete_file(node)" matTooltip="delete">
-          <mat-icon>delete</mat-icon>
-        </button>
+          <mat-icon>insert_drive_file</mat-icon>
+          <span class="node" (click)="openFile(node)" style="cursor: pointer">
+            {{ node.name }}
+          </span>
+          <button
+            mat-icon-button
+            (click)="delete_file(node)"
+            matTooltip="delete"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
         }
       </mat-tree-node>
 
@@ -66,29 +75,29 @@
         [cdkTreeNodeTypeaheadLabel]="node.name"
       >
         @if (node.isEditing) {
-        <mat-icon>create_new_folder</mat-icon>
-        <input
-          matInput
-          [(ngModel)]="node.name"
-          (keyup.enter)="finishEditingFolder(node)"
-          (keyup.escape)="cancelEditing(node)"
-          placeholder="Enter folder name"
-          autofocus
-        />
+          <mat-icon>create_new_folder</mat-icon>
+          <input
+            matInput
+            [(ngModel)]="node.name"
+            (keyup.enter)="finishEditingFolder(node)"
+            (keyup.escape)="cancelEditing(node)"
+            placeholder="Enter folder name"
+            autofocus
+          />
         } @else {
-        <button
-          mat-icon-button
-          matTreeNodeToggle
-          [attr.aria-label]="'Toggle ' + node.name"
-          (click)="onNodeToggle(node, !tree.isExpanded(node))"
-        >
-          <mat-icon class="mat-icon-rtl-mirror">
-            {{ tree.isExpanded(node) ? "expand_more" : "chevron_right" }}
-          </mat-icon>
-        </button>
+          <button
+            mat-icon-button
+            matTreeNodeToggle
+            [attr.aria-label]="'Toggle ' + node.name"
+            (click)="onNodeToggle(node, !tree.isExpanded(node))"
+          >
+            <mat-icon class="mat-icon-rtl-mirror">
+              {{ tree.isExpanded(node) ? "expand_more" : "chevron_right" }}
+            </mat-icon>
+          </button>
 
-        <mat-icon>folder</mat-icon>
-        {{ node.name }}
+          <mat-icon>folder</mat-icon>
+          {{ node.name }}
         }
       </mat-tree-node>
     </mat-tree>
@@ -109,32 +118,40 @@
       <span class="spacer"></span>
       monaco editor
     </mat-toolbar>
-    @if (isBrowser) { @if (this.isEditorEnabled) {
-    <ngx-monaco-editor
-      [(ngModel)]="code"
-      [options]="editorOptions"
-      (onInit)="onEditorInit($event)"
-    ></ngx-monaco-editor>
-    <div class="terminal-resizer" (mousedown)="startResizing($event)"></div>
-    <div class="btn">
-      <button mat-flat-button color="primary" (click)="downloadCode()">
-        Download Code
-      </button>
-      <span class="spacer"></span>
-      <button mat-flat-button color="accent" (click)="resetCode()">
-        Reset Code
-      </button>
-      <span class="spacer"></span>
-      <button mat-flat-button color="warn" (click)="runCode()">Run Code</button>
-    </div>
-    
-    <div class="terminal-wrapper" [style.height.px]="terminalHeight">
+    @if (isBrowser) {
+      @if (this.isEditorEnabled) {
+        <ngx-monaco-editor
+          [(ngModel)]="code"
+          [options]="editorOptions"
+          (onInit)="onEditorInit($event)"
+        ></ngx-monaco-editor>
+        <div class="terminal-resizer" (mousedown)="startResizing($event)"></div>
+        <div class="btn">
+          <button mat-flat-button color="primary" (click)="downloadCode()">
+            Download Code
+          </button>
+          <span class="spacer"></span>
+          <button mat-flat-button color="accent" (click)="resetCode()">
+            Reset Code
+          </button>
+          <span class="spacer"></span>
+          <button mat-flat-button color="warn" (click)="runCode()">
+            Run Code
+          </button>
+        </div>
+
+        <!-- <div class="terminal-wrapper" [style.height.px]="terminalHeight">
       <nevy11-terminal [logs]="this.logs"></nevy11-terminal>
-    </div>
-    }@else {
-    <div class="editor_picking">
-      <nevy11-no-file-selected></nevy11-no-file-selected>
-    </div>
-    } }
+    </div> -->
+        <div class="terminal-wrapper" [style.height.px]="terminalHeight">
+          <nevy11-terminal [logs]="this.logs" [isLoading]="isTerminalLoading">
+          </nevy11-terminal>
+        </div>
+      } @else {
+        <div class="editor_picking">
+          <nevy11-no-file-selected></nevy11-no-file-selected>
+        </div>
+      }
+    }
   </mat-sidenav-content>
 </mat-sidenav-container>
