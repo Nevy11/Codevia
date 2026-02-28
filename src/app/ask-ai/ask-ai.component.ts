@@ -28,44 +28,63 @@ export class AskAiComponent {
   )
   messages = signal<ChatMessage[]>([]);
   isLoading = signal(false);
-  toggleChat() {
+  async toggleChat() {
     this.open = !this.open;
+    
+    // Load history only when opening
+    if (this.open && this.messages().length === 0) {
+      const history = await this.supabase.getChatHistory();
+      this.messages.set(history);
+    }
   }
+  // async submitQuestion(event: Event) {
+  //   event.preventDefault();
+    
+  //   const queryValue = this.ai_data().query.value;
+  //   console.log('User Prompt:', queryValue);
+
+    
+  //   if (queryValue && !this.isLoading()) {
+  //     // 1. Add User message to list
+  //     this.messages.update(prev => [...prev, { role: 'user', content: queryValue }]);
+  //     this.ai_data().query.reset();
+  //     this.isLoading.set(true);
+
+  //     try {
+  //       const response = await this.supabase.generateAiResponse(queryValue);
+        
+  //       // 2. Add AI response to list
+  //       this.messages.update(prev => [...prev, { role: 'assistant', content: response }]);
+  //     } catch (error) {
+  //       console.error('Submission Error:', error);
+  //     } finally {
+  //       this.isLoading.set(false);
+  //       this.cdr.detectChanges();
+  //     }
+  //   }
+  // }
   async submitQuestion(event: Event) {
     event.preventDefault();
-    
     const queryValue = this.ai_data().query.value;
-    console.log('User Prompt:', queryValue);
 
-    // if (queryValue) {
-    //   try {
-    //     // 1. You might want to set a loading state here
-    //     // this.isLoading = true; 
-
-    //     const response = await this.supabase.generateAiResponse(queryValue);
-        
-    //     console.log('AI Response:', response);
-
-    //     // 2. Assign the response to a variable to show in your HTML
-    //     // this.aiResult = response;
-
-    //   } catch (error) {
-    //     console.error('Submission Error:', error);
-    //   } finally {
-    //     // this.isLoading = false;
-    //   }
-    // }
     if (queryValue && !this.isLoading()) {
-      // 1. Add User message to list
+      // 1. UI Update
       this.messages.update(prev => [...prev, { role: 'user', content: queryValue }]);
       this.ai_data().query.reset();
       this.isLoading.set(true);
 
+      // 2. Persistent Save (User Message)
+      await this.supabase.saveChatMessage('user', queryValue);
+
       try {
         const response = await this.supabase.generateAiResponse(queryValue);
         
-        // 2. Add AI response to list
+        // 3. UI Update (AI Message)
         this.messages.update(prev => [...prev, { role: 'assistant', content: response }]);
+        
+        // 4. Persistent Save (AI Response)
+        await this.supabase.saveChatMessage('assistant', response);
+        
       } catch (error) {
         console.error('Submission Error:', error);
       } finally {
@@ -74,4 +93,10 @@ export class AskAiComponent {
       }
     }
   }
+    async clearChat() {
+      if(confirm("Delete all messages?")) {
+        const success = await this.supabase.clearChatHistory();
+        if(success) this.messages.set([]);
+      }
+    }
 }

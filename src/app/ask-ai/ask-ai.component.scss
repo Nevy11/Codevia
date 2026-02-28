@@ -56,6 +56,34 @@
       }
     }
   }
+  .chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 4px 8px 8px; // Less padding on top, more on bottom
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05); // Very subtle divider
+    margin-bottom: 8px;
+
+    span {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #888;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    button {
+      opacity: 0.6;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      color: #ff5252; // Subtle red for the delete action
+
+      &:hover {
+        opacity: 1;
+        transform: scale(1.1);
+        background: rgba(255, 82, 82, 0.1); // Light glow on hover
+      }
+    }
+  }
 }
 .ask-ai-btn {
   position: fixed;

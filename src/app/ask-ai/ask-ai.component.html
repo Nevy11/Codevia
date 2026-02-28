@@ -1,36 +1,17 @@
-<!-- <button class="ask-ai-btn" mat-fab color="primary" (click)="toggleChat()">
-  <mat-icon>{{ open ? "close" : "smart_toy" }}</mat-icon>
-</button>
-
-@if(open) {
-<div class="backdrop" (click)="toggleChat()"></div>
-
-<form (submit)="submitQuestion($event)">
-  <div class="chat-window">
-  <mat-form-field appearance="outline" subscriptSizing="dynamic">
-    <mat-icon matPrefix style="margin-right: 8px; color: #888">search</mat-icon>
-    <input
-      style="color: white"
-      type="text"
-      matInput
-      [formControl]="ai_data().query"
-      placeholder="Ask CodeVia a question..."
-    />
-    <button type="submit" mat-icon-button matSuffix (click)="$event.stopPropagation()">
-      <mat-icon color="primary">play_arrow</mat-icon>
-    </button>
-  </mat-form-field>
-</div>
-</form>
-} -->
 <button class="ask-ai-btn" mat-fab color="primary" (click)="toggleChat()">
   <mat-icon>{{ open ? "close" : "smart_toy" }}</mat-icon>
 </button>
 
 @if(open) {
   <div class="backdrop" (click)="toggleChat()"></div>
-
+  
   <div class="chat-window">
+    <div class="chat-header">
+      <span>CodeVia  Assistant</span>
+      <button mat-icon-button (click)="clearChat()" title="Clear Conversation">
+        <mat-icon style="font-size: 20px;">delete_sweep</mat-icon>
+      </button>
+    </div>
     @if (messages().length > 0) {
       <nevy11-ai-response-view markdown [messages]="messages()"></nevy11-ai-response-view>
     }

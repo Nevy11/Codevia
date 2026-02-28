@@ -7,6 +7,7 @@ import { GetVideo } from './layout/learning/video-section/get-video';
 import { Courses } from './layout/user-stats/courses';
 import { Folders } from './layout/learning/code-editor-section/folders';
 import { environment } from '../environments/environment';
+import { ChatMessage } from './ask-ai/ai-response-view/chat-message';
 
 @Injectable({
   providedIn: 'root',
@@ -908,5 +909,47 @@ export class SupabaseClientService {
       console.error('Unexpected AI error:', err);
       return 'An unexpected error occurred while contacting the AI.';
     }
+  }
+  // Add to SupabaseClientService class
+
+  async saveChatMessage(role: 'user' | 'assistant', content: string): Promise<void> {
+    const userId = await this.getCurrentUserId();
+    if (!userId) return;
+
+    const { error } = await this.client
+      .from('ai_chat_history')
+      .insert({ user_id: userId, role, content });
+
+    if (error) console.error('Error saving chat:', error.message);
+  }
+
+  async getChatHistory(): Promise<ChatMessage[]> {
+    const userId = await this.getCurrentUserId();
+    if (!userId) return [];
+
+    const { data, error } = await this.client
+      .from('ai_chat_history')
+      .select('role, content')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: true });
+
+    if (error) {
+      console.error('Error loading chat history:', error.message);
+      return [];
+    }
+
+    return data as ChatMessage[];
+  }
+
+  async clearChatHistory(): Promise<boolean> {
+    const userId = await this.getCurrentUserId();
+    if (!userId) return false;
+
+    const { error } = await this.client
+      .from('ai_chat_history')
+      .delete()
+      .eq('user_id', userId);
+
+    return !error;
   }
 }
