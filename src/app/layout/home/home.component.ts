@@ -11,7 +11,8 @@ import { SupabaseClientService } from '../../supabase-client.service';
 import { Profile } from '../settings/profile-settings/profile';
 import { Stats } from './home';
 import { LoaderComponent } from '../learning/loader/loader.component';
-
+import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
 @Component({
   selector: 'nevy11-home',
   imports: [
@@ -20,6 +21,7 @@ import { LoaderComponent } from '../learning/loader/loader.component';
     MatIconModule,
     AsyncPipe,
     LoaderComponent,
+    BaseChartDirective,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
@@ -39,7 +41,7 @@ export class HomeComponent implements OnInit {
     switchMap((userId) => {
       if (!userId) return of(null);
       return from(this.supabaseService.getCourseStats(userId));
-    })
+    }),
   );
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {
@@ -52,7 +54,7 @@ export class HomeComponent implements OnInit {
       } else {
         // tablet potrait view
         const isTabletPotrait = this.breakpointObserver.isMatched(
-          Breakpoints.TabletPortrait
+          Breakpoints.TabletPortrait,
         );
         if (isTabletPotrait) {
           return [
@@ -63,7 +65,7 @@ export class HomeComponent implements OnInit {
         } else {
           // small laptop view
           const isSmallLaptop = this.breakpointObserver.isMatched(
-            '(min-width: 840px) and (max-width: 1366px)'
+            '(min-width: 840px) and (max-width: 1366px)',
           );
           if (isSmallLaptop) {
             return [
@@ -81,13 +83,30 @@ export class HomeComponent implements OnInit {
           }
         }
       }
-    })
+    }),
   );
+  public barChartOptions: ChartConfiguration['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: { beginAtZero: true, ticks: { stepSize: 1 } },
+    },
+    plugins: {
+      legend: { display: false },
+    },
+  };
+  public barChartType: ChartType = 'bar';
+  public barChartData: ChartData<'bar'> = {
+    labels: [],
+    datasets: [{ data: [], label: 'Check-ins', backgroundColor: '#3f51b5' }],
+  };
   ToLearning() {
     this.router.navigate(['/layout/learning']);
   }
 
   async ngOnInit(): Promise<void> {
+    this.supabaseService.logActivity();
+    this.loadStats();
     this.profile = await this.supabaseService.getProfile();
     if (this.profile) {
       this.username = this.profile.name;
@@ -104,5 +123,24 @@ export class HomeComponent implements OnInit {
       });
     }
     this.loadingUrls = false;
+  }
+  async loadStats() {
+    const chartData = await this.supabaseService.getWeeklyStats();
+
+    // Correct way to log objects to the console
+    console.log('Chart data received:', chartData);
+
+    // 2. Map the data to the chart
+    if (chartData) {
+      this.barChartData = {
+        labels: chartData.map((item) => item.day),
+        datasets: [
+          {
+            ...this.barChartData.datasets[0],
+            data: chartData.map((item) => item.count),
+          },
+        ],
+      };
+    }
   }
 }

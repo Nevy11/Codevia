@@ -22,7 +22,7 @@ export class SupabaseClientService {
     if (isPlatformBrowser(this.platformId)) {
       this.supabase = createClient(
         'https://xzeysnqxzmzlfbzfjhys.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZXlzbnF4em16bGZiemZqaHlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5NjU5MzMsImV4cCI6MjA2OTU0MTkzM30.dG4lwMFKtTpklmOu_tZeFrRZy-vvYhdjwsO2zz2yaNE'
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZXlzbnF4em16bGZiemZqaHlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5NjU5MzMsImV4cCI6MjA2OTU0MTkzM30.dG4lwMFKtTpklmOu_tZeFrRZy-vvYhdjwsO2zz2yaNE',
       );
     }
   }
@@ -50,7 +50,7 @@ export class SupabaseClientService {
   async addProfile(
     name: string,
     bio: string,
-    avatar_url: string
+    avatar_url: string,
   ): Promise<boolean> {
     const {
       data: { user },
@@ -174,7 +174,7 @@ export class SupabaseClientService {
           bio,
           avatar_url,
         },
-        { onConflict: 'id' }
+        { onConflict: 'id' },
       )
       .select();
 
@@ -244,7 +244,7 @@ export class SupabaseClientService {
         },
         {
           onConflict: 'user_id, video_id', // Ensures update instead of duplicate data
-        }
+        },
       );
 
     if (error) {
@@ -289,7 +289,7 @@ export class SupabaseClientService {
     video_id: string,
     thumbnail_url: string,
     title: string,
-    description: string
+    description: string,
   ): Promise<boolean> {
     const { error } = await this.client.from('courses').upsert(
       {
@@ -298,7 +298,7 @@ export class SupabaseClientService {
         title: title,
         description: description,
       },
-      { onConflict: 'video_id' }
+      { onConflict: 'video_id' },
     );
 
     if (error) {
@@ -339,7 +339,7 @@ export class SupabaseClientService {
       },
       {
         onConflict: 'user_id,video_id',
-      }
+      },
     );
 
     if (error) {
@@ -349,8 +349,6 @@ export class SupabaseClientService {
 
     return true;
   }
-
-
 
   async getCourseByVideoId(video_id: string): Promise<Courses | null> {
     const { data, error } = await this.client
@@ -368,7 +366,10 @@ export class SupabaseClientService {
   }
 
   // Getting all video thumbnails stored
-  async getAllCourses(limit: number = 10, offset: number = 0): Promise<Courses[] | null> {
+  async getAllCourses(
+    limit: number = 10,
+    offset: number = 0,
+  ): Promise<Courses[] | null> {
     const { data, error } = await this.client
       .from('courses')
       .select('video_id, thumbnail_url, title, description, created_at')
@@ -418,7 +419,7 @@ export class SupabaseClientService {
 
   // Get courses enrolled & completed for a user
   async getCourseStats(
-    user_id: string
+    user_id: string,
   ): Promise<{ enrolled: number; completed: number } | null> {
     const { data, error } = await this.client
       .from('user_course_stats')
@@ -497,7 +498,7 @@ export class SupabaseClientService {
         courses_enrolled: 0,
         courses_completed: 0,
       },
-      { onConflict: 'user_id' } // ensures no duplicates if row exists
+      { onConflict: 'user_id' }, // ensures no duplicates if row exists
     );
 
     if (error) {
@@ -564,7 +565,7 @@ export class SupabaseClientService {
 
   async createFolder(
     folderName: string,
-    parentFolderName: string | null = null
+    parentFolderName: string | null = null,
   ) {
     let parentFolderId: string | null = null;
 
@@ -716,7 +717,7 @@ export class SupabaseClientService {
 
   async deleteFile(
     fileName: string,
-    parentFolderName: string | null = null
+    parentFolderName: string | null = null,
   ): Promise<boolean> {
     if (!this.user_id) {
       this.user_id = await this.getCurrentUserId();
@@ -771,7 +772,7 @@ export class SupabaseClientService {
         user_id: userId,
         show_yt: value,
       },
-      { onConflict: 'user_id' }
+      { onConflict: 'user_id' },
     );
     console.log('updated successfully');
 
@@ -794,10 +795,6 @@ export class SupabaseClientService {
     return data.show_yt;
   }
 
-  /**
-   * Invokes the 'delete-user' Edge Function to securely delete the user's account.
-   * On success, it signs the user out of the application.
-   */
   public async deleteUserAccount(): Promise<void> {
     const { error } = await this.client.functions.invoke('delete-user', {});
 
@@ -814,8 +811,76 @@ export class SupabaseClientService {
     } catch (signOutError) {
       console.log(
         'Client-side signOut failed, which is expected after a full account deletion.',
-        signOutError
+        signOutError,
       );
     }
+  }
+
+  // 1. Call this when the app loads or user logs in
+  async logActivity(): Promise<void> {
+    const userId = await this.getCurrentUserId();
+    if (!userId) return;
+
+    const { error } = await this.client
+      .from('user_activity')
+      .insert({ user_id: userId });
+
+    if (error) console.error('Error logging activity:', error.message);
+  }
+
+  // 2. Fetch activity for the last 7 days
+  async getWeeklyStats(): Promise<{ day: string; count: number }[]> {
+    const userId = await this.getCurrentUserId();
+    if (!userId) return [];
+
+    // Calculate the start of the current week (Sunday)
+    const now = new Date();
+    const startOfWeek = new Date(now);
+    startOfWeek.setDate(now.getDate() - now.getDay()); // Go back to Sunday
+    startOfWeek.setHours(0, 0, 0, 0); // Start at midnight
+
+    const { data, error } = await this.client
+      .from('user_activity')
+      .select('joined_at')
+      .eq('user_id', userId)
+      .gte('joined_at', startOfWeek.toISOString());
+
+    if (error) {
+      console.error('Error fetching stats:', error.message);
+      return [];
+    }
+
+    return this.processGraphData(data);
+  }
+
+  // Helper to group records by day name
+  private processGraphData(data: any[]): { day: string; count: number }[] {
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    // 1. Create a map initialized with 0 for every day of the week
+    const statsMap: { [key: string]: number } = {
+      Sun: 0,
+      Mon: 0,
+      Tue: 0,
+      Wed: 0,
+      Thu: 0,
+      Fri: 0,
+      Sat: 0,
+    };
+
+    // 2. Count occurrences from the database results
+    data.forEach((row) => {
+      const date = new Date(row.joined_at);
+      const dayName = dayNames[date.getDay()]; // getDay() returns 0 for Sunday
+      if (statsMap[dayName] !== undefined) {
+        statsMap[dayName]++;
+      }
+    });
+
+    // 3. Map back to an array in the EXACT order of dayNames
+    return dayNames.map((name) => ({
+      day: name,
+      count: statsMap[name],
+    }));
   }
 }

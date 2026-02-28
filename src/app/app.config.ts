@@ -9,6 +9,7 @@ import { provideClientHydration } from '@angular/platform-browser';
 import { provideServiceWorker } from '@angular/service-worker';
 import { provideMonacoEditor } from 'ngx-monaco-editor-v2';
 import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -27,5 +28,6 @@ export const appConfig: ApplicationConfig = {
       },
     }),
     provideHttpClient(withFetch()),
+    provideCharts(withDefaultRegisterables()),
   ],
 };

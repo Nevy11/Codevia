@@ -171,3 +171,10 @@
   //   margin: 0;
   // }
 }
+.stats-graph {
+  min-height: 320px;
+
+  mat-card-content {
+    padding-top: 16px;
+  }
+}
