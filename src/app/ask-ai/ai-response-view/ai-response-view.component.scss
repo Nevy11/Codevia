@@ -1,4 +1,4 @@
-.response-container { display: flex; flex-direction: column; gap: 20px; padding: 10px; max-height: 400px; overflow-y: auto; color: white; }
+// .response-container { display: flex; flex-direction: column; gap: 20px; padding: 10px; max-height: 400px; overflow-y: auto; color: white; }
 .message-row { display: flex; gap: 12px; }
 .avatar { color: #888; }
 .role-label { font-weight: bold; font-size: 0.8rem; display: block; margin-bottom: 4px; }
@@ -13,3 +13,13 @@
   color: #d1d1d1;
   font-style: italic;
 }
+.response-container { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 20px; 
+  padding: 10px; 
+  /* Remove max-height from here */
+  color: white; 
+}
+
+/* ... keep your other message-row, avatar, and b/i styles ... */

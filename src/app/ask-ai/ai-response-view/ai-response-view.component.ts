@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, effect, ElementRef, input, viewChild } from '@angular/core';
 import { ChatMessage } from './chat-message';
 import { FormatMessagePipe } from '../../format-message.pipe';
 
@@ -10,4 +10,20 @@ import { FormatMessagePipe } from '../../format-message.pipe';
 })
 export class AiResponseViewComponent {
   messages = input<ChatMessage[]>([]);
+  scrollContainer = viewChild<ElementRef>('scrollMe');
+  onstructor() {
+    effect(() => {
+      // Trigger whenever messages update
+      if (this.messages().length) {
+        setTimeout(() => this.scrollToBottom(), 100);
+      }
+    });
+  }
+
+  private scrollToBottom() {
+    const el = this.scrollContainer()?.nativeElement;
+    if (el) {
+      el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+    }
+  }
 }
