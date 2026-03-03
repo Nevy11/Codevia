@@ -11,7 +11,7 @@ import { FormatMessagePipe } from '../../format-message.pipe';
 export class AiResponseViewComponent {
   messages = input<ChatMessage[]>([]);
   scrollContainer = viewChild<ElementRef>('scrollMe');
-  onstructor() {
+  constructor() {
     effect(() => {
       // Trigger whenever messages update
       if (this.messages().length) {

@@ -1,48 +1,75 @@
 // .response-container { display: flex; flex-direction: column; gap: 20px; padding: 10px; max-height: 400px; overflow-y: auto; color: white; }
-.message-row { display: flex; gap: 12px; }
-.avatar { color: #888; }
-.role-label { font-weight: bold; font-size: 0.8rem; display: block; margin-bottom: 4px; }
-.text-content { margin: 0; line-height: 1.5; font-size: 0.95rem; opacity: 0.9; }
-.user-row { opacity: 0.8; }
-
-.text-content{
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    line-height: 1.6;
-    b { color: #58a6ff; font-weight: 600; }
-    i { color: #d1d1d1; }
-
-    pre {
-        background-color: #0d1117; // Deep dark blue/black
-        border: 1px solid #30363d;
-        border-radius: 8px;
-        padding: 16px;
-        margin: 16px 0;
-        overflow-x: auto; // Crucial for long lines of code
-    }
-
-    // The text inside the code
-    code {
-        font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-        font-size: 0.85rem;
-        color: #e6edf3; // Off-white for readability
-        line-height: 1.45;
-    }
-
-    // Optional: Styling for inline code like `this`
-    p > code {
-        background-color: rgba(110, 118, 129, 0.4);
-        padding: 0.2em 0.4em;
-        border-radius: 6px;
-        font-size: 85%;
-    }
+.message-row {
+  display: flex;
+  gap: 12px;
 }
-.response-container { 
-  display: flex; 
-  flex-direction: column; 
-  gap: 20px; 
-  padding: 10px; 
-  /* Remove max-height from here */
-  color: white; 
+.avatar {
+  color: #888;
+}
+.role-label {
+  font-weight: bold;
+  font-size: 0.8rem;
+  display: block;
+  margin-bottom: 4px;
+}
+.text-content {
+  margin: 0;
+  line-height: 1.5;
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+.user-row {
+  opacity: 0.8;
+}
+
+.text-content {
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  b {
+    color: #58a6ff;
+    font-weight: 600;
+  }
+  i {
+    color: #d1d1d1;
+  }
+
+  pre {
+    background-color: #0d1117; // Deep dark blue/black
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+    overflow-x: auto; // Crucial for long lines of code
+  }
+
+  // The text inside the code
+  code {
+    font-family:
+      "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.85rem;
+    color: #e6edf3; // Off-white for readability
+    line-height: 1.45;
+  }
+
+  // Optional: Styling for inline code like `this`
+  p > code {
+    background-color: rgba(110, 118, 129, 0.4);
+    padding: 0.2em 0.4em;
+    border-radius: 6px;
+    font-size: 85%;
+  }
+}
+.response-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 10px;
+  color: white;
+
+  // This is the "magic" that enables scrolling:
+  height: 70vh; // Or a specific pixel value like 600px
+  overflow-y: auto;
+  border: 1px solid #30363d; // Optional: helps see the container bounds
 }
 
 /* ... keep your other message-row, avatar, and b/i styles ... */
