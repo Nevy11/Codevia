@@ -267,7 +267,11 @@ export class SupabaseClientService {
       { onConflict: 'user_id, video_id' }
     );
 
-  if (error) return false;
+  if (error)
+    {
+      console.error('Error saving video progress: ', error.message);
+      return false;
+    } 
 
   // 2. AUTOMATIC ENROLLMENT LOGIC
   // Check if this video belongs to a course and enroll the user if they aren't yet
