@@ -46,34 +46,70 @@ export class UserStatsComponent implements OnInit {
   );
   videos: any[] = [];
 
-  courseStats: CourseStat[] = [
-    {
-      courseName: 'Angular Basics',
-      totalVideos: 10,
-      watchedVideos: 10,
-      progress: 100,
-      totalWatchTime: 120,
-    },
-    {
-      courseName: 'Rust for Beginners',
-      totalVideos: 8,
-      watchedVideos: 5,
-      progress: 62,
-      totalWatchTime: 60,
-    },
-    {
-      courseName: 'AI with PyTorch',
-      totalVideos: 12,
-      watchedVideos: 6,
-      progress: 50,
-      totalWatchTime: 80,
-    },
+  courseStats: any[] = [
+    // {
+    //   courseName: 'Angular Basics',
+    //   totalVideos: 10,
+    //   watchedVideos: 10,
+    //   progress: 100,
+    //   totalWatchTime: 120,
+    // },
+    // {
+    //   courseName: 'Rust for Beginners',
+    //   totalVideos: 8,
+    //   watchedVideos: 5,
+    //   progress: 62,
+    //   totalWatchTime: 60,
+    // },
+    // {
+    //   courseName: 'AI with PyTorch',
+    //   totalVideos: 12,
+    //   watchedVideos: 6,
+    //   progress: 50,
+    //   totalWatchTime: 80,
+    // },
   ];
 
+  // async ngOnInit(): Promise<void> {
+  //   this.completionRate = Math.round(
+  //     (this.coursesCompleted / this.totalCoursesEnrolled) * 100
+  //   );
+  //   this.videoThumbnails = await this.supabaseService.getAllCourses();
+  // }
   async ngOnInit(): Promise<void> {
-    this.completionRate = Math.round(
-      (this.coursesCompleted / this.totalCoursesEnrolled) * 100
-    );
+    // 1. Fetch real course metadata
     this.videoThumbnails = await this.supabaseService.getAllCourses();
+
+    // 2. Fetch the 3 most recently watched videos/courses
+    const recentProgress = await this.supabaseService.getRecentUserProgress(3);
+
+    // 3. Map the Supabase data to your UI structure
+    this.courseStats = recentProgress.map(item => {
+      // Assuming you want to show progress. 
+      // Note: To get 'Total Videos', you'd need a more complex query, 
+      // so for now, let's map what we have from the progress table.
+      const recordDate = new Date(item.updated_at);
+    if (recordDate > this.lastActiveDate) {
+      this.lastActiveDate = recordDate;
+    }
+      return {
+        courseName: item.courses?.title || 'Unknown Course',
+        progress: item.playback_position > 0 ? 50 : 0, // Simplified logic
+        totalWatchTime: Math.round(item.playback_position / 60), // Convert seconds to minutes
+        thumbnail: item.courses?.thumbnail_url,
+        lastWatched: item.updated_at
+      };
+    });
+
+    // Calculate completion rate based on real stats if available
+    this.stats$.subscribe(stats => {
+      if (stats) {
+        this.totalCoursesEnrolled = stats.enrolled;
+        this.coursesCompleted = stats.completed;
+        this.completionRate = this.totalCoursesEnrolled > 0 
+          ? Math.round((this.coursesCompleted / this.totalCoursesEnrolled) * 100) 
+          : 0;
+      }
+    });
   }
 }

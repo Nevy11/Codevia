@@ -234,26 +234,51 @@ export class SupabaseClientService {
   }
 
   // Save or update the user's video progress
-  async saveVideoProgress(video_data: VideoSaving): Promise<Boolean> {
-    const { data, error } = await this.client
-      .from('user_video_progress')
-      .upsert(
-        {
-          user_id: video_data.userId,
-          video_id: video_data.videoId,
-          playback_position: video_data.currentTime,
-        },
-        {
-          onConflict: 'user_id, video_id', // Ensures update instead of duplicate data
-        },
-      );
+  // async saveVideoProgress(video_data: VideoSaving): Promise<Boolean> {
+  //   const { data, error } = await this.client
+  //     .from('user_video_progress')
+  //     .upsert(
+  //       {
+  //         user_id: video_data.userId,
+  //         video_id: video_data.videoId,
+  //         playback_position: video_data.currentTime,
+  //       },
+  //       {
+  //         onConflict: 'user_id, video_id', // Ensures update instead of duplicate data
+  //       },
+  //     );
 
-    if (error) {
-      console.error('Error saving video progress: ', error.message);
-      return false;
-    }
-    return true;
+  //   if (error) {
+  //     console.error('Error saving video progress: ', error.message);
+  //     return false;
+  //   }
+  //   return true;
+  // }
+  async saveVideoProgress(video_data: VideoSaving): Promise<boolean> {
+  // 1. Save the actual progress as usual
+  const { error } = await this.client
+    .from('user_video_progress')
+    .upsert(
+      {
+        user_id: video_data.userId,
+        video_id: video_data.videoId,
+        playback_position: video_data.currentTime,
+      },
+      { onConflict: 'user_id, video_id' }
+    );
+
+  if (error) return false;
+
+  // 2. AUTOMATIC ENROLLMENT LOGIC
+  // Check if this video belongs to a course and enroll the user if they aren't yet
+  const course = await this.getCourseByVideoId(video_data.videoId);
+  if (course) {
+    // This RPC you already have will handle incrementing the 'enrolled' count
+    await this.enrollCourse(video_data.userId, course.video_id);
   }
+
+  return true;
+}
 
   // Getting the saved video progress for resume
   async getVideoProgress(video_data: GetVideo) {
@@ -952,4 +977,31 @@ export class SupabaseClientService {
 
     return !error;
   }
+  async getRecentUserProgress(limit: number = 3): Promise<any[]> {
+  const userId = await this.getCurrentUserId();
+  if (!userId) return [];
+
+  // Fetch the latest progress records
+  const { data, error } = await this.client
+    .from('user_video_progress')
+    .select(`
+      playback_position,
+      updated_at,
+      video_id,
+      courses!inner (
+        title,
+        thumbnail_url
+      )
+    `)
+    .eq('user_id', userId)
+    .order('updated_at', { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error('Error fetching recent progress:', error.message);
+    return [];
+  }
+
+  return data;
+}
 }
