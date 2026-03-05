@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   inject,
@@ -48,17 +49,21 @@ export class VideoSectionComponent
   private supabaseService = inject(SupabaseClientService);
   private snackBar = inject(MatSnackBar);
   route = inject(ActivatedRoute);
+  cdr = inject(ChangeDetectorRef);
 
+  
   private async setSafeUrl() {
     if (this.videoId) {
       const video_data: GetVideo = {
         userId: this.user_id,
         videoId: this.videoId,
       };
-      // get saved time from Supabase
       const savedTime = await this.supabaseService.getVideoProgress(video_data);
 
-      const url = `https://www.youtube.com/embed/${this.videoId}?start=${savedTime}&enablejsapi=1&autoplay=1&controls=1&modestbranding=1&rel=0`;
+      // CRITICAL: origin and enablejsapi are required for the API to work with a hardcoded iframe
+      const origin = window.location.origin;
+      const url = `https://www.youtube.com/embed/${this.videoId}?start=${savedTime}&enablejsapi=1&origin=${origin}&autoplay=1&rel=0`;
+      
       this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
     }
   }
@@ -67,46 +72,53 @@ export class VideoSectionComponent
 
     this.user_id = (await this.supabaseService.getCurrentUserId()) || '';
 
-    // 1️⃣ Get video from query params
     this.route.queryParams.subscribe(async (params) => {
-      const paramVideoId = params['video'] ?? null;
+      const paramVideoId = params['video'];
 
       if (paramVideoId) {
-        // user clicked a new video
+        // 1. Prioritize the URL parameter (what the user just clicked)
         this.videoId = paramVideoId;
-        console.log('Video ID from router:', this.videoId);
+        console.log('Playing clicked video:', this.videoId);
       } else {
-        // fallback to last watched
-        this.my_videos = await this.supabaseService.getUserVideos();
-        if (this.my_videos.length > 0) {
-          this.videoId = this.my_videos[this.my_videos.length - 1].video_id;
-          console.log('Video ID from Supabase last watched:', this.videoId);
+        // 2. No param? Try to get last watched from Supabase
+        const my_videos = await this.supabaseService.getUserVideos();
+        
+        if (my_videos && my_videos.length > 0) {
+          this.videoId = my_videos[my_videos.length - 1].video_id;
+          console.log('Playing last watched:', this.videoId);
         } else {
-          this.videoId = 'dQw4w9WgXcQ'; // default
-          console.log('Using fallback video:', this.videoId);
+          // 3. Absolute last resort fallback
+          this.videoId = 'dQw4w9WgXcQ'; 
+          console.log('No history found, using fallback');
         }
       }
 
-      this.setSafeUrl();
-    });
+      // Update the URL and tell Angular to refresh the view
+      await this.setSafeUrl();
+      this.cdr.detectChanges();
 
-    // playback speed subscription
-    this.playbackService.speed$.subscribe((speed) => {
-      this.playbackSpeed = speed;
-      if (this.player) {
-        this.player.setPlaybackRate(speed);
+      // If the player is already initialized, force it to load the new ID
+      if (this.player && typeof this.player.loadVideoById === 'function') {
+        this.player.loadVideoById(this.videoId);
       }
     });
   }
+ 
 
+  
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['videoId'] && this.videoId) {
-      // this.setSafeUrl();
-      if (this.player) {
+      // Only call loadVideoById if the player API has actually connected
+      if (this.player && typeof this.player.loadVideoById === 'function') {
         this.player.loadVideoById(this.videoId);
+      } else {
+        // If player isn't ready yet, setSafeUrl will handle the initial load via [src]
+        if (!isPlatformBrowser(this.platformId)) return;
+        this.setSafeUrl();
       }
     }
-    if (changes['playbackSpeed'] && this.player) {
+    
+    if (changes['playbackSpeed'] && this.player?.setPlaybackRate) {
       this.player.setPlaybackRate(this.playbackSpeed);
     }
   }
@@ -141,44 +153,30 @@ export class VideoSectionComponent
       }
     }
   }
+  
+        
   private async createPlayer() {
-    const video_data: GetVideo = {
-      userId: this.user_id,
-      videoId: this.videoId!,
-    };
+    if (!this.youtubePlayer || !this.videoId) return;
 
-    // fetch saved time from Supabase
-    // const savedTime = await this.supabaseService.getVideoProgress(video_data);
-    this.my_videos = await this.supabaseService.getUserVideos();
-    const savedTime =
-      this.my_videos[this.my_videos.length - 1].playback_position;
-    this.player = new (window as any).YT.Player(
-      this.youtubePlayer.nativeElement,
-      {
-        videoId: this.videoId,
-        playerVars: {
-          start: savedTime,
-          autoplay: 1,
-          controls: 1,
-          modestbranding: 1,
-          rel: 0,
+    // Instead of creating a NEW player, we "bind" to the existing iframe
+    this.player = new (window as any).YT.Player(this.youtubePlayer.nativeElement, {
+      events: {
+        onReady: (event: any) => {
+          console.log('API attached to existing iframe');
+          event.target.setPlaybackRate(this.playbackSpeed);
+          this.startProgressTracking();
         },
-        events: {
-          onReady: (event: any) => {
-            event.target.setPlaybackRate(this.playbackSpeed);
-            this.startProgressTracking(); // 👈 Start tracking progress
-          },
-          onStateChange: async (event: any) => {
-            if (event.data === YT.PlayerState.ENDED) {
-              await this.markCourseCompleted();
-              await this.clear_save_time();
-            }
-          },
+        onStateChange: (event: any) => {
+          if (event.data === (window as any).YT.PlayerState.ENDED) {
+            this.markCourseCompleted();
+          }
         },
+        onError: (event: any) => {
+          console.error('YouTube Player Error:', event.data);
+        }
       }
-    );
+    });
   }
-
   private startProgressTracking() {
     const interval = setInterval(() => {
       if (this.player && typeof this.player.getCurrentTime === 'function') {
@@ -205,7 +203,7 @@ export class VideoSectionComponent
         duration: 3000,
       });
     } else {
-      console.error('❌ There was an issue saving completion');
+      console.error(' There was an issue saving completion');
       this.snackBar.open(`Error while updating completed course`, `Close`, {
         duration: 3000,
       });
