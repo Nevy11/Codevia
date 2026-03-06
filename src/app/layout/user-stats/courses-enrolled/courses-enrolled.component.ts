@@ -17,6 +17,10 @@ export class CoursesEnrolledComponent implements OnInit {
   videoThumbnails: Courses[] | null = null;
 
   async ngOnInit(): Promise<void> {
-    this.videoThumbnails = await this.supabaseService.getAllCourses();
+    const progressData = await this.supabaseService.getUserVideos();
+    // this.videoThumbnails = await this.supabaseService.getAllCourses();
+    // i can use the progressData to get the course ids and then fetch the course details for those ids to display the thumbnails and other details in the UI
+    // this.videoThumbnails = await this.supabaseService.getRecentUserProgress(10);
+    this.videoThumbnails = progressData;
   }
 }
