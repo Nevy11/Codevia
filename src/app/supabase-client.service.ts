@@ -8,6 +8,7 @@ import { Courses } from './layout/user-stats/courses';
 import { Folders } from './layout/learning/code-editor-section/folders';
 import { environment } from '../environments/environment';
 import { ChatMessage } from './ask-ai/ai-response-view/chat-message';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -255,34 +256,37 @@ export class SupabaseClientService {
   //   return true;
   // }
   async saveVideoProgress(video_data: VideoSaving): Promise<boolean> {
-  // 1. Save the actual progress as usual
-  const { error } = await this.client
-    .from('user_video_progress')
-    .upsert(
+    // 1. FIRST, ensure the course exists or get its data
+    // If the video isn't in the 'courses' table yet, the FK will always fail.
+    const course = await this.getCourseByVideoId(video_data.videoId);
+
+    if (!course) {
+      console.warn(
+        `Video ${video_data.videoId} not found in courses. Progress cannot be saved due to FK constraint.`,
+      );
+      return false;
+    }
+
+    // 2. NOW save the progress (The FK will now pass because the course exists)
+    const { error } = await this.client.from('user_video_progress').upsert(
       {
         user_id: video_data.userId,
         video_id: video_data.videoId,
         playback_position: video_data.currentTime,
       },
-      { onConflict: 'user_id, video_id' }
+      { onConflict: 'user_id, video_id' },
     );
 
-  if (error)
-    {
+    if (error) {
       console.error('Error saving video progress: ', error.message);
       return false;
-    } 
+    }
 
-  // 2. AUTOMATIC ENROLLMENT LOGIC
-  // Check if this video belongs to a course and enroll the user if they aren't yet
-  const course = await this.getCourseByVideoId(video_data.videoId);
-  if (course) {
-    // This RPC you already have will handle incrementing the 'enrolled' count
+    // 3. Handle enrollment logic
     await this.enrollCourse(video_data.userId, course.video_id);
-  }
 
-  return true;
-}
+    return true;
+  }
 
   // Getting the saved video progress for resume
   async getVideoProgress(video_data: GetVideo) {
@@ -923,9 +927,12 @@ export class SupabaseClientService {
 
     try {
       // We call the function by the name you gave it in the CLI
-      const { data, error } = await this.client.functions.invoke('gemini-chat', {
-        body: { prompt: prompt },
-      });
+      const { data, error } = await this.client.functions.invoke(
+        'gemini-chat',
+        {
+          body: { prompt: prompt },
+        },
+      );
 
       if (error) {
         console.error('Edge Function Error:', error);
@@ -941,7 +948,10 @@ export class SupabaseClientService {
   }
   // Add to SupabaseClientService class
 
-  async saveChatMessage(role: 'user' | 'assistant', content: string): Promise<void> {
+  async saveChatMessage(
+    role: 'user' | 'assistant',
+    content: string,
+  ): Promise<void> {
     const userId = await this.getCurrentUserId();
     if (!userId) return;
 
@@ -982,13 +992,14 @@ export class SupabaseClientService {
     return !error;
   }
   async getRecentUserProgress(limit: number = 3): Promise<any[]> {
-  const userId = await this.getCurrentUserId();
-  if (!userId) return [];
+    const userId = await this.getCurrentUserId();
+    if (!userId) return [];
 
-  // Fetch the latest progress records
-  const { data, error } = await this.client
-    .from('user_video_progress')
-    .select(`
+    // Fetch the latest progress records
+    const { data, error } = await this.client
+      .from('user_video_progress')
+      .select(
+        `
       playback_position,
       updated_at,
       video_id,
@@ -996,16 +1007,45 @@ export class SupabaseClientService {
         title,
         thumbnail_url
       )
-    `)
-    .eq('user_id', userId)
-    .order('updated_at', { ascending: false })
-    .limit(limit);
+    `,
+      )
+      .eq('user_id', userId)
+      .order('updated_at', { ascending: false })
+      .limit(limit);
 
-  if (error) {
-    console.error('Error fetching recent progress:', error.message);
-    return [];
+    if (error) {
+      console.error('Error fetching recent progress:', error.message);
+      return [];
+    }
+
+    return data;
   }
+  /**
+   * Listens for real-time updates to a specific file's content.
+   * Useful for syncing the code editor across multiple tabs.
+   */
+  // subscribeToFileChanges(fileId: string): Observable<any> {
+  //   return new Observable((observer) => {
+  //     const channel = this.supabase
+  //       .channel(`file-updates-${fileId}`)
+  //       .on(
+  //         'postgres_changes',
+  //         {
+  //           event: 'UPDATE',
+  //           schema: 'public',
+  //           table: 'files',
+  //           filter: `id=eq.${fileId}`, // Only listen to this specific file
+  //         },
+  //         (payload) => {
+  //           observer.next(payload.new);
+  //         },
+  //       )
+  //       .subscribe();
 
-  return data;
-}
+  //     // Cleanup when the component unsubscribes
+  //     return () => {
+  //       this.supabase.removeChannel(channel);
+  //     };
+  //   });
+  // }
 }

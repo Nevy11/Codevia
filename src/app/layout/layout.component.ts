@@ -61,7 +61,7 @@ export class LayoutComponent implements OnInit {
       } else {
         // tablet potrait view
         const isTabletPotrait = this.breakpointObserver.isMatched(
-          Breakpoints.TabletPortrait
+          Breakpoints.TabletPortrait,
         );
         if (isTabletPotrait) {
           return [
@@ -72,7 +72,7 @@ export class LayoutComponent implements OnInit {
         } else {
           // small laptop view
           const isSmallLaptop = this.breakpointObserver.isMatched(
-            '(min-width: 840px) and (max-width: 1366px)'
+            '(min-width: 840px) and (max-width: 1366px)',
           );
           if (isSmallLaptop) {
             return [
@@ -90,7 +90,7 @@ export class LayoutComponent implements OnInit {
           }
         }
       }
-    })
+    }),
   );
   async ngOnInit() {
     // this.isYoutubeShown = this.learningService.get_show_yt();
@@ -118,19 +118,59 @@ export class LayoutComponent implements OnInit {
     this.router.navigate(['/layout/settings'], { queryParams: { tab: index } });
   }
 
-  openSearch() {
+  // openSearch() {
+  //   const dialogRef = this.dialog.open(SearchDialogComponent, {
+  //     width: '800px',
+  //     height: '80vh',
+  //   });
+
+  //   dialogRef.afterClosed().subscribe((videoId: string) => {
+  //     if (videoId) {
+  //       this.router.navigate(['/layout/learning'], {
+  //         queryParams: {
+  //           video: videoId,
+  //         },
+  //       });
+  //     }
+  //   });
+  // }
+  // In layout.component.ts
+  async openSearch() {
     const dialogRef = this.dialog.open(SearchDialogComponent, {
       width: '800px',
       height: '80vh',
     });
 
-    dialogRef.afterClosed().subscribe((videoId: string) => {
-      if (videoId) {
-        this.router.navigate(['/layout/learning'], {
-          queryParams: {
-            video: videoId,
-          },
-        });
+    dialogRef.afterClosed().subscribe(async (videoData: any) => {
+      if (videoData) {
+        // 1. Create the Course entry in Supabase
+        const isCourseCreated = await this.supabaseService.createCourse(
+          videoData.id,
+          videoData.thumbnailUrl,
+          videoData.title,
+          'Imported via Search',
+        );
+
+        if (isCourseCreated) {
+          const userId = await this.supabaseService.getCurrentUserId();
+
+          if (userId) {
+            // 2. Enroll the user automatically
+            await this.supabaseService.enrollCourse(userId, videoData.id);
+
+            // 3. Initialize progress to avoid the Foreign Key error (fk_video_course)
+            await this.supabaseService.saveCurrentVideo(videoData.id);
+          }
+
+          // 4. Finally, navigate to the learning section
+          this.router.navigate(['/layout/learning'], {
+            queryParams: { video: videoData.id },
+          });
+        } else {
+          this.snackBar.open('Error registering course', 'Close', {
+            duration: 3000,
+          });
+        }
       }
     });
   }
@@ -138,10 +178,13 @@ export class LayoutComponent implements OnInit {
   async logout() {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '350px',
-      data: { title: 'Confirm Logout', message: 'Are you sure you want to log out?' }
+      data: {
+        title: 'Confirm Logout',
+        message: 'Are you sure you want to log out?',
+      },
     });
 
-    dialogRef.afterClosed().subscribe(async result => {
+    dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
         this.islogged_out = await this.supabaseService.logout();
         if (this.islogged_out) {
