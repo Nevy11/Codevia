@@ -4,7 +4,6 @@ import {
   ReactiveFormsModule,
   Validators,
   FormControl,
-  FormGroupDirective,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -14,7 +13,7 @@ import { Router } from '@angular/router';
 import { TopLoginSignupComponent } from '../top-login-signup/top-login-signup.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SupabaseClientService } from '../supabase-client.service';
-
+import { NotificiationService } from '../notificiation.service';
 @Component({
   selector: 'nevy11-login',
   imports: [
@@ -33,6 +32,7 @@ export class LoginComponent {
   private router = inject(Router);
   private snackbar = inject(MatSnackBar);
   private supabase = inject(SupabaseClientService);
+  private notify = inject(NotificiationService);
   loginForm = signal({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [
@@ -54,7 +54,7 @@ export class LoginComponent {
     const email = this.loginForm().email.value!;
     const password = this.loginForm().password.value!;
     if (!this.loginForm().email.valid || !this.loginForm().password.valid) {
-      this.snackbar.open('Invalid credentials', 'Close', { duration: 3000 });
+      this.notify.show('Invalid credentials');
       return;
     }
     const { data, error } = await this.supabase.client.auth.signInWithPassword({
@@ -64,9 +64,9 @@ export class LoginComponent {
     // Logic for login can be added here
     if (error) {
       console.error('Login error:', error.message);
-      this.snackbar.open(error.message, 'Close', { duration: 3000 });
+      this.notify.show('Login failed');
     } else {
-      this.snackbar.open('Login Successful', 'Close', { duration: 3000 });
+      this.notify.show('Login Successful');
       this.router.navigate(['/layout/home']);
     }
   }

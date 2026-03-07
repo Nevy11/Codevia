@@ -6,7 +6,6 @@ import {
   OnInit,
   PLATFORM_ID,
   ViewChild,
-  viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
@@ -29,7 +28,7 @@ import { SupabaseClientService } from '../../../supabase-client.service';
 import { RapidApiService } from '../../../rapid-api.service';
 import { CustomSnackBarService } from '../../../custom-snack-bar.service';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Subscription } from 'rxjs';
+import { NotificiationService } from '../../../notificiation.service';
 
 declare const monaco: any;
 
@@ -64,10 +63,9 @@ export class CodeEditorSectionComponent implements OnInit {
   private foldername!: string;
   private parts!: string[];
   private rapidService = inject(RapidApiService);
-  private output_code!: string | null;
   private customSnackBarService = inject(CustomSnackBarService);
   private breakpointObserver = inject(BreakpointObserver);
-  private fileSubscription: Subscription | null = null;
+  private notify = inject(NotificiationService);
   isEditorEnabled: boolean = false;
   isMobile = false;
   isTerminalLoading = false;
@@ -186,11 +184,8 @@ export class CodeEditorSectionComponent implements OnInit {
           };
         } catch (err: any) {
           this.isTerminalLoading = false; // Stop loading on crash
-          this.matsnackbar.open(
-            `TypeScript error: ${err.message || err}`,
-            'Close',
-            { duration: 2000 },
-          );
+          this.notify.show(`TypeScript error: ${err.message || err}`);
+
         }
       }
 
@@ -232,11 +227,7 @@ export class CodeEditorSectionComponent implements OnInit {
         }
       } else {
         this.isTerminalLoading = false; // Stop loading if unsupported extension
-        this.matsnackbar.open(
-          `Extension .${extension} not supported`,
-          'Close',
-          { duration: 2000 },
-        );
+        this.notify.show(`Extension .${extension} not supported`);
       }
     } else {
       this.isTerminalLoading = false; // Not in browser
@@ -248,9 +239,7 @@ export class CodeEditorSectionComponent implements OnInit {
       this.codeEditorService.setcurrentFile(node);
       this.code = node.content || ''; // Load content into Monaco editor
       this.isEditorEnabled = true; // ✅ enable editor
-      this.matsnackbar.open(`Opened file: ${node.name}`, 'Close', {
-        duration: 2000,
-      });
+      this.notify.show(`Opened file: ${node.name}`);
       if (this.isMobile) {
         this.sidenav.close();
       }
@@ -264,18 +253,10 @@ export class CodeEditorSectionComponent implements OnInit {
       this.code = '';
       this.currentFile.content = '';
       this.saveCurrentFile();
-      this.matsnackbar.open(
-        `Code reset in file: ${this.currentFile.name}`,
-        'Close',
-        {
-          duration: 1500,
-        },
-      );
+      this.notify.show(`Code reset in file: ${this.currentFile.name}`);
     } else {
       this.isEditorEnabled = false; // ✅ disable editor
-      this.matsnackbar.open('Error while clearing the file', 'Close', {
-        duration: 2000,
-      });
+      this.notify.show('Error while clearing the file');
     }
   }
 
@@ -283,9 +264,8 @@ export class CodeEditorSectionComponent implements OnInit {
     this.currentFile = this.codeEditorService.getcurrentFile();
 
     if (!this.currentFile) {
-      this.matsnackbar.open('No file is open to download.', 'Close', {
-        duration: 2000,
-      });
+      
+      this.notify.show('No file is open to download.');
       return;
     }
 
@@ -294,23 +274,20 @@ export class CodeEditorSectionComponent implements OnInit {
 
     this.codeEditorService.downloadFile(fileName, fileContent);
 
-    this.matsnackbar.open(`Downloaded: ${fileName}`, 'Close', {
-      duration: 2000,
-    });
+    
+    this.notify.show(`Downloaded: ${fileName}`);
   }
   newFile() {
     const success = this.codeEditorService.createNewFile(this.dataSource);
     if (!success) {
-      this.matsnackbar.open('Select a valid folder first!', 'Close', {
-        duration: 2000,
-      });
+      
+      this.notify.show('Select a valid folder first!');
       return;
     }
     // Refresh UI
     this.dataSource = [...this.dataSource];
-    this.matsnackbar.open('New file placeholder created', 'Close', {
-      duration: 1500,
-    });
+    
+    this.notify.show('New file placeholder created');
   }
 
   // A function to add custom keybindings to the monaco editor
@@ -333,15 +310,13 @@ export class CodeEditorSectionComponent implements OnInit {
   onNodeToggle(node: Folders, isExpanded: boolean) {
     if (isExpanded) {
       // This means the node is about to close
-      this.matsnackbar.open(`Closed folder: ${node.name}`, 'Close', {
-        duration: 2000,
-      });
+      
+      this.notify.show(`Closed folder: ${node.name}`);
     } else {
       // This means the node is about to open
       this.codeEditorService.setfolder_name_selected(node.name);
-      this.matsnackbar.open(`Opened folder: ${node.name}`, 'Close', {
-        duration: 2000,
-      });
+      
+      this.notify.show(`Opened folder: ${node.name}`);
     }
   }
 
@@ -364,9 +339,8 @@ export class CodeEditorSectionComponent implements OnInit {
 
     // Validate name
     if (!node.name || !node.name.trim()) {
-      this.matsnackbar.open('File name cannot be empty.', 'Close', {
-        duration: 2000,
-      });
+      
+      this.notify.show('File name cannot be empty.');
       this.editingInProgress = false;
       return;
     }
@@ -386,28 +360,19 @@ export class CodeEditorSectionComponent implements OnInit {
         fileType,
       );
       if (success) {
-        this.matsnackbar.open(
-          `File "${node.name}" created successfully.`,
-          'Close',
-          { duration: 2000 },
-        );
+       
+        this.notify.show(`File "${node.name}" created successfully.`);
 
         // Refresh the dataSource to update your file tree
         this.dataSource = [...this.dataSource];
       } else {
-        this.matsnackbar.open(
-          'Failed to create file. Please select a valid folder.',
-          'Close',
-          { duration: 2000 },
-        );
+        
+        this.notify.show('Failed to create file. Please select a valid folder.');
       }
     } catch (error) {
       console.error('Error during file creation:', error);
-      this.matsnackbar.open(
-        'An unexpected error occurred while creating the file.',
-        'Close',
-        { duration: 2000 },
-      );
+      
+      this.notify.show('An unexpected error occurred while creating the file.');
     } finally {
       // Allow editing again after a short delay
       setTimeout(() => (this.editingInProgress = false), 100);
@@ -426,28 +391,19 @@ export class CodeEditorSectionComponent implements OnInit {
 
       if (deleted) {
         console.log(`✅ File '${node.name}' deleted successfully!`);
-        this.matsnackbar.open(
-          `File '${node.name}' deleted successfully!`,
-          'Close',
-          { duration: 2000 },
-        );
+        
+        this.notify.show(`File '${node.name}' deleted successfully!`);
         // Refresh UI after deletion
         this.dataSource = [...this.dataSource];
       } else {
         console.warn(`⚠️ File '${node.name}' could not be deleted.`);
-        this.matsnackbar.open(
-          `Failed to delete file '${node.name}'.`,
-          'Close',
-          { duration: 2000 },
-        );
+        
+        this.notify.show(`Failed to delete file '${node.name}'.`);
       }
     } catch (error) {
       console.error('❌ Error deleting file:', error);
-      this.matsnackbar.open(
-        `An error occurred while deleting file '${node.name}'.`,
-        'Close',
-        { duration: 2000 },
-      );
+      
+      this.notify.show(`An error occurred while deleting file '${node.name}'.`);
     }
   }
 
@@ -457,9 +413,8 @@ export class CodeEditorSectionComponent implements OnInit {
     if (!folderName) {
       this.codeEditorService.createNewRootFolder(this.dataSource);
       this.dataSource = [...this.dataSource]; // Refresh UI
-      this.matsnackbar.open('New root folder created successfully!', 'Close', {
-        duration: 2000,
-      });
+      
+      this.notify.show('New root folder created successfully!');
       return;
     }
 
@@ -470,13 +425,10 @@ export class CodeEditorSectionComponent implements OnInit {
 
     if (success) {
       this.dataSource = [...this.dataSource]; // Refresh UI
-      this.matsnackbar.open('New folder created successfully!', 'Close', {
-        duration: 2000,
-      });
+      this.notify.show('New folder created successfully!');
     } else {
-      this.matsnackbar.open('Failed to create folder.', 'Close', {
-        duration: 2000,
-      });
+    
+      this.notify.show("Failed to create folder.")
     }
   }
 
@@ -495,15 +447,11 @@ export class CodeEditorSectionComponent implements OnInit {
       );
       if (created) {
         this.dataSource = [...this.dataSource];
-        this.matsnackbar.open(
-          'New root folder created successfully!',
-          'Close',
-          { duration: 2000 },
-        );
+        
+        this.notify.show("New root folder created successfully!")
       } else {
-        this.matsnackbar.open('Failed to create root folder.', 'Close', {
-          duration: 2000,
-        });
+        
+        this.notify.show("New root folder created successfully!")
       }
       return;
     }
@@ -517,13 +465,11 @@ export class CodeEditorSectionComponent implements OnInit {
 
     if (success) {
       this.dataSource = [...this.dataSource];
-      this.matsnackbar.open('New folder created successfully!', 'Close', {
-        duration: 2000,
-      });
+      
+      this.notify.show('New folder created successfully!')
     } else {
-      this.matsnackbar.open('Failed to create folder.', 'Close', {
-        duration: 2000,
-      });
+      
+      this.notify.show('Failed to create folder.')
     }
 
     this.cdr.detectChanges(); // 🔹 Ensure view updates after async call too
@@ -544,21 +490,16 @@ export class CodeEditorSectionComponent implements OnInit {
         );
 
         // Notify success
-        this.matsnackbar.open(`Saved: ${this.currentFile.name}`, 'Close', {
-          duration: 1500,
-        });
+        
+        this.notify.show(`Saved: ${this.currentFile.name}`);
       } catch (error: any) {
         console.error('Error saving file:', error.message || error);
-        this.matsnackbar.open(
-          `Failed to save: ${this.currentFile.name}`,
-          'Close',
-          { duration: 2000 },
-        );
+        
+        this.notify.show(`Failed to save: ${this.currentFile.name}`);
       }
     } else {
-      this.matsnackbar.open('No file is open to save.', 'Close', {
-        duration: 2000,
-      });
+      
+      this.notify.show('No file is open to save.');
     }
   }
 
