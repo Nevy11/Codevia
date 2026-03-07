@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../../environments/environment.development';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
+import { environment } from '../environments/environment.development';
 
 @Injectable({
   providedIn: 'root',
@@ -26,7 +26,7 @@ export class YoutubeService {
 
   getVideos(query: string, maxResults: number = 50): Observable<any[]> {
     const url = `${this.apiUrl}?part=snippet&type=video&q=${encodeURIComponent(
-      query
+      query,
     )}&maxResults=${maxResults}&key=${this.apiKey}`;
     return this.http.get<any>(url).pipe(
       map((res) =>
@@ -34,8 +34,8 @@ export class YoutubeService {
           id: item.id.videoId,
           title: item.snippet.title,
           thumbnailUrl: item.snippet.thumbnails.high.url,
-        }))
-      )
+        })),
+      ),
     );
   }
 }

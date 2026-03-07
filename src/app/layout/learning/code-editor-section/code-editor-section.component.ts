@@ -29,6 +29,7 @@ import { SupabaseClientService } from '../../../supabase-client.service';
 import { RapidApiService } from '../../../rapid-api.service';
 import { CustomSnackBarService } from '../../../custom-snack-bar.service';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { Subscription } from 'rxjs';
 
 declare const monaco: any;
 
@@ -66,6 +67,7 @@ export class CodeEditorSectionComponent implements OnInit {
   private output_code!: string | null;
   private customSnackBarService = inject(CustomSnackBarService);
   private breakpointObserver = inject(BreakpointObserver);
+  private fileSubscription: Subscription | null = null;
   isEditorEnabled: boolean = false;
   isMobile = false;
   isTerminalLoading = false;
@@ -595,50 +597,3 @@ export class CodeEditorSectionComponent implements OnInit {
     window.removeEventListener('mouseup', this.stopResizing);
   };
 }
-
-//  else if (extension == 'py') {
-//   this.rapidService
-//     .getInfo()
-//     .then((response) => {
-//       console.log('Rapid API response received in component:', response);
-//     })
-//     .catch((error) => {
-//       console.error('Error in Rapid API call:', error);
-//     });
-//   const result = this.rapidService.runPython(this.code);
-//   console.log('Output: ', result);
-//   console.log('output_code: ', (await result).stdout);
-//   this.output_code = (await result).stdout;
-
-//   if (this.output_code != null) {
-//     this.logs = [this.output_code];
-//     console.log('new log pushed: ', this.output_code);
-//   }
-// } else if (extension == 'rs') {
-//   const result = this.rapidService.runRust(this.code);
-//   console.log('Output: ', result);
-//   console.log('output_code: ', (await result).stdout);
-//   this.output_code = (await result).stdout;
-
-//   if (this.output_code != null) {
-//     this.logs = [this.output_code];
-//     console.log('new log pushed: ', this.output_code);
-//   }
-// }
-
-// else if (extension === 'c') {
-//   const result = this.rapidService.runC(this.code);
-//   this.output_code = (await result).stdout;
-//   this.logs = this.output_code ? [this.output_code] : [];
-// } else if (['cpp', 'cc', 'cxx'].includes(extension)) {
-//   const result = this.rapidService.runCpp(this.code);
-//   this.output_code = (await result).stdout;
-//   this.logs = this.output_code ? [this.output_code] : [];
-// } else {
-//   this.matsnackbar.open(
-//     `Running code for .${extension} files is not supported yet.`,
-//     'Close',
-//     { duration: 2000 }
-//   );
-//   return;
-// }

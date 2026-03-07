@@ -1,13 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { CourseStat } from './course-stat';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { Courses } from './courses';
 import { SupabaseClientService } from '../../supabase-client.service';
-import { YoutubeService } from '../youtube.service';
-import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { CoursesEnrolledComponent } from './courses-enrolled/courses-enrolled.component';
 import { from, of, switchMap } from 'rxjs';
@@ -42,7 +39,7 @@ export class UserStatsComponent implements OnInit {
     switchMap((userId) => {
       if (!userId) return of(null);
       return from(this.supabaseService.getCourseStats(userId));
-    })
+    }),
   );
   videos: any[] = [];
 
@@ -84,31 +81,34 @@ export class UserStatsComponent implements OnInit {
     const recentProgress = await this.supabaseService.getRecentUserProgress(3);
 
     // 3. Map the Supabase data to your UI structure
-    this.courseStats = recentProgress.map(item => {
-      // Assuming you want to show progress. 
-      // Note: To get 'Total Videos', you'd need a more complex query, 
+    this.courseStats = recentProgress.map((item) => {
+      // Assuming you want to show progress.
+      // Note: To get 'Total Videos', you'd need a more complex query,
       // so for now, let's map what we have from the progress table.
       const recordDate = new Date(item.updated_at);
-    if (recordDate > this.lastActiveDate) {
-      this.lastActiveDate = recordDate;
-    }
+      if (recordDate > this.lastActiveDate) {
+        this.lastActiveDate = recordDate;
+      }
       return {
         courseName: item.courses?.title || 'Unknown Course',
         progress: item.playback_position > 0 ? 50 : 0, // Simplified logic
         totalWatchTime: Math.round(item.playback_position / 60), // Convert seconds to minutes
         thumbnail: item.courses?.thumbnail_url,
-        lastWatched: item.updated_at
+        lastWatched: item.updated_at,
       };
     });
 
     // Calculate completion rate based on real stats if available
-    this.stats$.subscribe(stats => {
+    this.stats$.subscribe((stats) => {
       if (stats) {
         this.totalCoursesEnrolled = stats.enrolled;
         this.coursesCompleted = stats.completed;
-        this.completionRate = this.totalCoursesEnrolled > 0 
-          ? Math.round((this.coursesCompleted / this.totalCoursesEnrolled) * 100) 
-          : 0;
+        this.completionRate =
+          this.totalCoursesEnrolled > 0
+            ? Math.round(
+                (this.coursesCompleted / this.totalCoursesEnrolled) * 100,
+              )
+            : 0;
       }
     });
   }

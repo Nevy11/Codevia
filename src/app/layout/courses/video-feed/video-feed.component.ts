@@ -1,11 +1,9 @@
 import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { YoutubeService } from '../../youtube.service';
 import { SupabaseClientService } from '../../../supabase-client.service';
 
 @Component({
@@ -17,9 +15,7 @@ import { SupabaseClientService } from '../../../supabase-client.service';
 })
 export class VideoFeedComponent implements OnInit {
   private router = inject(Router);
-  private youtube = inject(YoutubeService);
   private supabaseService = inject(SupabaseClientService);
-  private is_thumbnail_stored: Boolean = false;
   private userId: string | null = null;
   private is_courses_enrolled: boolean = false;
 
@@ -38,7 +34,7 @@ export class VideoFeedComponent implements OnInit {
 
     const courses = await this.supabaseService.getAllCourses(
       this.limit,
-      this.offset
+      this.offset,
     );
 
     if (courses) {
@@ -47,7 +43,7 @@ export class VideoFeedComponent implements OnInit {
           id: course.video_id,
           title: course.title,
           thumbnailUrl: course.thumbnail_url,
-        }))
+        })),
       );
       this.offset += this.limit;
     } else {
@@ -72,7 +68,7 @@ export class VideoFeedComponent implements OnInit {
       video.id,
       video.thumbnailUrl,
       video.title,
-      ''
+      '',
     );
 
     if (isCourseCreated) {
@@ -81,7 +77,7 @@ export class VideoFeedComponent implements OnInit {
       if (this.userId) {
         this.is_courses_enrolled = await this.supabaseService.enrollCourse(
           this.userId,
-          video.id
+          video.id,
         );
         if (this.is_courses_enrolled) {
           console.log('The course was updated successfully');
