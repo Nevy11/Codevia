@@ -26,8 +26,11 @@ export class NotificationSettingsComponent implements OnInit {
   frequencies = ['instant', 'daily', 'weekly', 'never'];
 
   private settingService = inject(NotificationSettingsService);
-  ngOnInit(): void {
-    this.settings = this.settingService.getSettings();
+  async ngOnInit(): Promise<void> {
+    this.settingService.settings$.subscribe((data) => {
+      this.settings = {...data };
+    });
+    // this.settings = this.settingService.getSettings();
   }
   save() {
     this.settingService.updateSettings(this.settings);

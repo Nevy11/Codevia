@@ -9,6 +9,7 @@ import { Folders } from './layout/learning/code-editor-section/folders';
 import { environment } from '../environments/environment';
 import { ChatMessage } from './ask-ai/ai-response-view/chat-message';
 import { Observable } from 'rxjs';
+import { NotificationSettings } from './layout/settings/notification-settings/notification-settings';
 
 @Injectable({
   providedIn: 'root',
@@ -1020,6 +1021,50 @@ export class SupabaseClientService {
 
     return data;
   }
+  // Get Notification Settings
+async getNotificationSettings(): Promise<NotificationSettings | null> {
+  const userId = await this.getCurrentUserId();
+  if (!userId) return null;
+
+  const { data, error } = await this.client
+    .from('user_settings')
+    .select('learning_reminders, product_updates, email_notifications, push_notifications, in_app_notifications, frequency')
+    .eq('user_id', userId)
+    .maybeSingle();
+
+  if (error || !data) return null;
+
+  // Map snake_case from DB back to camelCase for the Interface
+  return {
+    learningReminders: data.learning_reminders,
+    productUpdates: data.product_updates,
+    emailNotifications: data.email_notifications,
+    pushNotifications: data.push_notifications,
+    inAppNotifications: data.in_app_notifications,
+    frequency: data.frequency
+  };
+}
+
+// Update Notification Settings
+async updateNotificationSettings(settings: NotificationSettings): Promise<boolean> {
+  const userId = await this.getCurrentUserId();
+  if (!userId) return false;
+
+  const { error } = await this.client.from('user_settings').upsert(
+    {
+      user_id: userId,
+      learning_reminders: settings.learningReminders,
+      product_updates: settings.productUpdates,
+      email_notifications: settings.emailNotifications,
+      push_notifications: settings.pushNotifications,
+      in_app_notifications: settings.inAppNotifications,
+      frequency: settings.frequency
+    },
+    { onConflict: 'user_id' }
+  );
+
+  return !error;
+}
   /**
    * Listens for real-time updates to a specific file's content.
    * Useful for syncing the code editor across multiple tabs.
