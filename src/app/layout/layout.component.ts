@@ -18,7 +18,7 @@ import { ProfileService } from './settings/profile-setup-stepper/profile.service
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { LearningService } from './learning/learning.service';
 import { ConfirmationDialogComponent } from '../shared/confirmation-dialog/confirmation-dialog.component';
-
+import { NotificiationService } from '../notificiation.service';
 @Component({
   selector: 'nevy11-layout',
   imports: [
@@ -50,6 +50,7 @@ export class LayoutComponent implements OnInit {
   private profileService = inject(ProfileService);
   private snackBar = inject(MatSnackBar);
   private learningService = inject(LearningService);
+  private notify = inject(NotificiationService);
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {
       if (matches) {
@@ -167,9 +168,10 @@ export class LayoutComponent implements OnInit {
             queryParams: { video: videoData.id },
           });
         } else {
-          this.snackBar.open('Error registering course', 'Close', {
-            duration: 3000,
-          });
+          // this.snackBar.open('Error registering course', 'Close', {
+          //   duration: 3000,
+          // });
+          this.notify.show('Error registering course');
         }
       }
     });
@@ -188,15 +190,17 @@ export class LayoutComponent implements OnInit {
       if (result) {
         this.islogged_out = await this.supabaseService.logout();
         if (this.islogged_out) {
-          this.snackBar.open('Logged out successfully', `Close`, {
-            duration: 3600,
-          });
+          // this.snackBar.open('Logged out successfully', `Close`, {
+          //   duration: 3600,
+          // });
+          this.notify.show('Logged out successfully');
           this.themeChangeService.setTheme('light');
           this.router.navigate(['']);
         } else {
-          this.snackBar.open(`log out unsuccessfull`, `Close`, {
-            duration: 3600,
-          });
+          this.notify.show('log out unsuccessfull');
+          // this.snackBar.open(`log out unsuccessfull`, `Close`, {
+          //   duration: 3600,
+          // });
         }
       }
     });
@@ -205,14 +209,17 @@ export class LayoutComponent implements OnInit {
     console.log(`${this.learningService.getShowYT()}`);
     if (this.learningService.getShowYT()) {
       this.learningService.set_show_yt(false);
-      this.snackBar.open(`Youtube hidden`, `Close`, {
-        duration: 3000,
-      });
+      this.notify.show('Youtube hidden');
+      // this.snackBar.open(`Youtube hidden`, `Close`, {
+      //   duration: 3000,
+      // });
     } else {
       this.learningService.set_show_yt(true);
-      this.snackBar.open(`Youtube displayed`, `Close`, {
-        duration: 3000,
-      });
+      this.notify.show('Youtube displayed');
+      // this.snackBar.open(`Youtube displayed`, `Close`, {
+      //   duration: 3000,
+      // });
     }
   }
+  
 }
