@@ -1065,6 +1065,29 @@ async updateNotificationSettings(settings: NotificationSettings): Promise<boolea
 
   return !error;
 }
+/**
+ * Saves a Web Push subscription to the database.
+ * This is the 'address' used by Supabase Edge Functions to send OS-level notifications.
+ */
+async savePushSubscription(subscription: PushSubscription): Promise<boolean> {
+  const userId = await this.getCurrentUserId();
+  if (!userId) return false;
+
+  // We convert the subscription to JSON to store it in a JSONB column
+  const { error } = await this.client
+    .from('push_subscriptions')
+    .upsert({
+      user_id: userId,
+      subscription_json: subscription.toJSON(),
+      browser_name: navigator.userAgent.includes('Brave') ? 'Brave' : 'Other'
+    }, { onConflict: 'user_id' }); // One subscription per user (simple approach)
+
+  if (error) {
+    console.error('Error saving push subscription:', error.message);
+    return false;
+  }
+  return true;
+}
   /**
    * Listens for real-time updates to a specific file's content.
    * Useful for syncing the code editor across multiple tabs.
