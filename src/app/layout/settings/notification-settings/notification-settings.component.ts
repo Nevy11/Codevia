@@ -9,6 +9,7 @@ import { NotificationSettingsService } from './notification-settings.service';
 import { CommonModule } from '@angular/common';
 import { SupabaseClientService } from '../../../supabase-client.service';
 import { SwPush } from '@angular/service-worker';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'nevy11-notification-settings',
@@ -31,7 +32,8 @@ export class NotificationSettingsComponent implements OnInit {
   private supabaseService = inject(SupabaseClientService);
   private swPush = inject(SwPush);
 
-  readonly VAPID_PUBLIC_KEY = "BH362Ae9m5yRBU2JeVv43IJIs0jxEKacm0g2rjjY_WofSVmOJ2NjYr4giGO7NKEoAaZpdW_eQU8aLiL9I5KDOII"; 
+  // readonly VAPID_PUBLIC_KEY = "BH362Ae9m5yRBU2JeVv43IJIs0jxEKacm0g2rjjY_WofSVmOJ2NjYr4giGO7NKEoAaZpdW_eQU8aLiL9I5KDOII"; 
+  private readonly VAPID_PUBLIC_KEY = environment.vapidPublicKey;
 
   async ngOnInit(): Promise<void> {
     this.settingService.settings$.subscribe((data) => {

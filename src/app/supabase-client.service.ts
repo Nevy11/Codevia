@@ -23,10 +23,11 @@ export class SupabaseClientService {
   private deleted_user: any;
   constructor(@Inject(PLATFORM_ID) private platformId: object) {
     if (isPlatformBrowser(this.platformId)) {
-      this.supabase = createClient(
-        'https://xzeysnqxzmzlfbzfjhys.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZXlzbnF4em16bGZiemZqaHlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5NjU5MzMsImV4cCI6MjA2OTU0MTkzM30.dG4lwMFKtTpklmOu_tZeFrRZy-vvYhdjwsO2zz2yaNE',
-      );
+      // this.supabase = createClient(
+      //   'https://xzeysnqxzmzlfbzfjhys.supabase.co',
+      //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZXlzbnF4em16bGZiemZqaHlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5NjU5MzMsImV4cCI6MjA2OTU0MTkzM30.dG4lwMFKtTpklmOu_tZeFrRZy-vvYhdjwsO2zz2yaNE',
+      // );
+      this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
     }
   }
   get client() {
