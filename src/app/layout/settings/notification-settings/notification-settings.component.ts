@@ -40,27 +40,25 @@ export class NotificationSettingsComponent implements OnInit {
   }
 
   async onTogglePush(enabled: boolean) {
-    if (enabled) {
-      try {
-        // 1. Ask browser for permission & get subscription object
-        const sub = await this.swPush.requestSubscription({
-          serverPublicKey: this.VAPID_PUBLIC_KEY
-        });
-
-        // 2. Save subscription to Supabase
-        await this.supabaseService.savePushSubscription(sub);
-        
-        // 3. Update settings state
-        this.save();
-      } catch (err) {
-        console.error('Push subscription failed:', err);
-        // Fallback: turn the toggle back off if they denied permission
-        this.settings.pushNotifications = false;
-      }
-    } else {
+  if (enabled) {
+    try {
+      const sub = await this.swPush.requestSubscription({
+        serverPublicKey: this.VAPID_PUBLIC_KEY
+      });
+      await this.supabaseService.savePushSubscription(sub);
       this.save();
+    } catch (err: any) {
+      console.error('Push subscription failed:', err);
+      
+      // Check for Brave/Chrome specific push service errors
+      if (err.message.includes('push service error')) {
+        alert("It looks like your browser is blocking push notifications. If you're using Brave, please enable 'Google services for push messaging' in your Privacy settings.");
+      }
+      
+      this.settings.pushNotifications = false; // Reset toggle
     }
   }
+}
 
   save() {
     this.settingService.updateSettings(this.settings);
