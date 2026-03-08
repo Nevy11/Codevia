@@ -38,7 +38,7 @@ export class NotificationSettingsComponent implements OnInit {
       this.settings = { ...data };
     });
   }
-
+  
   async onTogglePush(enabled: boolean) {
   if (enabled) {
     try {

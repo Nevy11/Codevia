@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import WebPush from "https://esm.sh/web-push@3.6.6"
+import WebPush from "npm:web-push@3.6.7"
 
 const VAPID_PUBLIC_KEY = Deno.env.get('VAPID_PUBLIC_KEY')!
 const VAPID_PRIVATE_KEY = Deno.env.get('VAPID_PRIVATE_KEY')!
@@ -49,6 +49,18 @@ serve(async (req) => {
     })
 
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), { status: 500 })
+    // This logs to the Supabase Dashboard "Logs" tab
+    console.error("DETAILED_ERROR:", err.message);
+    
+    return new Response(
+      JSON.stringify({ 
+        error: err.message, 
+        details: "Check Supabase Function Logs for full stack trace" 
+      }), 
+      { 
+        status: 500, 
+        headers: { "Content-Type": "application/json" } 
+      }
+    )
   }
 })
