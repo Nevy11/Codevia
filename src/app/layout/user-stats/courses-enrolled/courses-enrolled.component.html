@@ -1,18 +1,18 @@
 <div class="p-4">
   <div class="video-grid">
-    @for (video of courses; track $index) {
+    @for (course of courses; track $index) {
     <mat-card class="video-card">
       <img
         mat-card-image
-        [src]="video.thumbnail_url"
-        alt="{{ video.video_id }}"
+        [src]="course.thumbnail_url"
+        alt="{{ course.video_id }}"
       />
       <mat-card-content>
-        <h3>{{ video.video_id }}</h3>
+        <h3>{{ course.title }}</h3>
       </mat-card-content>
       
       <p mat-line class="created-date">
-        {{ video.created_at | date : "medium" }}
+        {{ course.created_at | date : "medium" }}
       </p>
     </mat-card>
     }

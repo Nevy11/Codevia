@@ -1,5 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
-import { SupabaseClientService } from '../../../supabase-client.service';
+import { Component, Input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,12 +12,8 @@ import { DatePipe } from '@angular/common';
   styleUrl: './courses-enrolled.component.scss',
 })
 export class CoursesEnrolledComponent  {
-  private supabaseService = inject(SupabaseClientService);
-  // videoThumbnails: Courses[] | null = null;
   @Input() courses: Courses[] | null = [];
 
-  // async ngOnInit(): Promise<void> {
-  //   const progressData = await this.supabaseService.getUserVideos();
-  //   this.videoThumbnails = progressData;
-  // }
+ 
+
 }
