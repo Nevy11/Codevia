@@ -144,13 +144,28 @@
   
 }
 .main-dashboard-wrapper {
+  position: relative; // Needed for the absolute overlay
   width: 100%;
-  transition: filter 0.3s ease; // Smooth transition
+  min-height: 100vh;
+  transition: filter 0.3s ease;
 }
 
-// Global class bound in HTML
+.loader-overlay {
+  position: fixed; 
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.2); 
+}
+
 .blur-content {
   filter: blur(8px);
-  pointer-events: none; // Disable clicks while loading
-  user-select: none;    // Disable text highlighting
+  pointer-events: none; 
+  user-select: none;
+  opacity: 0.7; 
 }

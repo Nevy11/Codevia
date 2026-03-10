@@ -31,6 +31,8 @@ export class HomeComponent implements OnInit {
   // loadingUrls: boolean = true;
   loading: boolean = true;
   profile: Profile | null = null;
+  latestCourseTitle = 'No courses started';
+  latestCourseProgress = 0;
   private router = inject(Router);
   private breakpointObserver = inject(BreakpointObserver);
   private supabaseService = inject(SupabaseClientService);
@@ -105,42 +107,29 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['/layout/learning']);
   }
 
-  // async ngOnInit(): Promise<void> {
-  //   this.supabaseService.logActivity();
-  //   this.loadStats();
-  //   this.profile = await this.supabaseService.getProfile();
-  //   if (this.profile) {
-  //     this.username = this.profile.name;
-  //   }
-
-  //   this.user_id = await this.supabaseService.getCurrentUserId();
-  //   if (this.user_id) {
-  //     // create observable AFTER we know the user_id
-  //     this.stats$ = from(this.supabaseService.getCourseStats(this.user_id));
-
-  //     // if you still want the console log:
-  //     this.stats$.subscribe((stat) => {
-  //       this.stats = stat;
-  //     });
-  //   }
-  //   this.loadingUrls = false;
-  // }
+  
   async ngOnInit(): Promise<void> {
     // 2. Wrap everything in a try/catch/finally block
     try {
       this.loading = true; // Ensure loader shows
 
       // Start all calls in parallel for better performance
-      const [userId, profile] = await Promise.all([
+      const [userId, profile, recentProgress] = await Promise.all([
         this.supabaseService.getCurrentUserId(),
         this.supabaseService.getProfile(),
-        this.supabaseService.logActivity() // Fire and forget
+        this.supabaseService.getRecentUserProgress(1), // Fetch the single latest record
+        this.supabaseService.logActivity()
       ]);
 
       if (profile) {
         this.username = profile.name;
       }
-
+      if (recentProgress && recentProgress.length > 0) {
+        const latest = recentProgress[0];
+        this.latestCourseTitle = latest.courses?.title || 'Unknown Course';
+        
+        this.latestCourseProgress = latest.progress_percent || 0; 
+      }
       this.user_id = userId;
 
       if (this.user_id) {
@@ -174,23 +163,5 @@ export class HomeComponent implements OnInit {
       };
     }
   }
-  // async loadStats() {
-  //   const chartData = await this.supabaseService.getWeeklyStats();
-
-  //   // Correct way to log objects to the console
-  //   console.log('Chart data received:', chartData);
-
-  //   // 2. Map the data to the chart
-  //   if (chartData) {
-  //     this.barChartData = {
-  //       labels: chartData.map((item) => item.day),
-  //       datasets: [
-  //         {
-  //           ...this.barChartData.datasets[0],
-  //           data: chartData.map((item) => item.count),
-  //         },
-  //       ],
-  //     };
-  //   }
-  // }
+  
 }
