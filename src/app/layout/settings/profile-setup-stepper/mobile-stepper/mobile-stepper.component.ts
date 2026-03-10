@@ -208,7 +208,7 @@ export class MobileStepperComponent implements OnInit{
 
     if (success) {
       this.notify.show('Profile created successfully!');
-      this.router.navigate(['/layout/user-stats']);
+      this.router.navigate(['/layout/home']);
     } else {
       this.notify.show('Error saving profile.');
     }

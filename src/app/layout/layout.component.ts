@@ -15,7 +15,7 @@ import { map } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { SupabaseClientService } from '../supabase-client.service';
 import { ProfileService } from './settings/profile-setup-stepper/profile.service';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { LearningService } from './learning/learning.service';
 import { ConfirmationDialogComponent } from '../shared/confirmation-dialog/confirmation-dialog.component';
 import { NotificiationService } from '../notificiation.service';
@@ -48,7 +48,6 @@ export class LayoutComponent implements OnInit {
   private breakpointObserver = inject(BreakpointObserver);
   private supabaseService = inject(SupabaseClientService);
   private profileService = inject(ProfileService);
-  private snackBar = inject(MatSnackBar);
   private learningService = inject(LearningService);
   private notify = inject(NotificiationService);
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
@@ -119,22 +118,7 @@ export class LayoutComponent implements OnInit {
     this.router.navigate(['/layout/settings'], { queryParams: { tab: index } });
   }
 
-  // openSearch() {
-  //   const dialogRef = this.dialog.open(SearchDialogComponent, {
-  //     width: '800px',
-  //     height: '80vh',
-  //   });
-
-  //   dialogRef.afterClosed().subscribe((videoId: string) => {
-  //     if (videoId) {
-  //       this.router.navigate(['/layout/learning'], {
-  //         queryParams: {
-  //           video: videoId,
-  //         },
-  //       });
-  //     }
-  //   });
-  // }
+  
   // In layout.component.ts
   async openSearch() {
     const dialogRef = this.dialog.open(SearchDialogComponent, {
@@ -168,9 +152,7 @@ export class LayoutComponent implements OnInit {
             queryParams: { video: videoData.id },
           });
         } else {
-          // this.snackBar.open('Error registering course', 'Close', {
-          //   duration: 3000,
-          // });
+          
           this.notify.show('Error registering course');
         }
       }

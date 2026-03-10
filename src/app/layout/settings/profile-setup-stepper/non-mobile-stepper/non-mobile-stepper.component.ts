@@ -138,7 +138,7 @@ export class NonMobileStepperComponent implements OnInit{
     );
     if (result) {
       this.notify.show('Registration process completed!');
-      this.router.navigate(['/layout/user-stats']);
+      this.router.navigate(['/layout/home']);
     } else {
       this.notify.show('Error completing registration.');
     }
