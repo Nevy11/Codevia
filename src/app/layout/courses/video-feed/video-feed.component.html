@@ -1,26 +1,24 @@
-<div class="video-grid" *ngIf="videos.length; else noVideos">
-  <mat-card class="video-card" *ngFor="let video of videos">
-    <img mat-card-image [src]="video.thumbnailUrl" alt="{{ video.title }}" />
-    <mat-card-content>
-      <h3>{{ video.title }}</h3>
-    </mat-card-content>
-    <mat-card-actions class="card-actions">
-      <button
-        mat-flat-button
-        color="primary"
-        aria-label="Play"
-        (click)="playVideo(video)"
-      >
-        <mat-icon>play_arrow</mat-icon>
-        Play
-      </button>
-    </mat-card-actions>
-  </mat-card>
-</div>
+<div class="component-wrapper">
+  
+  @if (!videos || videos.length === 0) {
+    <div class="loader-overlay">
+      <nevy11-loader></nevy11-loader>
+    </div>
+  }
 
-<ng-template #noVideos>
-  <!-- <p class="no-videos">No videos available</p> -->
-  <div class="spinner">
-    <nevy11-loader></nevy11-loader>
+  <div class="video-grid" [class.blur-content]="!videos || videos.length === 0">
+    @for (video of videos; track video.title) {
+      <mat-card class="video-card">
+        <img mat-card-image [src]="video.thumbnailUrl" [alt]="video.title" />
+        <mat-card-content>
+          <h3>{{ video.title }}</h3>
+        </mat-card-content>
+        <mat-card-actions class="card-actions">
+          <button mat-flat-button color="primary" (click)="playVideo(video)">
+            <mat-icon>play_arrow</mat-icon> Play
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    }
   </div>
-</ng-template>
+</div>
