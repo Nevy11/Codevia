@@ -325,15 +325,43 @@ export class SupabaseClientService {
     return true;
   }
 
+  // async getUserVideos(): Promise<any[]> {
+  //   this.user_id = await this.getCurrentUserId();
+  //   if (!this.user_id) {
+  //     console.error('No user logged in');
+  //     return [];
+  //   }
+  //   const { data, error } = await this.client
+  //     .from('user_video_progress')
+  //     .select('video_id, playback_position')
+  //     .eq('user_id', this.user_id);
+
+  //   if (error) {
+  //     console.error('Error fetching user videos: ', error.message);
+  //     return [];
+  //   }
+
+  //   return data || [];
+  // }
   async getUserVideos(): Promise<any[]> {
     this.user_id = await this.getCurrentUserId();
     if (!this.user_id) {
       console.error('No user logged in');
       return [];
     }
+
+    // Use !inner or a hint to let TypeScript know this is a single join
     const { data, error } = await this.client
       .from('user_video_progress')
-      .select('video_id, playback_position')
+      .select(`
+        video_id, 
+        playback_position,
+        courses (
+          title,
+          thumbnail_url,
+          description
+        )
+      `)
       .eq('user_id', this.user_id);
 
     if (error) {
@@ -341,7 +369,19 @@ export class SupabaseClientService {
       return [];
     }
 
-    return data || [];
+    // We cast 'item.courses' as 'any' or check if it's an array to avoid the TS error
+    return (data || []).map((item: any) => {
+      // Supabase joins sometimes return an array even for 1-to-1 relations
+      const courseInfo = Array.isArray(item.courses) ? item.courses[0] : item.courses;
+
+      return {
+        video_id: item.video_id,
+        title: courseInfo?.title || 'Unknown Title',
+        thumbnail_url: courseInfo?.thumbnail_url || 'assets/default-thumbnail.png',
+        description: courseInfo?.description || '',
+        playback_position: item.playback_position
+      };
+    });
   }
   async saveCurrentVideo(videoId: string): Promise<boolean> {
     const userId = await this.getCurrentUserId();

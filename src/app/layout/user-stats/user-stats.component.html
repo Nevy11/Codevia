@@ -109,7 +109,7 @@
     <mat-card-title>Watched Videos</mat-card-title>
     <mat-card-content>
       @if (videoThumbnails?.length) {
-      <nevy11-courses-enrolled></nevy11-courses-enrolled>
+      <nevy11-courses-enrolled [courses]="videoThumbnails"></nevy11-courses-enrolled>
       }@else {
       <p>No videos found</p>
       }

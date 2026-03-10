@@ -44,35 +44,10 @@ export class UserStatsComponent implements OnInit {
   videos: any[] = [];
 
   courseStats: any[] = [
-    // {
-    //   courseName: 'Angular Basics',
-    //   totalVideos: 10,
-    //   watchedVideos: 10,
-    //   progress: 100,
-    //   totalWatchTime: 120,
-    // },
-    // {
-    //   courseName: 'Rust for Beginners',
-    //   totalVideos: 8,
-    //   watchedVideos: 5,
-    //   progress: 62,
-    //   totalWatchTime: 60,
-    // },
-    // {
-    //   courseName: 'AI with PyTorch',
-    //   totalVideos: 12,
-    //   watchedVideos: 6,
-    //   progress: 50,
-    //   totalWatchTime: 80,
-    // },
+    
   ];
 
-  // async ngOnInit(): Promise<void> {
-  //   this.completionRate = Math.round(
-  //     (this.coursesCompleted / this.totalCoursesEnrolled) * 100
-  //   );
-  //   this.videoThumbnails = await this.supabaseService.getAllCourses();
-  // }
+  
   async ngOnInit(): Promise<void> {
     // 1. Fetch real course metadata
     this.videoThumbnails = await this.supabaseService.getAllCourses();

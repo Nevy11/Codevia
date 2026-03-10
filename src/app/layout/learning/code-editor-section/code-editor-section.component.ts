@@ -539,7 +539,6 @@ export class CodeEditorSectionComponent implements OnInit {
     window.removeEventListener('mousemove', this.resize);
     window.removeEventListener('mouseup', this.stopResizing);
   };
-  // Add this method to your class
   selectAndToggleFolder(node: Folders) {
     // 1. Set this folder as the active one in your service
     this.codeEditorService.setfolder_name_selected(node.name);
