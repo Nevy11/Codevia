@@ -17,7 +17,7 @@ import { Folders } from './folders';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatTreeModule } from '@angular/material/tree';
+import { MatTree, MatTreeModule } from '@angular/material/tree';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TerminalComponent } from './terminal/terminal.component';
 import { FileSearchBarComponent } from './file-search-bar/file-search-bar.component';
@@ -55,7 +55,6 @@ declare const monaco: any;
 export class CodeEditorSectionComponent implements OnInit {
   private themechangeService = inject(ThemeChangeService);
   private matsnackbar = inject(MatSnackBar);
-  private codeEditorService = inject(CodeEditorSectionService);
   private supabaseService = inject(SupabaseClientService);
   private currentFile: Folders | null = null;
   private editingInProgress = false;
@@ -66,18 +65,21 @@ export class CodeEditorSectionComponent implements OnInit {
   private customSnackBarService = inject(CustomSnackBarService);
   private breakpointObserver = inject(BreakpointObserver);
   private notify = inject(NotificiationService);
+  private isResizing = false;
+
+  codeEditorService = inject(CodeEditorSectionService);
   isEditorEnabled: boolean = false;
   isMobile = false;
   isTerminalLoading = false;
   isBrowser = false;
   number_of_search_results = this.codeEditorService.getSearchResults();
-
+  @ViewChild('sidenav') sidenav!: MatSidenav;
+  @ViewChild('tree') tree!: MatTree<Folders>;
   code: string = `// Write your code here`;
   result: string = '';
   logs: string[] = [];
   startup: string = `// Write your code here`;
   terminalHeight: number = 200;
-  private isResizing = false;
   initial_data: Folders[] = this.codeEditorService.get_initial_data();
   editorOptions = {
     theme: 'vs-dark',
@@ -92,7 +94,7 @@ export class CodeEditorSectionComponent implements OnInit {
   constructor(@Inject(PLATFORM_ID) platformId: Object) {
     this.isBrowser = isPlatformBrowser(platformId);
   }
-  @ViewChild('sidenav') sidenav!: MatSidenav;
+  // @ViewChild('sidenav') sidenav!: MatSidenav;
   ngOnInit() {
     this.codeEditorService.loadAndCacheData().then(() => {
       this.dataSource = this.codeEditorService.get_cached_data();
@@ -537,4 +539,16 @@ export class CodeEditorSectionComponent implements OnInit {
     window.removeEventListener('mousemove', this.resize);
     window.removeEventListener('mouseup', this.stopResizing);
   };
+  // Add this method to your class
+  selectAndToggleFolder(node: Folders) {
+    // 1. Set this folder as the active one in your service
+    this.codeEditorService.setfolder_name_selected(node.name);
+    
+    // 2. Toggle the expansion state
+    this.tree.toggle(node);
+
+    // 3. Optional: Notify user
+    const state = this.tree.isExpanded(node) ? 'Opened' : 'Closed';
+    this.notify.show(`${state} folder: ${node.name}`);
+  }
 }

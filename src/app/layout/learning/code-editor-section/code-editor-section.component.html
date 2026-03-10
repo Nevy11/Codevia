@@ -68,7 +68,7 @@
         }
       </mat-tree-node>
 
-      <mat-tree-node
+      <!-- <mat-tree-node
         *matTreeNodeDef="let node; when: hasChild"
         matTreeNodePadding
         matTreeNodeToggle
@@ -98,6 +98,42 @@
 
           <mat-icon>folder</mat-icon>
           {{ node.name }}
+        }
+      </mat-tree-node> -->
+      <mat-tree-node
+        *matTreeNodeDef="let node; when: hasChild"
+        matTreeNodePadding
+        [cdkTreeNodeTypeaheadLabel]="node.name"
+        (click)="selectAndToggleFolder(node)"
+        [class.selected-node]="this.codeEditorService.getfolder_name_selected() === node.name"
+        class="folder-node"
+      >
+        @if (node.isEditing) {
+          <mat-icon>create_new_folder</mat-icon>
+          <input
+            matInput
+            [(ngModel)]="node.name"
+            (keyup.enter)="finishEditingFolder(node)"
+            (keyup.escape)="cancelEditing(node)"
+            placeholder="Enter folder name"
+            autofocus
+            (click)="$event.stopPropagation()"
+          />
+        } @else {
+          <button
+            mat-icon-button
+            [attr.aria-label]="'Toggle ' + node.name"
+            (click)="$event.stopPropagation(); selectAndToggleFolder(node)"
+          >
+            <mat-icon class="mat-icon-rtl-mirror">
+              {{ tree.isExpanded(node) ? "expand_more" : "chevron_right" }}
+            </mat-icon>
+          </button>
+
+          <div class="folder-content">
+            <mat-icon>folder</mat-icon>
+            <span class="folder-label">{{ node.name }}</span>
+          </div>
         }
       </mat-tree-node>
     </mat-tree>
@@ -140,9 +176,7 @@
           </button>
         </div>
 
-        <!-- <div class="terminal-wrapper" [style.height.px]="terminalHeight">
-      <nevy11-terminal [logs]="this.logs"></nevy11-terminal>
-    </div> -->
+        
         <div class="terminal-wrapper" [style.height.px]="terminalHeight">
           <nevy11-terminal [logs]="this.logs" [isLoading]="isTerminalLoading">
           </nevy11-terminal>
