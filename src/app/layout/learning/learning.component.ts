@@ -7,7 +7,7 @@ import { VideoFeedComponent } from '../courses/video-feed/video-feed.component';
 import { PythonProcessingComponent } from './code-editor-section/python-processing/python-processing.component';
 import { LearningService } from './learning.service';
 import { SupabaseClientService } from '../../supabase-client.service';
-import { LoaderComponent } from './loader/loader.component';
+import { LoaderComponent } from '../../loader/loader.component';
 
 @Component({
   selector: 'nevy11-learning',

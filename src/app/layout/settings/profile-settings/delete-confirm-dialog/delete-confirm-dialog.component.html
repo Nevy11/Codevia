@@ -1,0 +1,9 @@
+<h2 mat-dialog-title>Delete Account</h2>
+    <mat-dialog-content>
+      Are you sure you want to delete your account? This action is permanent and cannot be undone.
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="onCancel()">Cancel</button>
+      <span class="sep"></span>
+      <button mat-flat-button color="warn" (click)="onConfirm()">Delete My Account</button>
+    </mat-dialog-actions>

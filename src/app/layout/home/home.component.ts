@@ -10,7 +10,7 @@ import { AsyncPipe } from '@angular/common';
 import { SupabaseClientService } from '../../supabase-client.service';
 import { Profile } from '../settings/profile-settings/profile';
 import { Stats } from './home';
-import { LoaderComponent } from '../learning/loader/loader.component';
+import { LoaderComponent } from '../../loader/loader.component';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 @Component({

@@ -10,7 +10,9 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { SupabaseClientService } from '../../../supabase-client.service';
 import { ProfileService } from '../profile-setup-stepper/profile.service';
 import { ThemeChangeService } from '../../../theme-change.service';
-import { LoaderComponent } from '../../learning/loader/loader.component';
+import { LoaderComponent } from '../../../loader/loader.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { DeleteConfirmDialogComponent } from './delete-confirm-dialog/delete-confirm-dialog.component';
 
 @Component({
   selector: 'nevy11-profile-settings',
@@ -22,6 +24,7 @@ import { LoaderComponent } from '../../learning/loader/loader.component';
     MatButtonModule,
     MatSnackBarModule,
     LoaderComponent,
+    MatDialogModule,
   ],
   templateUrl: './profile-settings.component.html',
   styleUrl: './profile-settings.component.scss',
@@ -41,6 +44,7 @@ export class ProfileSettingsComponent implements OnInit {
   private snackBar = inject(MatSnackBar);
   private supabaseService = inject(SupabaseClientService);
   private themeService = inject(ThemeChangeService);
+  private dialog = inject(MatDialog);
   async ngOnInit() {
     this.profile = await this.supabaseService.getProfile();
     if (this.profile) {
@@ -142,33 +146,67 @@ export class ProfileSettingsComponent implements OnInit {
     }
   }
 
-  async deleteAccount() {
-    // The actual deletion and cleanup is now handled by the backend delete-user Supabase Edge Function.
-    // The deleteUserAccount method triggers this backend function.
-    // this.delete_account = await this.supabaseService.removeProfile();
+//   async deleteAccount() {
+//     // The actual deletion and cleanup is now handled by the backend delete-user Supabase Edge Function.
+//     // The deleteUserAccount method triggers this backend function.
+//     // this.delete_account = await this.supabaseService.removeProfile();
+//     try {
+//       await this.supabaseService.deleteUserAccount();
+//       this.delete_account = true; // Assuming success if no error is thrown
+//     } catch (error) {
+//       console.error('Error during account deletion:', error);
+//       this.delete_account = false;
+//       this.deleteError = 'Failed to delete account. Please try again later.';
+//     }
+
+//     if (this.delete_account) {
+//       this.themeService.setTheme('light');
+//       this.router.navigate(['']);
+//       this.isDeleting = true;
+
+// // 26. Show success message after deletion  
+
+//       this.snackBar.open('Account deleted successfully', `Close`, {
+//         duration: 3000,
+//       });
+//     } else {
+//       this.snackBar.open(`Failed to delete an account`, `Close`, {
+//         duration: 3000,
+//       });
+//     }
+//   }
+async deleteAccount() {
+    // Open the dialog first
+    const dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
+      width: '350px',
+      disableClose: true // User must click a button
+    });
+
+    // Wait for the user to confirm or cancel
+    dialogRef.afterClosed().subscribe(async (result) => {
+      if (result === true) {
+        // User clicked "Delete My Account"
+        await this.executeAccountDeletion();
+      }
+    });
+  }
+
+  // 3. Move the actual deletion logic to a helper method
+  private async executeAccountDeletion() {
+    this.isDeleting = true;
     try {
       await this.supabaseService.deleteUserAccount();
-      this.delete_account = true; // Assuming success if no error is thrown
+      
+      this.themeService.setTheme('light');
+      this.snackBar.open('Account deleted successfully', 'Close', { duration: 3000 });
+      this.router.navigate(['']);
+      
     } catch (error) {
       console.error('Error during account deletion:', error);
-      this.delete_account = false;
       this.deleteError = 'Failed to delete account. Please try again later.';
-    }
-
-    if (this.delete_account) {
-      this.themeService.setTheme('light');
-      this.router.navigate(['']);
-      this.isDeleting = true;
-
-26  
-
-      this.snackBar.open('Account deleted successfully', `Close`, {
-        duration: 3000,
-      });
-    } else {
-      this.snackBar.open(`Failed to delete an account`, `Close`, {
-        duration: 3000,
-      });
+      this.snackBar.open('Failed to delete account', 'Close', { duration: 3000 });
+    } finally {
+      this.isDeleting = false;
     }
   }
 }

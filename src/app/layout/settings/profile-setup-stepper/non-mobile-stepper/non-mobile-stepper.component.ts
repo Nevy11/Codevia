@@ -13,7 +13,8 @@ import { MatCardModule } from '@angular/material/card';
 import { ProfileService } from '../profile.service';
 import { SupabaseClientService } from '../../../../supabase-client.service';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
+import { NotificiationService } from '../../../../notificiation.service';
 @Component({
   selector: 'nevy11-non-mobile-stepper',
   imports: [
@@ -33,7 +34,8 @@ export class NonMobileStepperComponent {
   private _formBuilder = inject(FormBuilder);
   private profileService = inject(ProfileService);
   private supabaseService = inject(SupabaseClientService);
-  private snackbar = inject(MatSnackBar);
+  private router = inject(Router);
+  private notify = inject(NotificiationService);
 
   username!: string;
   bio!: string;
@@ -105,12 +107,16 @@ export class NonMobileStepperComponent {
     } else {
       console.error('bio not updated');
     }
-    this.snackbar.open('Profile setup completed!', 'Close', { duration: 3000 });
-    this.snackbar.open(
-      `Click done to complete the registration process`,
-      'Close',
-      { duration: 3000 }
+    // this.snackbar.open('Profile setup completed!', 'Close', { duration: 3000 });
+    // this.snackbar.open(
+    //   `Click done to complete the registration process`,
+    //   'Close',
+    //   { duration: 3000 }
+    // );
+    this.notify.show(
+      'Profile setup completed! Click done to complete the registration process'
     );
+    
     console.log('bio updated');
   }
   async done() {
@@ -132,13 +138,10 @@ export class NonMobileStepperComponent {
       this.avatar_url
     );
     if (result) {
-      this.snackbar.open('Registration process completed!', 'Close', {
-        duration: 3000,
-      });
+      this.notify.show('Registration process completed!');
+      this.router.navigate(['/layout/user-stats']);
     } else {
-      this.snackbar.open('Error completing registration.', 'Close', {
-        duration: 3000,
-      });
+      this.notify.show('Error completing registration.');
     }
   }
 }
