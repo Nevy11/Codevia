@@ -8,6 +8,7 @@ import { SupabaseClientService } from '../../supabase-client.service';
 import { MatIconModule } from '@angular/material/icon';
 import { CoursesEnrolledComponent } from './courses-enrolled/courses-enrolled.component';
 import { from, of, switchMap } from 'rxjs';
+import { LoaderComponent } from '../../loader/loader.component';
 
 @Component({
   selector: 'nevy11-user-stats',
@@ -19,6 +20,7 @@ import { from, of, switchMap } from 'rxjs';
     MatIconModule,
     CoursesEnrolledComponent,
     AsyncPipe,
+    LoaderComponent
   ],
   templateUrl: './user-stats.component.html',
   styleUrl: './user-stats.component.scss',
@@ -31,7 +33,7 @@ export class UserStatsComponent implements OnInit {
   mostWatchedCourse = 'Angular Basics';
   averageWatchDuration = 0; // minutes per video
   videoThumbnails: Courses[] | null = null;
-
+  isLoading: boolean=true;
   private supabaseService = inject(SupabaseClientService);
   userId$ = from(this.supabaseService.getCurrentUserId());
 
@@ -49,42 +51,49 @@ export class UserStatsComponent implements OnInit {
 
   
   async ngOnInit(): Promise<void> {
-    // 1. Fetch real course metadata
-    this.videoThumbnails = await this.supabaseService.getAllCourses();
+    this.isLoading = true;
+    try{
+      // 1. Fetch real course metadata
+      this.videoThumbnails = await this.supabaseService.getAllCourses();
 
-    // 2. Fetch the 3 most recently watched videos/courses
-    const recentProgress = await this.supabaseService.getRecentUserProgress(3);
+      // 2. Fetch the 3 most recently watched videos/courses
+      const recentProgress = await this.supabaseService.getRecentUserProgress(3);
 
-    if (recentProgress && recentProgress.length > 0) {
-      let totalMinutesAcrossAll = 0;
+      if (recentProgress && recentProgress.length > 0) {
+        let totalMinutesAcrossAll = 0;
 
-      // 3. Map the Supabase data to your UI structure
-      this.courseStats = recentProgress.map((item) => {
-        const recordDate = new Date(item.updated_at);
-        if (recordDate > this.lastActiveDate) {
-          this.lastActiveDate = recordDate;
+        // 3. Map the Supabase data to your UI structure
+        this.courseStats = recentProgress.map((item) => {
+          const recordDate = new Date(item.updated_at);
+          if (recordDate > this.lastActiveDate) {
+            this.lastActiveDate = recordDate;
+          }
+
+          const minutesSpent = Math.round(item.playback_position / 60);
+          totalMinutesAcrossAll += minutesSpent; // Accumulate for average
+
+          return {
+            courseName: item.courses?.title || 'Unknown Course',
+            progress: item.playback_position > 0 ? 50 : 0, 
+            totalWatchTime: minutesSpent,
+            thumbnail: item.courses?.thumbnail_url,
+            lastWatched: item.updated_at,
+          };
+        });
+
+        // 4. Calculate Average Watch Duration
+        // This takes the total time spent in these sessions divided by the number of sessions
+        this.averageWatchDuration = Math.round(totalMinutesAcrossAll / recentProgress.length);
+        
+        // Optional: Update 'Most Watched' based on the top record
+        if (this.courseStats.length > 0) {
+            this.mostWatchedCourse = this.courseStats[0].courseName;
         }
-
-        const minutesSpent = Math.round(item.playback_position / 60);
-        totalMinutesAcrossAll += minutesSpent; // Accumulate for average
-
-        return {
-          courseName: item.courses?.title || 'Unknown Course',
-          progress: item.playback_position > 0 ? 50 : 0, 
-          totalWatchTime: minutesSpent,
-          thumbnail: item.courses?.thumbnail_url,
-          lastWatched: item.updated_at,
-        };
-      });
-
-      // 4. Calculate Average Watch Duration
-      // This takes the total time spent in these sessions divided by the number of sessions
-      this.averageWatchDuration = Math.round(totalMinutesAcrossAll / recentProgress.length);
-      
-      // Optional: Update 'Most Watched' based on the top record
-      if (this.courseStats.length > 0) {
-          this.mostWatchedCourse = this.courseStats[0].courseName;
       }
+    }catch(error){
+      console.error('Error fetching stats:', error);
+    }finally{
+      this.isLoading = false;
     }
 
     // Keep your stats$ subscription for completion rate...
