@@ -6,11 +6,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { SupabaseClientService } from '../../../supabase-client.service';
 import { YoutubeService } from '../../../youtube.service';
+import { LoaderComponent } from '../../../loader/loader.component';
 
 @Component({
   selector: 'nevy11-video-feed',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, MatCardModule],
+  imports: [CommonModule, MatIconModule, MatButtonModule, MatCardModule,
+    LoaderComponent
+  ],
   templateUrl: './video-feed.component.html',
   styleUrls: ['./video-feed.component.scss'],
 })
@@ -29,30 +32,7 @@ export class VideoFeedComponent implements OnInit {
     this.loadDiscoveryFeed();
   }
 
-  // async loadCourses() {
-  //   if (this.loading) return;
-  //   this.loading = true;
-
-  //   const courses = await this.supabaseService.getAllCourses(
-  //     this.limit,
-  //     this.offset,
-  //   );
-
-  //   if (courses) {
-  //     this.videos.push(
-  //       ...courses.map((course) => ({
-  //         id: course.video_id,
-  //         title: course.title,
-  //         thumbnailUrl: course.thumbnail_url,
-  //       })),
-  //     );
-  //     this.offset += this.limit;
-  //   } else {
-  //     console.error('VideoFeed: failed to load videos');
-  //   }
-
-  //   this.loading = false;
-  // }
+  
   async loadDiscoveryFeed() {
     if (this.loading) return;
     this.loading = true;
