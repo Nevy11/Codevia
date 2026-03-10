@@ -28,7 +28,8 @@ import { BaseChartDirective } from 'ng2-charts';
 })
 export class HomeComponent implements OnInit {
   username = '';
-  loadingUrls: boolean = true;
+  // loadingUrls: boolean = true;
+  loading: boolean = true;
   profile: Profile | null = null;
   private router = inject(Router);
   private breakpointObserver = inject(BreakpointObserver);
@@ -104,33 +105,63 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['/layout/learning']);
   }
 
+  // async ngOnInit(): Promise<void> {
+  //   this.supabaseService.logActivity();
+  //   this.loadStats();
+  //   this.profile = await this.supabaseService.getProfile();
+  //   if (this.profile) {
+  //     this.username = this.profile.name;
+  //   }
+
+  //   this.user_id = await this.supabaseService.getCurrentUserId();
+  //   if (this.user_id) {
+  //     // create observable AFTER we know the user_id
+  //     this.stats$ = from(this.supabaseService.getCourseStats(this.user_id));
+
+  //     // if you still want the console log:
+  //     this.stats$.subscribe((stat) => {
+  //       this.stats = stat;
+  //     });
+  //   }
+  //   this.loadingUrls = false;
+  // }
   async ngOnInit(): Promise<void> {
-    this.supabaseService.logActivity();
-    this.loadStats();
-    this.profile = await this.supabaseService.getProfile();
-    if (this.profile) {
-      this.username = this.profile.name;
-    }
+    // 2. Wrap everything in a try/catch/finally block
+    try {
+      this.loading = true; // Ensure loader shows
 
-    this.user_id = await this.supabaseService.getCurrentUserId();
-    if (this.user_id) {
-      // create observable AFTER we know the user_id
-      this.stats$ = from(this.supabaseService.getCourseStats(this.user_id));
+      // Start all calls in parallel for better performance
+      const [userId, profile] = await Promise.all([
+        this.supabaseService.getCurrentUserId(),
+        this.supabaseService.getProfile(),
+        this.supabaseService.logActivity() // Fire and forget
+      ]);
 
-      // if you still want the console log:
-      this.stats$.subscribe((stat) => {
-        this.stats = stat;
-      });
+      if (profile) {
+        this.username = profile.name;
+      }
+
+      this.user_id = userId;
+
+      if (this.user_id) {
+        // Prepare the async statistics call
+        this.stats$ = from(this.supabaseService.getCourseStats(this.user_id));
+        
+        // Load chart data sequentially (if needed by your service)
+        await this.loadStats(); 
+      }
+
+    } catch (error) {
+      console.error('Error loading dashboard:', error);
+      // Handle error UX here if needed
+    } finally {
+      // 3. Stop the loader no matter what happened
+      this.loading = false;
     }
-    this.loadingUrls = false;
   }
-  async loadStats() {
+  async loadStats(): Promise<void> {
     const chartData = await this.supabaseService.getWeeklyStats();
-
-    // Correct way to log objects to the console
-    console.log('Chart data received:', chartData);
-
-    // 2. Map the data to the chart
+    
     if (chartData) {
       this.barChartData = {
         labels: chartData.map((item) => item.day),
@@ -143,4 +174,23 @@ export class HomeComponent implements OnInit {
       };
     }
   }
+  // async loadStats() {
+  //   const chartData = await this.supabaseService.getWeeklyStats();
+
+  //   // Correct way to log objects to the console
+  //   console.log('Chart data received:', chartData);
+
+  //   // 2. Map the data to the chart
+  //   if (chartData) {
+  //     this.barChartData = {
+  //       labels: chartData.map((item) => item.day),
+  //       datasets: [
+  //         {
+  //           ...this.barChartData.datasets[0],
+  //           data: chartData.map((item) => item.count),
+  //         },
+  //       ],
+  //     };
+  //   }
+  // }
 }

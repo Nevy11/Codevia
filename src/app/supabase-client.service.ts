@@ -236,27 +236,7 @@ export class SupabaseClientService {
     return false;
   }
 
-  // Save or update the user's video progress
-  // async saveVideoProgress(video_data: VideoSaving): Promise<Boolean> {
-  //   const { data, error } = await this.client
-  //     .from('user_video_progress')
-  //     .upsert(
-  //       {
-  //         user_id: video_data.userId,
-  //         video_id: video_data.videoId,
-  //         playback_position: video_data.currentTime,
-  //       },
-  //       {
-  //         onConflict: 'user_id, video_id', // Ensures update instead of duplicate data
-  //       },
-  //     );
-
-  //   if (error) {
-  //     console.error('Error saving video progress: ', error.message);
-  //     return false;
-  //   }
-  //   return true;
-  // }
+  
   async saveVideoProgress(video_data: VideoSaving): Promise<boolean> {
     // 1. FIRST, ensure the course exists or get its data
     // If the video isn't in the 'courses' table yet, the FK will always fail.
@@ -1090,6 +1070,23 @@ async savePushSubscription(subscription: any): Promise<boolean> {
   }
   return true;
 }
+
+  async getSeenVideoIds(): Promise<string[]> {
+    const userId = await this.getCurrentUserId();
+    if (!userId) return [];
+
+    const { data, error } = await this.client
+      .from('user_video_progress')
+      .select('video_id')
+      .eq('user_id', userId);
+
+    if (error) {
+      console.error('Error fetching seen videos:', error.message);
+      return [];
+    }
+
+    return data.map(record => record.video_id);
+  }
   /**
    * Listens for real-time updates to a specific file's content.
    * Useful for syncing the code editor across multiple tabs.

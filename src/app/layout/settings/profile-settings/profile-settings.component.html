@@ -1,6 +1,9 @@
-@if (loading) {
-<nevy11-loader></nevy11-loader>
-} @if (!loading && profile) {
+@if (loading || isDeleting) {
+  <div class="spinner-overlay">
+    <nevy11-loader></nevy11-loader>
+  </div>
+}
+@if (!loading && profile) {
 <div class="profile-container">
   <!-- Avatar Section -->
   <mat-card class="avatar-card">

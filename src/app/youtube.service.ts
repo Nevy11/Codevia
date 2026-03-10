@@ -38,4 +38,13 @@ export class YoutubeService {
       ),
     );
   }
+  // youtube.service.ts
+  getDiscoverProgrammingVideos(maxResults: number = 50): Observable<any[]> {
+    const queries = ['programming tutorials', 'web development course', 'computer science basics', 'coding projects'];
+    const randomQuery = queries[Math.floor(Math.random() * queries.length)];
+
+    return this.getVideos(randomQuery, maxResults).pipe(
+      map(videos => videos.sort(() => Math.random() - 0.5)) // Shuffle for randomness
+    );
+  }
 }

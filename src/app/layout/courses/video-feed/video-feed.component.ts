@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { SupabaseClientService } from '../../../supabase-client.service';
+import { YoutubeService } from '../../../youtube.service';
 
 @Component({
   selector: 'nevy11-video-feed',
@@ -18,48 +19,71 @@ export class VideoFeedComponent implements OnInit {
   private supabaseService = inject(SupabaseClientService);
   private userId: string | null = null;
   private is_courses_enrolled: boolean = false;
-
+  private youtubeService = inject(YoutubeService);
   videos: any[] = [];
   limit = 10;
   offset = 0;
   loading = false;
 
   ngOnInit() {
-    this.loadCourses();
+    this.loadDiscoveryFeed();
   }
 
-  async loadCourses() {
+  // async loadCourses() {
+  //   if (this.loading) return;
+  //   this.loading = true;
+
+  //   const courses = await this.supabaseService.getAllCourses(
+  //     this.limit,
+  //     this.offset,
+  //   );
+
+  //   if (courses) {
+  //     this.videos.push(
+  //       ...courses.map((course) => ({
+  //         id: course.video_id,
+  //         title: course.title,
+  //         thumbnailUrl: course.thumbnail_url,
+  //       })),
+  //     );
+  //     this.offset += this.limit;
+  //   } else {
+  //     console.error('VideoFeed: failed to load videos');
+  //   }
+
+  //   this.loading = false;
+  // }
+  async loadDiscoveryFeed() {
     if (this.loading) return;
     this.loading = true;
 
-    const courses = await this.supabaseService.getAllCourses(
-      this.limit,
-      this.offset,
-    );
+    // 1. Get IDs the user has already watched/clicked
+    const seenIds = await this.supabaseService.getSeenVideoIds();
 
-    if (courses) {
-      this.videos.push(
-        ...courses.map((course) => ({
-          id: course.video_id,
-          title: course.title,
-          thumbnailUrl: course.thumbnail_url,
-        })),
-      );
-      this.offset += this.limit;
-    } else {
-      console.error('VideoFeed: failed to load videos');
-    }
+    // 2. Fetch programming videos from YouTube
+    this.youtubeService.getDiscoverProgrammingVideos(20).subscribe({
+      next: (allVideos) => {
+        // 3. Filter: Keep only videos NOT in the seenIds list
+        const unseenVideos = allVideos.filter(
+          video => !seenIds.includes(video.id)
+        );
 
-    this.loading = false;
+        this.videos = [...this.videos, ...unseenVideos];
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Failed to load discovery feed', err);
+        this.loading = false;
+      }
+    });
   }
-
   @HostListener('window:scroll')
   onScroll() {
     if (
       window.innerHeight + window.scrollY >= document.body.offsetHeight &&
       !this.loading
     ) {
-      this.loadCourses();
+      this.loadDiscoveryFeed();
     }
   }
 

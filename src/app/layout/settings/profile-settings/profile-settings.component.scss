@@ -6,6 +6,14 @@
   gap: 1.5rem;
   max-width: 80rem;
   align-items: center;
+  transition: filter 0.3s ease; // Makes the blur fade in smoothly
+  
+  // When this class is active, blur everything inside
+  &.blur-content {
+    filter: blur(8px); 
+    pointer-events: none; // Prevents user from clicking buttons while blurred
+    user-select: none;    // Prevents highlighting text while loading
+  }
 }
 
 .avatar-card {
@@ -88,11 +96,20 @@ form {
     )
   );
 }
-// .delete_button {
-//   background-color: #e53935; // Material Red 600
-//   color: white;
-
-//   &:hover {
-//     background-color: #d32f2f; // darker red
-//   }
-// }
+.spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  // This semi-transparent background makes the blur look "frosted"
+  background: rgba(255, 255, 255, 0.2); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  
+  // Alternative: You can also put the blur directly on the overlay 
+  // if you don't want to edit the profile-container
+  backdrop-filter: blur(4px); 
+}

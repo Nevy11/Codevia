@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import {
   FormBuilder,
   Validators,
@@ -30,7 +30,7 @@ import { NotificiationService } from '../../../../notificiation.service';
   templateUrl: './non-mobile-stepper.component.html',
   styleUrl: './non-mobile-stepper.component.scss',
 })
-export class NonMobileStepperComponent {
+export class NonMobileStepperComponent implements OnInit{
   private _formBuilder = inject(FormBuilder);
   private profileService = inject(ProfileService);
   private supabaseService = inject(SupabaseClientService);
@@ -53,6 +53,10 @@ export class NonMobileStepperComponent {
   isLinear = false;
 
   previewUrl: string | null = null;
+
+  ngOnInit() {
+    console.log('non-mobile stepper init');
+  }
 
   async onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -107,12 +111,7 @@ export class NonMobileStepperComponent {
     } else {
       console.error('bio not updated');
     }
-    // this.snackbar.open('Profile setup completed!', 'Close', { duration: 3000 });
-    // this.snackbar.open(
-    //   `Click done to complete the registration process`,
-    //   'Close',
-    //   { duration: 3000 }
-    // );
+    
     this.notify.show(
       'Profile setup completed! Click done to complete the registration process'
     );
