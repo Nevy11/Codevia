@@ -64,7 +64,6 @@ export class NotificationSettingsComponent implements OnInit {
         this.settings.pushNotifications = false; // Reset toggle on error
       }
     } else {
-      // --- THIS IS WHERE THE DELETE HAPPENS ---
       try {
         await this.swPush.unsubscribe(); // Stop browser from listening
         if (userId) {

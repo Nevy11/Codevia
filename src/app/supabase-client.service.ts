@@ -1156,6 +1156,7 @@ async savePushSubscription(subscription: any): Promise<boolean> {
     }
   }
   async deletePushSubscription(userId: string): Promise<boolean> {
+    console.log('Deleting push subscription for user:', userId);
     const { error } = await this.client
       .from('push_subscriptions')
       .delete()
