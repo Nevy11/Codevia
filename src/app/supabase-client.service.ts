@@ -1143,6 +1143,7 @@ async savePushSubscription(subscription: any): Promise<boolean> {
 
   async sendLogoutNotification(userId: string): Promise<void> {
     try {
+      console.log('Triggering logout notification for user:', userId);
       await this.client.functions.invoke('send-push-notification', {
         body: { 
           user_id: userId, 
