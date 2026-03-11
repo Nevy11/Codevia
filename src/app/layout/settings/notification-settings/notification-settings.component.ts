@@ -42,25 +42,33 @@ export class NotificationSettingsComponent implements OnInit {
   }
   
   async onTogglePush(enabled: boolean) {
-  if (enabled) {
-    try {
-      const sub = await this.swPush.requestSubscription({
-        serverPublicKey: this.VAPID_PUBLIC_KEY
-      });
-      await this.supabaseService.savePushSubscription(sub);
-      this.save();
-    } catch (err: any) {
-      console.error('Push subscription failed:', err);
-      
-      // Check for Brave/Chrome specific push service errors
-      if (err.message.includes('push service error')) {
-        alert("It looks like your browser is blocking push notifications. If you're using Brave, please enable 'Google services for push messaging' in your Privacy settings.");
+    if (enabled) {
+      try {
+        const sub = await this.swPush.requestSubscription({
+          serverPublicKey: this.VAPID_PUBLIC_KEY
+        });
+        
+        const saved = await this.supabaseService.savePushSubscription(sub);
+        
+        if (saved) {
+          // Trigger the Welcome Notification
+          await this.supabaseService.generateAiResponse(JSON.stringify({
+            user_id: await this.supabaseService.getCurrentUserId(),
+            title: "Account Active! 🎉",
+            message: "Welcome to Codevia. Your push notifications are now successfully configured."
+          }));
+        }
+        
+        this.save();
+      } catch (err: any) {
+        console.error('Push subscription failed:', err);
+        if (err.message.includes('push service error')) {
+          alert("Check Brave settings for 'Google services for push messaging'.");
+        }
+        this.settings.pushNotifications = false;
       }
-      
-      this.settings.pushNotifications = false; // Reset toggle
     }
   }
-}
 
   save() {
     this.settingService.updateSettings(this.settings);

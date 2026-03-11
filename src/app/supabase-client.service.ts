@@ -325,24 +325,7 @@ export class SupabaseClientService {
     return true;
   }
 
-  // async getUserVideos(): Promise<any[]> {
-  //   this.user_id = await this.getCurrentUserId();
-  //   if (!this.user_id) {
-  //     console.error('No user logged in');
-  //     return [];
-  //   }
-  //   const { data, error } = await this.client
-  //     .from('user_video_progress')
-  //     .select('video_id, playback_position')
-  //     .eq('user_id', this.user_id);
-
-  //   if (error) {
-  //     console.error('Error fetching user videos: ', error.message);
-  //     return [];
-  //   }
-
-  //   return data || [];
-  // }
+  
   async getUserVideos(): Promise<any[]> {
     this.user_id = await this.getCurrentUserId();
     if (!this.user_id) {
@@ -852,23 +835,33 @@ export class SupabaseClientService {
   }
 
   public async deleteUserAccount(): Promise<void> {
+    const userId = await this.getCurrentUserId();
+    
+    if (userId) {
+      try {
+        // 1. Send the "Goodbye" notification first
+        await this.generateAiResponse(JSON.stringify({
+          user_id: userId,
+          title: "Account Deleted",
+          message: "Your Codevia account and data have been successfully removed. We hope to see you again!"
+        }));
+      } catch (e) {
+        console.warn("Could not send deletion alert, proceeding with deletion.");
+      }
+    }
+
+    // 2. Call the actual deletion function
     const { error } = await this.client.functions.invoke('delete-user', {});
 
     if (error) {
       console.error('Error deleting user account:', error);
-      throw error; // Re-throw the error to be handled by the component
+      throw error;
     }
 
-    // On successful deletion from the backend, sign the user out on the client.
-    // We wrap this in a try-catch because the session might already be invalidated
-    // by the backend function, which can cause a harmless 403 error.
     try {
       await this.client.auth.signOut();
     } catch (signOutError) {
-      console.log(
-        'Client-side signOut failed, which is expected after a full account deletion.',
-        signOutError,
-      );
+      console.log('Client-side signOut failed as expected.');
     }
   }
 
@@ -1086,10 +1079,7 @@ async updateNotificationSettings(settings: NotificationSettings): Promise<boolea
 
   return !error;
 }
-/**
- * Saves a Web Push subscription to the database.
- * This is the 'address' used by Supabase Edge Functions to send OS-level notifications.
- */
+
 async savePushSubscription(subscription: any): Promise<boolean> {
   const userId = await this.getCurrentUserId();
   if (!userId) return false;
@@ -1127,32 +1117,26 @@ async savePushSubscription(subscription: any): Promise<boolean> {
 
     return data.map(record => record.video_id);
   }
-  /**
-   * Listens for real-time updates to a specific file's content.
-   * Useful for syncing the code editor across multiple tabs.
-   */
-  // subscribeToFileChanges(fileId: string): Observable<any> {
-  //   return new Observable((observer) => {
-  //     const channel = this.supabase
-  //       .channel(`file-updates-${fileId}`)
-  //       .on(
-  //         'postgres_changes',
-  //         {
-  //           event: 'UPDATE',
-  //           schema: 'public',
-  //           table: 'files',
-  //           filter: `id=eq.${fileId}`, // Only listen to this specific file
-  //         },
-  //         (payload) => {
-  //           observer.next(payload.new);
-  //         },
-  //       )
-  //       .subscribe();
+  // Inside SupabaseClientService class
 
-  //     // Cleanup when the component unsubscribes
-  //     return () => {
-  //       this.supabase.removeChannel(channel);
-  //     };
-  //   });
-  // }
+  async sendLoginNotification(userId: string): Promise<void> {
+    try {
+      const { data, error } = await this.client.functions.invoke(
+        'send-push-notification', // The name of your Supabase function
+        {
+          body: { 
+            user_id: userId, 
+            title: "New Login Detected 🔐", 
+            message: "You have successfully logged into your Codevia account." 
+          },
+        },
+      );
+
+      if (error) {
+        console.error('Push Notification Edge Function Error:', error);
+      }
+    } catch (err) {
+      console.error('Unexpected error triggering push notification:', err);
+    }
+  }
 }

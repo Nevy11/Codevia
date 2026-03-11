@@ -11,7 +11,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { TopLoginSignupComponent } from '../top-login-signup/top-login-signup.component';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { SupabaseClientService } from '../supabase-client.service';
 import { NotificiationService } from '../notificiation.service';
 @Component({
@@ -30,7 +29,6 @@ import { NotificiationService } from '../notificiation.service';
 })
 export class LoginComponent {
   private router = inject(Router);
-  private snackbar = inject(MatSnackBar);
   private supabase = inject(SupabaseClientService);
   private notify = inject(NotificiationService);
   loginForm = signal({
@@ -50,23 +48,54 @@ export class LoginComponent {
     this.hide.set(!this.hide());
     event.stopPropagation();
   }
+  // async login() {
+  //   const email = this.loginForm().email.value!;
+  //   const password = this.loginForm().password.value!;
+  //   if (!this.loginForm().email.valid || !this.loginForm().password.valid) {
+  //     this.notify.show('Invalid credentials');
+  //     return;
+  //   }
+  //   const { data, error } = await this.supabase.client.auth.signInWithPassword({
+  //     email,
+  //     password,
+  //   });
+  //   // Logic for login can be added here
+  //   if (error) {
+  //     console.error('Login error:', error.message);
+  //     this.notify.show('Login failed');
+  //   } else {
+  //     this.notify.show('Login Successful');
+  //     this.router.navigate(['/layout/home']);
+  //   }
+  // }
+  // login.component.ts
+
   async login() {
     const email = this.loginForm().email.value!;
     const password = this.loginForm().password.value!;
+
     if (!this.loginForm().email.valid || !this.loginForm().password.valid) {
       this.notify.show('Invalid credentials');
       return;
     }
+
     const { data, error } = await this.supabase.client.auth.signInWithPassword({
       email,
       password,
     });
-    // Logic for login can be added here
+
     if (error) {
       console.error('Login error:', error.message);
       this.notify.show('Login failed');
     } else {
       this.notify.show('Login Successful');
+
+      // TRIGGER NOTIFICATION
+      if (data.user) {
+        // We don't 'await' this so the user isn't delayed from entering the app
+        this.supabase.sendLoginNotification(data.user.id);
+      }
+
       this.router.navigate(['/layout/home']);
     }
   }
