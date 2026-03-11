@@ -21,7 +21,7 @@ import { Router } from '@angular/router';
 import { TopLoginSignupComponent } from '../top-login-signup/top-login-signup.component';
 import { SupabaseClientService } from '../supabase-client.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { NotificiationService } from '../notificiation.service';
+import { NotificiationService } from '../notification.service';
 @Component({
   selector: 'nevy11-signup',
   imports: [

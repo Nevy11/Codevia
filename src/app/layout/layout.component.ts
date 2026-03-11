@@ -18,7 +18,7 @@ import { ProfileService } from './settings/profile-setup-stepper/profile.service
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { LearningService } from './learning/learning.service';
 import { ConfirmationDialogComponent } from '../shared/confirmation-dialog/confirmation-dialog.component';
-import { NotificiationService } from '../notificiation.service';
+import { NotificiationService } from '../notification.service';
 @Component({
   selector: 'nevy11-layout',
   imports: [

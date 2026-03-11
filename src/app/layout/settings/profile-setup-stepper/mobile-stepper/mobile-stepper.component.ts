@@ -13,7 +13,7 @@ import { MatCardModule } from '@angular/material/card';
 import { SupabaseClientService } from '../../../../supabase-client.service';
 import { ProfileService } from '../profile.service';
 import { MatIconModule } from '@angular/material/icon';
-import { NotificiationService } from '../../../../notificiation.service';
+import { NotificiationService } from '../../../../notification.service';
 import { Router } from '@angular/router';
 
 @Component({

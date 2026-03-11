@@ -14,7 +14,7 @@ import { ProfileService } from '../profile.service';
 import { SupabaseClientService } from '../../../../supabase-client.service';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
-import { NotificiationService } from '../../../../notificiation.service';
+import { NotificiationService } from '../../../../notification.service';
 @Component({
   selector: 'nevy11-non-mobile-stepper',
   imports: [

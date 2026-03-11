@@ -12,7 +12,7 @@ import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { TopLoginSignupComponent } from '../top-login-signup/top-login-signup.component';
 import { SupabaseClientService } from '../supabase-client.service';
-import { NotificiationService } from '../notificiation.service';
+import { NotificiationService } from '../notification.service';
 @Component({
   selector: 'nevy11-login',
   imports: [

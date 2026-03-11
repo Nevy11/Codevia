@@ -28,7 +28,7 @@ import { SupabaseClientService } from '../../../supabase-client.service';
 import { RapidApiService } from '../../../rapid-api.service';
 import { CustomSnackBarService } from '../../../custom-snack-bar.service';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { NotificiationService } from '../../../notificiation.service';
+import { NotificiationService } from '../../../notification.service';
 
 declare const monaco: any;
 
