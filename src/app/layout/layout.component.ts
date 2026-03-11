@@ -92,11 +92,11 @@ export class LayoutComponent implements OnInit {
     }),
   );
   async ngOnInit() {
-    // this.isYoutubeShown = this.learningService.get_show_yt();
+    this.triggerManualReminder();
     this.themeChangeService.loadTheme();
     this.profile = await this.supabaseService.getProfile();
     if (!this.supabaseService.client) {
-      // console.error('Supabase client is not initialized.');
+      
       return;
     }
     if (this.profile) {
@@ -112,6 +112,19 @@ export class LayoutComponent implements OnInit {
     this.profileService.avatarUrl$.subscribe((url_avatar) => {
       this.avatar_url = url_avatar;
     });
+    await this.checkLearningReminders();
+  }
+  private async checkLearningReminders() {
+    const stats = await this.supabaseService.getWeeklyStats();
+    const todayName = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][new Date().getDay()];
+    
+    // Find today's activity count
+    const todayActivity = stats.find(s => s.day === todayName);
+
+    // If count is 0, they haven't logged activity yet today
+    if (todayActivity && todayActivity.count === 0) {
+      this.notify.show('Welcome back! Ready to continue your learning journey? 📚');
+    }
   }
   goToTab(index: number) {
     this.router.navigate(['/layout/settings'], { queryParams: { tab: index } });
@@ -203,5 +216,12 @@ export class LayoutComponent implements OnInit {
       
     }
   }
-  
+  async triggerManualReminder() {
+    const userId = await this.supabaseService.getCurrentUserId();
+    if (userId) {
+      // This hits your Edge Function which sends the Web Push
+      await this.supabaseService.sendLoginNotification(userId); 
+      this.notify.show('Push reminder sent to your device!');
+    }
+  }
 }

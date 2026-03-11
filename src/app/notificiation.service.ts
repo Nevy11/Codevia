@@ -9,10 +9,7 @@ export class NotificiationService {
   private snackBar = inject(MatSnackBar);
   private settingsService = inject(NotificationSettingsService);
 
-  /**
-   * Wrapper for MatSnackBar.open
-   * Only displays if 'In-App Notifications' is toggled ON.
-   */
+  
   show(message: string, action: string = 'Close', config?: MatSnackBarConfig) {
     const settings = this.settingsService.getSettings();
 

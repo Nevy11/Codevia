@@ -11,7 +11,7 @@ export class NotificationSettingsService {
 
   private defaultSettings: NotificationSettings = {
     learningReminders: true,
-    productUpdates: true,
+    productUpdates: false,
     emailNotifications: false,
     pushNotifications: false,
     inAppNotifications: true,
