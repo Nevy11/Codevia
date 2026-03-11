@@ -221,7 +221,7 @@ export class LayoutComponent implements OnInit {
     if (userId) {
       // This hits your Edge Function which sends the Web Push
       await this.supabaseService.sendLoginNotification(userId); 
-      this.notify.show('Push reminder sent to your device!');
+      // this.notify.show('Push reminder sent to your device!');
     }
   }
 }

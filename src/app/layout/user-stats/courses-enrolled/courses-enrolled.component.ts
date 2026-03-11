@@ -13,7 +13,4 @@ import { DatePipe } from '@angular/common';
 })
 export class CoursesEnrolledComponent  {
   @Input() courses: Courses[] | null = [];
-
- 
-
 }

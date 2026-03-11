@@ -1168,4 +1168,28 @@ async savePushSubscription(subscription: any): Promise<boolean> {
     }
     return true;
   }
+  
+  async getUserEnrolledCourses(userId: string): Promise<Courses[]> {
+    // We query user_video_progress because it tracks what the user actually watches
+    const { data, error } = await this.client
+      .from('user_video_progress')
+      .select(`
+        courses!inner (
+          video_id,
+          thumbnail_url,
+          title,
+          description,
+          created_at
+        )
+      `)
+      .eq('user_id', userId);
+
+    if (error) {
+      console.error('Error fetching user-specific courses:', error.message);
+      return [];
+    }
+
+    // Flatten the result: Supabase returns { courses: { ... } } due to the join
+    return (data || []).map((item: any) => item.courses) as Courses[];
+  }
 }

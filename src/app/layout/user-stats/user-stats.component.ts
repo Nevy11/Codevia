@@ -50,19 +50,35 @@ export class UserStatsComponent implements OnInit {
   ];
 
   
+  
   async ngOnInit(): Promise<void> {
     this.isLoading = true;
-    try{
-      // 1. Fetch real course metadata
-      this.videoThumbnails = await this.supabaseService.getAllCourses();
+    try {
+      const userId = await this.supabaseService.getCurrentUserId();
+      if (!userId) return;
 
-      // 2. Fetch the 3 most recently watched videos/courses
-      const recentProgress = await this.supabaseService.getRecentUserProgress(3);
+      // 1. Fetch Enrolled Courses (Thumbnails)
+      this.videoThumbnails = await this.supabaseService.getUserEnrolledCourses(userId);
 
+      // 2. Fetch Detailed Stats (Table data)
+      const [recentProgress, summaryStats] = await Promise.all([
+        this.supabaseService.getRecentUserProgress(3),
+        this.supabaseService.getCourseStats(userId)
+      ]);
+
+      // 3. Process Summary Stats (No subscription needed!)
+      if (summaryStats) {
+        this.totalCoursesEnrolled = summaryStats.enrolled;
+        this.coursesCompleted = summaryStats.completed;
+        this.completionRate = this.totalCoursesEnrolled > 0
+          ? Math.round((this.coursesCompleted / this.totalCoursesEnrolled) * 100)
+          : 0;
+      }
+
+      // 4. Process Recent Progress for the Table
       if (recentProgress && recentProgress.length > 0) {
         let totalMinutesAcrossAll = 0;
 
-        // 3. Map the Supabase data to your UI structure
         this.courseStats = recentProgress.map((item) => {
           const recordDate = new Date(item.updated_at);
           if (recordDate > this.lastActiveDate) {
@@ -70,7 +86,7 @@ export class UserStatsComponent implements OnInit {
           }
 
           const minutesSpent = Math.round(item.playback_position / 60);
-          totalMinutesAcrossAll += minutesSpent; // Accumulate for average
+          totalMinutesAcrossAll += minutesSpent;
 
           return {
             courseName: item.courses?.title || 'Unknown Course',
@@ -81,30 +97,13 @@ export class UserStatsComponent implements OnInit {
           };
         });
 
-        // 4. Calculate Average Watch Duration
-        // This takes the total time spent in these sessions divided by the number of sessions
         this.averageWatchDuration = Math.round(totalMinutesAcrossAll / recentProgress.length);
-        
-        // Optional: Update 'Most Watched' based on the top record
-        if (this.courseStats.length > 0) {
-            this.mostWatchedCourse = this.courseStats[0].courseName;
-        }
+        this.mostWatchedCourse = this.courseStats[0].courseName;
       }
-    }catch(error){
+    } catch (error) {
       console.error('Error fetching stats:', error);
-    }finally{
+    } finally {
       this.isLoading = false;
     }
-
-    // Keep your stats$ subscription for completion rate...
-    this.stats$.subscribe((stats) => {
-      if (stats) {
-        this.totalCoursesEnrolled = stats.enrolled;
-        this.coursesCompleted = stats.completed;
-        this.completionRate = this.totalCoursesEnrolled > 0
-            ? Math.round((this.coursesCompleted / this.totalCoursesEnrolled) * 100)
-            : 0;
-      }
-    });
   }
 }
