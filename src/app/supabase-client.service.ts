@@ -1117,47 +1117,45 @@ async savePushSubscription(subscription: any): Promise<boolean> {
 
     return data.map(record => record.video_id);
   }
-  // Inside SupabaseClientService class
-
   async sendLoginNotification(userId: string): Promise<void> {
-    try {
-      const { data, error } = await this.client.functions.invoke(
-        'send-push-notification', // The name of your Supabase function
-        {
-          body: { 
-            user_id: userId, 
-            title: "New Login Detected 🔐", 
-            message: "You have successfully logged into your Codevia account." 
-          },
-        },
-      );
-      this.client.functions.invoke('send-login-email', {
-        body: { user_id: userId }
-      });
+  try {
+    // 1. Trigger Push Notification
+    this.client.functions.invoke('send-push-notification', {
+      body: { 
+        user_id: userId, 
+        title: "New Login Detected ", 
+        message: "You have successfully logged into your Codevia account." 
+      },
+    });
 
-      if (error) {
-        console.error('Push Notification Edge Function Error:', error);
-      }
-    } catch (err) {
-      console.error('Unexpected error triggering push notification:', err);
-    }
+    this.client.functions.invoke('send-login-email', {
+      body: { user_id: userId, type: 'login' }
+    });
+
+  } catch (err) {
+    console.error('Unexpected error triggering login notifications:', err);
   }
+}
 
+async sendLogoutNotification(userId: string): Promise<void> {
+  try {
+    // 1. Trigger Push Notification
+    this.client.functions.invoke('send-push-notification', {
+      body: { 
+        user_id: userId, 
+        title: "Session Ended ", 
+        message: "You have been logged out of Codevia. See you soon!" 
+      },
+    });
 
-  async sendLogoutNotification(userId: string): Promise<void> {
-    try {
-      console.log('Triggering logout notification for user:', userId);
-      await this.client.functions.invoke('send-push-notification', {
-        body: { 
-          user_id: userId, 
-          title: "Session Ended 👋", 
-          message: "You have been logged out of Codevia. See you soon!" 
-        },
-      });
-    } catch (err) {
-      console.error('Logout notification failed:', err);
-    }
+    this.client.functions.invoke('send-login-email', {
+      body: { user_id: userId, type: 'logout' }
+    });
+
+  } catch (err) {
+    console.error('Logout notification failed:', err);
   }
+}
   async deletePushSubscription(userId: string): Promise<boolean> {
     console.log('Deleting push subscription for user:', userId);
     const { error } = await this.client
