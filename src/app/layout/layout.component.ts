@@ -92,7 +92,7 @@ export class LayoutComponent implements OnInit {
     }),
   );
   async ngOnInit() {
-    this.triggerManualReminder();
+    // this.triggerManualReminder();
     this.themeChangeService.loadTheme();
     this.profile = await this.supabaseService.getProfile();
     if (!this.supabaseService.client) {

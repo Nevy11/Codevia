@@ -27,8 +27,7 @@ export class NotificationSettingsService {
   }
 
 
-  //  Fetches settings from Supabase. 
-  //  If not found, it keeps the defaults.
+  
  
   private async loadInitialSettings() {
     try {

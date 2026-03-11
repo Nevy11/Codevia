@@ -1131,6 +1131,9 @@ async savePushSubscription(subscription: any): Promise<boolean> {
           },
         },
       );
+      this.client.functions.invoke('send-login-email', {
+        body: { user_id: userId }
+      });
 
       if (error) {
         console.error('Push Notification Edge Function Error:', error);
@@ -1192,4 +1195,7 @@ async savePushSubscription(subscription: any): Promise<boolean> {
     // Flatten the result: Supabase returns { courses: { ... } } due to the join
     return (data || []).map((item: any) => item.courses) as Courses[];
   }
+  
+
+  
 }
