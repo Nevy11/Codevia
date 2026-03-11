@@ -48,27 +48,7 @@ export class LoginComponent {
     this.hide.set(!this.hide());
     event.stopPropagation();
   }
-  // async login() {
-  //   const email = this.loginForm().email.value!;
-  //   const password = this.loginForm().password.value!;
-  //   if (!this.loginForm().email.valid || !this.loginForm().password.valid) {
-  //     this.notify.show('Invalid credentials');
-  //     return;
-  //   }
-  //   const { data, error } = await this.supabase.client.auth.signInWithPassword({
-  //     email,
-  //     password,
-  //   });
-  //   // Logic for login can be added here
-  //   if (error) {
-  //     console.error('Login error:', error.message);
-  //     this.notify.show('Login failed');
-  //   } else {
-  //     this.notify.show('Login Successful');
-  //     this.router.navigate(['/layout/home']);
-  //   }
-  // }
-  // login.component.ts
+  
 
   async login() {
     const email = this.loginForm().email.value!;

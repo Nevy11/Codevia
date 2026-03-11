@@ -1139,4 +1139,19 @@ async savePushSubscription(subscription: any): Promise<boolean> {
       console.error('Unexpected error triggering push notification:', err);
     }
   }
+
+
+  async sendLogoutNotification(userId: string): Promise<void> {
+    try {
+      await this.client.functions.invoke('send-push-notification', {
+        body: { 
+          user_id: userId, 
+          title: "Session Ended 👋", 
+          message: "You have been logged out of Codevia. See you soon!" 
+        },
+      });
+    } catch (err) {
+      console.error('Logout notification failed:', err);
+    }
+  }
 }

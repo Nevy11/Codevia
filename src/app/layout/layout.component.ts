@@ -41,7 +41,6 @@ export class LayoutComponent implements OnInit {
   themeChangeService = inject(ThemeChangeService);
   avatar_url: string = '';
   islogged_out: boolean = false;
-  // isYoutubeShown!: boolean;
 
   private router = inject(Router);
   private dialog = inject(MatDialog);
@@ -159,6 +158,32 @@ export class LayoutComponent implements OnInit {
     });
   }
 
+  // async logout() {
+  //   const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+  //     width: '350px',
+  //     data: {
+  //       title: 'Confirm Logout',
+  //       message: 'Are you sure you want to log out?',
+  //     },
+  //   });
+
+  //   dialogRef.afterClosed().subscribe(async (result) => {
+  //     if (result) {
+  //       this.islogged_out = await this.supabaseService.logout();
+  //       if (this.islogged_out) {
+          
+  //         this.notify.show('Logged out successfully');
+  //         this.themeChangeService.setTheme('light');
+  //         this.router.navigate(['']);
+  //       } else {
+  //         this.notify.show('log out unsuccessfull');
+          
+  //       }
+  //     }
+  //   });
+  // }
+  // Inside layout.component.ts
+
   async logout() {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '350px',
@@ -170,19 +195,22 @@ export class LayoutComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
+        // 1. Get current userId before logging out
+        const userId = await this.supabaseService.getCurrentUserId();
+
         this.islogged_out = await this.supabaseService.logout();
+        
         if (this.islogged_out) {
-          // this.snackBar.open('Logged out successfully', `Close`, {
-          //   duration: 3600,
-          // });
+          // 2. Trigger the notification if we have a userId
+          if (userId) {
+            this.supabaseService.sendLogoutNotification(userId);
+          }
+
           this.notify.show('Logged out successfully');
           this.themeChangeService.setTheme('light');
           this.router.navigate(['']);
         } else {
-          this.notify.show('log out unsuccessfull');
-          // this.snackBar.open(`log out unsuccessfull`, `Close`, {
-          //   duration: 3600,
-          // });
+          this.notify.show('Logout unsuccessful');
         }
       }
     });
@@ -192,15 +220,11 @@ export class LayoutComponent implements OnInit {
     if (this.learningService.getShowYT()) {
       this.learningService.set_show_yt(false);
       this.notify.show('Youtube hidden');
-      // this.snackBar.open(`Youtube hidden`, `Close`, {
-      //   duration: 3000,
-      // });
+      
     } else {
       this.learningService.set_show_yt(true);
       this.notify.show('Youtube displayed');
-      // this.snackBar.open(`Youtube displayed`, `Close`, {
-      //   duration: 3000,
-      // });
+      
     }
   }
   
