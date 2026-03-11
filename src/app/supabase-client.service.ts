@@ -1155,4 +1155,16 @@ async savePushSubscription(subscription: any): Promise<boolean> {
       console.error('Logout notification failed:', err);
     }
   }
+  async deletePushSubscription(userId: string): Promise<boolean> {
+    const { error } = await this.client
+      .from('push_subscriptions')
+      .delete()
+      .eq('user_id', userId);
+
+    if (error) {
+      console.error('Error deleting push subscription:', error.message);
+      return false;
+    }
+    return true;
+  }
 }

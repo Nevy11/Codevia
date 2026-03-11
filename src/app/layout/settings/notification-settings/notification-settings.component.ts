@@ -35,39 +35,46 @@ export class NotificationSettingsComponent implements OnInit {
   // readonly VAPID_PUBLIC_KEY = "BH362Ae9m5yRBU2JeVv43IJIs0jxEKacm0g2rjjY_WofSVmOJ2NjYr4giGO7NKEoAaZpdW_eQU8aLiL9I5KDOII"; 
   private readonly VAPID_PUBLIC_KEY = environment.vapidPublicKey;
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void {
     this.settingService.settings$.subscribe((data) => {
       this.settings = { ...data };
+      
+      // Cross-check with actual browser permission
+      if (Notification.permission !== 'granted') {
+        this.settings.pushNotifications = false;
+      }
     });
   }
   
   async onTogglePush(enabled: boolean) {
+    const userId = await this.supabaseService.getCurrentUserId();
+    
     if (enabled) {
       try {
         const sub = await this.swPush.requestSubscription({
           serverPublicKey: this.VAPID_PUBLIC_KEY
         });
+        await this.supabaseService.savePushSubscription(sub);
         
-        const saved = await this.supabaseService.savePushSubscription(sub);
-        
-        if (saved) {
-          // Trigger the Welcome Notification
-          await this.supabaseService.generateAiResponse(JSON.stringify({
-            user_id: await this.supabaseService.getCurrentUserId(),
-            title: "Account Active! 🎉",
-            message: "Welcome to Codevia. Your push notifications are now successfully configured."
-          }));
+        // Optional: Send a "You're subscribed" alert
+        if (userId) {
+          await this.supabaseService.sendLoginNotification(userId);
         }
-        
-        this.save();
-      } catch (err: any) {
-        console.error('Push subscription failed:', err);
-        if (err.message.includes('push service error')) {
-          alert("Check Brave settings for 'Google services for push messaging'.");
+      } catch (err) {
+        this.settings.pushNotifications = false; // Reset toggle on error
+      }
+    } else {
+      // --- THIS IS WHERE THE DELETE HAPPENS ---
+      try {
+        await this.swPush.unsubscribe(); // Stop browser from listening
+        if (userId) {
+          await this.supabaseService.deletePushSubscription(userId); 
         }
-        this.settings.pushNotifications = false;
+      } catch (err) {
+        console.error('Unsubscribe failed', err);
       }
     }
+    this.save(); 
   }
 
   save() {

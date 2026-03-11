@@ -158,31 +158,7 @@ export class LayoutComponent implements OnInit {
     });
   }
 
-  // async logout() {
-  //   const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-  //     width: '350px',
-  //     data: {
-  //       title: 'Confirm Logout',
-  //       message: 'Are you sure you want to log out?',
-  //     },
-  //   });
-
-  //   dialogRef.afterClosed().subscribe(async (result) => {
-  //     if (result) {
-  //       this.islogged_out = await this.supabaseService.logout();
-  //       if (this.islogged_out) {
-          
-  //         this.notify.show('Logged out successfully');
-  //         this.themeChangeService.setTheme('light');
-  //         this.router.navigate(['']);
-  //       } else {
-  //         this.notify.show('log out unsuccessfull');
-          
-  //       }
-  //     }
-  //   });
-  // }
-  // Inside layout.component.ts
+  
 
   async logout() {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
