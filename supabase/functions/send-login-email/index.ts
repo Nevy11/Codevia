@@ -16,7 +16,22 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
+    const { data: existing } = await supabaseAdmin
+      .from('notifications')
+      .select('id')
+      .eq('user_id', user_id)
+      .eq('type', type)
+      .gt('created_at', new Date(Date.now() - 5000).toISOString())
+      .limit(1);
 
+    if (!existing || existing.length === 0) {
+      await supabaseAdmin.from('notifications').insert({
+        user_id: user_id,
+        title: subject,
+        message: isLogin ? "New login to your account" : "Session ended successfully",
+        type: type
+      });
+    }
     // Check settings
     const { data: settings } = await supabaseAdmin
       .from('user_settings')

@@ -19,6 +19,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { LearningService } from './learning/learning.service';
 import { ConfirmationDialogComponent } from '../shared/confirmation-dialog/confirmation-dialog.component';
 import { NotificiationService } from '../notification.service';
+import { NotificationCenterComponent } from './notification-center/notification-center.component';
 @Component({
   selector: 'nevy11-layout',
   imports: [
@@ -31,6 +32,7 @@ import { NotificiationService } from '../notification.service';
     MatMenuModule,
     AsyncPipe,
     MatSnackBarModule,
+    NotificationCenterComponent,
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss',

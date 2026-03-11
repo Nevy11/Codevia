@@ -1193,7 +1193,29 @@ async sendLogoutNotification(userId: string): Promise<void> {
     // Flatten the result: Supabase returns { courses: { ... } } due to the join
     return (data || []).map((item: any) => item.courses) as Courses[];
   }
-  
+  async getNotifications() {
+    const { data, error } = await this.client
+      .from('notifications')
+      .select('*')
+      .order('created_at', { ascending: false }) // Newest first
+      .limit(20);
+      
+    return data || [];
+  }  
+  // supabase-client.service.ts
+  async clearAllNotifications(): Promise<boolean> {
+    const userId = await this.getCurrentUserId();
+    if (!userId) return false;
 
-  
+    const { error } = await this.client
+      .from('notifications')
+      .delete()
+      .eq('user_id', userId);
+
+    if (error) {
+      console.error('Error clearing notifications:', error);
+      return false;
+    }
+    return true;
+  }
 }

@@ -25,7 +25,9 @@ serve(async (req) => {
 
   try {
     const { user_id, title, message } = await req.json()
+    
 
+   
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL')!,
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
@@ -55,7 +57,13 @@ serve(async (req) => {
         }
       }
     })
-
+    // SAVE TO DATABASE FIRST
+    await supabase.from('notifications').insert({
+      user_id: user_id,
+      title: title,
+      message: message,
+      type: title.toLowerCase().includes('login') ? 'login' : 'logout',
+    });
     await WebPush.sendNotification(subData.subscription_json, payload)
 
     // 3. Include headers in Success response
