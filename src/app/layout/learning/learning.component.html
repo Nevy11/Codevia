@@ -1,24 +1,39 @@
 @if (loadingshowYT) {
-<nevy11-loader></nevy11-loader>
-}@else{
-<div class="learning-container">
-  @if (this.learningService.getShowYT()) {
-  <div class="video-section">
-    <nevy11-video-section
-      [videoId]="videoId"
-      [playbackSpeed]="playbackSpeed"
-    ></nevy11-video-section>
-  </div>
-  }
-  <div class="editor-section">
-    <nevy11-code-editor-section></nevy11-code-editor-section>
-  </div>
-</div>
-<div class="courses-header">
-  <h2>Other courses</h2>
-</div>
+  <nevy11-loader></nevy11-loader>
+} @else {
+  <video #videoElement autoplay muted style="display: none"></video>
+  <canvas #canvasElement style="display: none"></canvas>
 
-<div><nevy11-video-feed></nevy11-video-feed></div>
-<nevy11-python-processing></nevy11-python-processing>
+  <div
+    class="emotion-status-pill"
+    [class]="
+      currentEmotion === 'Detecting...'
+        ? 'loading'
+        : currentEmotion.toLowerCase().trim()
+    "
+  >
+    <span class="dot"></span>
+    Focus: <strong>{{ currentEmotion }}</strong>
+  </div>
 
+  <div class="learning-container">
+    @if (this.learningService.getShowYT()) {
+      <div class="video-section">
+        <nevy11-video-section
+          [videoId]="videoId"
+          [playbackSpeed]="playbackSpeed"
+        ></nevy11-video-section>
+      </div>
+    }
+    <div class="editor-section">
+      <nevy11-code-editor-section></nevy11-code-editor-section>
+    </div>
+  </div>
+
+  <div class="courses-header">
+    <h2>Other courses</h2>
+  </div>
+
+  <div><nevy11-video-feed></nevy11-video-feed></div>
+  <nevy11-python-processing></nevy11-python-processing>
 }
