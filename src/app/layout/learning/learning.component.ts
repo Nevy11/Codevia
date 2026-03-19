@@ -70,7 +70,6 @@ export class LearningComponent implements OnInit, OnDestroy {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
       this.videoElement.nativeElement.srcObject = stream;
 
-      // Start the "Heartbeat" detection every 3 seconds
       this.detectionInterval = setInterval(() => {
         this.captureAndDetect();
       }, 3000);
@@ -109,7 +108,7 @@ export class LearningComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // Clean up: Stop the camera and the interval when leaving the page
+    // Stop the camera and the interval when leaving the page
     if (this.detectionInterval) clearInterval(this.detectionInterval);
     const stream = this.videoElement.nativeElement.srcObject as MediaStream;
     stream?.getTracks().forEach((track) => track.stop());

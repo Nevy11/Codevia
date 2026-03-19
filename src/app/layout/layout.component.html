@@ -1,9 +1,7 @@
-<!-- Just a test to detect mobile device detection-->
 @for (card of cards | async; track card) {
   @if (card.mobile_device) {
     <mat-sidenav-container class="sidenav-container">
       <!-- Side Navigation -->
-      <!-- style="width: 6.7rem" -->
       <mat-sidenav
         #drawer
         class="sidenav"
@@ -235,9 +233,7 @@
           <button mat-icon-button (click)="openSearch()">
             <mat-icon>search</mat-icon>
           </button>
-          <!-- <button mat-icon-button>
-        <mat-icon>notifications</mat-icon>
-      </button> -->
+
           <nevy11-notification-center></nevy11-notification-center>
           <button mat-icon-button [matMenuTriggerFor]="profileMenu">
             @if (this.profile) {
@@ -270,8 +266,6 @@
               <mat-icon>notifications</mat-icon>
               Notifications
             </button>
-            <!-- <nevy11-notification-center></nevy11-notification-center> -->
-            <!-- Notifications -->
           </mat-menu>
         </mat-toolbar>
 
